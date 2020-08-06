@@ -1,7 +1,7 @@
 {
 	"basic template": {
-		"scope": "c++",
-		"prefix": "bbbbb",
+		"scope": "cpp",
+		"prefix": "bt",
 		"body": [
 			"#define _USE_MATH_DEFINES",
 			"#include <bits/stdc++.h>",
@@ -17,12 +17,12 @@
 			"const int dx[] = { 1, -1, 0, 0 };",
 			"",
 			"int main() {",
-			"cin.tie(NULL); cout.tie(NULL);",
-			"ios_base::sync_with_stdio(false);",
-			"",
-			"return 0;",
+			"\tcin.tie(NULL); cout.tie(NULL);",
+			"\tios_base::sync_with_stdio(false);",
+			"\t",
+			"\treturn 0;",
 			"}"
 		],
-		"description": "this is basic template"
+		"description": "basic template"
 	}
 }
