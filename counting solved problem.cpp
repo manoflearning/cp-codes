@@ -29,9 +29,9 @@ int main() {
 
 	cout<<"현재까지\n";
 	for(int i = 1; i < contents.size(); i++) {
-		cout<<contents[i].name<<"에서 "<<contents[i].cnt<<"문제, \n";
+		cout<<contents[i].name<<"에서 \t"<<contents[i].cnt<<"문제, <br/>\n";
 	}
-	cout<<"총합 "<<contents[0].cnt<<"문제를 풀었습니다.";
+	cout<<"총합 "<<contents[0].cnt<<"문제를 풀었습니다.<br/>";
 
     return 0;
 }
