@@ -37,7 +37,7 @@ int main() {
 
 	printLastRenewalTime();
 
-    return 0;
+	return 0;
 }
 
 void printIntro() {
