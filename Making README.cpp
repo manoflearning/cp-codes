@@ -19,6 +19,7 @@ struct Contents {
 
 vector<Contents> contents;
 
+void printIntro();
 void printTheNumOfSolvedProblem();
 int searchingDir(string path, int dep);
 bool isFile(_finddata_t fd);
@@ -26,8 +27,7 @@ bool isExeFile(string s);
 void printLastRenewalTime();
 
 int main() {
-	cout<<"# PS-Codes\n";
-	cout<<"알고리즘 문제 정답 코드 저장용입니다. <br/>\n";
+	printIntro();
 
 	cout<<"<br/>\n";
 
@@ -38,6 +38,11 @@ int main() {
 	printLastRenewalTime();
 
     return 0;
+}
+
+void printIntro() {
+	cout<<"# PS-Codes\n";
+	cout<<"알고리즘 문제 정답 코드 저장용입니다. <br/>\n";
 }
 
 void printTheNumOfSolvedProblem() {
