@@ -11,7 +11,8 @@ struct Contents {
 	string name;
 	int cnt;
 	bool operator<(Contents& rhs) {
-		return cnt > rhs.cnt;
+		if(cnt != rhs.cnt) return cnt > rhs.cnt;
+		return name < rhs.name;
 	}
 };
 
@@ -27,11 +28,11 @@ int main() {
 
 	sort(contents.begin(), contents.end());
 
-	cout<<"현재까지\n";
+	cout<<"현재까지 <br/>\n";
 	for(int i = 1; i < contents.size(); i++) {
-		cout<<contents[i].name<<"에서 \t"<<contents[i].cnt<<"문제, <br/>\n";
+		cout<<"**"<<contents[i].name<<"**에서 **"<<contents[i].cnt<<"**문제, <br/>\n";
 	}
-	cout<<"총합 "<<contents[0].cnt<<"문제를 풀었습니다.<br/>";
+	cout<<"총합 **"<<contents[0].cnt<<"**문제를 풀었습니다.<br/>";
 
     return 0;
 }
