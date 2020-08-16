@@ -35,18 +35,18 @@ int main() {
 
     int N; cin>>N;
 
-    if(N & 1) {
+    if(N < 8) cout<<-1;
+    else if(N & 1) {
         //홀수인 소수가 1개 또는 3개
         if(isPrime[N-6]) {
             cout<<"2 2 2 "<<N-6;
             return 0;
         }
         
-        for(int i=3; i<N-2; i+=2) {
-            if(!isPrime[i]) continue;
-            for(int j=i; j<=N-2-i-j; j+=2) {
-                if(!isPrime[j] || !isPrime[N-2-i-j]) continue;
-                cout<<"2 "<<i<<' '<<j<<' '<<N-2-i-j;
+        for(int i=0; prime[i]<N-2; i++) {
+            for(int j=i; prime[j]<=N-2-prime[i]-prime[j]; j++) {
+                if(!isPrime[N-2-prime[i]-prime[j]]) continue;
+                cout<<"2 "<<prime[i]<<' '<<prime[j]<<' '<<N-2-prime[i]-prime[j];
                 return 0;
             }
         }
@@ -58,26 +58,12 @@ int main() {
             return 0;
         }
 
-       for(int i=3; i<N-4 && i<=N-4-i; i+=2) {
-            if(!isPrime[i] || !isPrime[N-4-i]) continue;
-            cout<<"2 2 "<<i<<' '<<N-4-i;
+       for(int i=0; prime[i]<N-4 && prime[i]<=N-4-prime[i]; i++) {
+            if(!isPrime[N-4-prime[i]]) continue;
+            cout<<"2 2 "<<prime[i]<<' '<<N-4-prime[i];
             return 0;
         }
-
-        for(int i=3; i<N; i+=2) {
-            if(!isPrime[i]) continue;
-            for(int j=i; i+j<N; j+=2) {
-                if(!isPrime[j]) continue;
-                for(int k=j; k<=N-i-j-k; k+=2) {
-                    if(!isPrime[k] || !isPrime[N-i-j-k]) continue;
-                    cout<<i<<' '<<j<<' '<<k<<' '<<N-i-j-k;
-                    return 0;
-                }
-            }
-        }
     }
-
-    cout<<-1;
 
     return 0;
 }
