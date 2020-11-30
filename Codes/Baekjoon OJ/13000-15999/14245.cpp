@@ -78,13 +78,13 @@ int main() {
 	cin >> m;
 	while (m--) {
 		int q, a, b, c;
-		cin >> q >> a >> b;
+		cin >> q >> a;
 		if (q == 1) {
-			cin >> c;
+			cin >> b >> c;
 			seg.modify(a + 1, b + 1, c);
 		}
 		else {
-			cout << seg.query(a + 1, b + 1) << '\n';
+			cout << seg.query(a + 1, a + 1) << '\n';
 		}
 	}
 
