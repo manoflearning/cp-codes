@@ -55,6 +55,7 @@ void printTheNumOfSolvedProblem() {
 	for(int i = 1; i < contents.size(); i++) {
 		cout<<"**"<<contents[i].name<<"**에서 **"<<contents[i].cnt<<"**문제, <br/>\n";
 	}
+	cout<<"<br/>\n";
 	cout<<"총합 **"<<contents[0].cnt<<"**문제를 풀었습니다.<br/>\n";
 }
 
