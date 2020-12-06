@@ -39,7 +39,9 @@ void dijkstra(int st, int mx) {
         int now = pq.top().v;
         ll d = pq.top().d;
         pq.pop();
-
+        
+        if(now==en) break;
+        
         for (auto& e : adj[now]) {
             int next = e.v;
             if (e.d > mx) continue;
