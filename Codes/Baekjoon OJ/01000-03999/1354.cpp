@@ -10,7 +10,7 @@ const int INF = 1e9 + 7;
 const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1 };
 const int dx[] = { 1, -1, 0, 0 };
-const int sz = 1e7;
+const int sz = 1e6;
 
 ll n, dp[sz + 5];
 int p, q, x, y;
