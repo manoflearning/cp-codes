@@ -1,34 +1,37 @@
-#include <stdio.h>
-#include <math.h>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
+using namespace std;
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
 
-int generator(int N) {
-	int i, l, j;
-	int m;
-	int fN, gen, flag=0;
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
+
+int n, b;
+
+int main() {
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
 	
-	for(m=1; N>pow(10, m); m++) {}
-	gen=N;
+	cin >> n;
 	
-	for(i=N-1; i>=0; i--) {
-		fN=0;
-		fN+=i;
-		for(l=1; l<=m; l++)
-			fN+=i%(int)pow(10, l)/(int)pow(10, l-1); //불필요한 연산 
-		
-		if(fN==N && i<gen)
-			gen=i, flag++;
+	for (int i = max(1, n - 54); i < n; i++) {
+	    int sum = i;
+	    for (int j = 1; j <= n; j *= 10) {
+	        sum += i / j % 10;
+	    }
+	    if (sum == n) {
+	        cout << i;
+	        b = 1;
+	        break;
+	    }
 	}
 	
-	if(flag>0) return gen;
-	else return 0;
-}
-
-int main (void) {
-	int N;
-	
-	scanf("%d", &N);
-	
-	printf("%d", generator(N));
+	if (b == 0) cout << 0;
 	
 	return 0;
 }
