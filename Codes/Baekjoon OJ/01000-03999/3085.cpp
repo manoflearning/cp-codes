@@ -1,92 +1,67 @@
-#include <iostream>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
+using namespace std;
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
 
-int maximum_number_candies(char board[][50], int N);
-int swapcheck(char board[][50], int i, int l, int N);
-int justcheck(char board[][50], int N);
-void swappointer(char &n, char &m);
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
+
+int n;
+char a[55][55];
+
+int f() {
+    int ret = 1;
+    
+    for (int i = 0; i < n; i++) {
+        int my = 1, mx = 1;
+        for (int j = 0; j < n - 1; j++) {
+            my++, mx++;
+            if (a[i][j] != a[i][j + 1]) my = 1;
+            if (a[j][i] != a[j + 1][i]) mx = 1;
+            
+            ret = max({ ret, my, mx});
+        }
+    }
+    
+    return ret;
+}
 
 int main() {
-	int N;
-	std::cin>>N;
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
 	
-	char board[50][50];
-	for(int i=0; i<N; i++)
-	for(int l=0; l<N; l++)
-		std::cin>>board[i][l];
-		
-	std::cout<<maximum_number_candies(board, N);
+	cin >> n;
+	
+	for (int i = 0; i < n; i++) {
+	    for (int j = 0; j < n; j++) {
+	        cin >> a[i][j];
+	    }
+	}
+	
+	int ans = 0;
+	
+	for (int y = 0; y < n; y++) {
+	    for (int x = 0; x < n; x++) {
+	        for (int k = 0; k < 4; k++) {
+	            int ny = y + dy[k], nx = x + dx[k];
+	            
+	            if (a[y][x] != a[ny][nx]) {
+	                swap(a[y][x], a[ny][nx]);
+	                
+	                ans = max(ans, f());
+	                
+	                swap(a[y][x], a[ny][nx]);
+	            }
+	        }
+	    }
+	}
+	
+	cout << ans;
 	
 	return 0;
-}
-
-int maximum_number_candies(char board[][50], int N) {
-	int max=0;
-	
-	for(int i=0; i<N; i++)
-	for(int l=0; l<N; l++) {
-		int tmp;
-		tmp = swapcheck(board, i, l, N);
-		
-		if(tmp>max)
-			max = tmp;
-	}
-	
-	return max;
-}
-
-int swapcheck(char board[][50], int y, int x, int N) {
-	int countx=0, county=0;
-	
-	//가로줄 체크
-	if(y!=N-1)
-	if(board[y][x]!=board[y+1][x]) {
-		swappointer(board[y][x], board[y+1][x]);
-		countx = justcheck(board, N);
-		swappointer(board[y][x], board[y+1][x]);
-	}
-	//세로줄 체크
-	if(x!=N-1)
-	if(board[y][x]!=board[y][x+1]) {
-		swappointer(board[y][x], board[y][x+1]);
-		county = justcheck(board, N);
-		swappointer(board[y][x], board[y][x+1]);
-	}
-	
-	return (countx>county)?countx:county;
-}
-
-int justcheck(char board[][50], int N) {
-	int max=1;
-	
-	for(int i=0; i<N; i++) {
-		int count;
-		//가로 체크
-		count=1;
-		for(int l=0; l<N-1; l++) {
-			if(board[i][l]==board[i][l+1]) count++;
-			else {
-				if(count>max) max=count;
-				count=1;
-			}
-			if(count>max) max=count;
-		}
-		//세로 체크
-		count=1;
-		for(int l=0; l<N-1; l++) {
-			if(board[l][i]==board[l+1][i]) count++;
-			else {
-				if(count>max) max=count;
-				count=1;
-			}
-			if(count>max) max=count;
-		}
-	}
-	
-	return max;
-}
-
-void swappointer(char &n, char &m) {
-	char tmp=n;
-	n=m;
-	m=tmp;
 }
