@@ -58,32 +58,26 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-
 const int INF = 1e9 + 7;
 const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1 };
 const int dx[] = { 1, -1, 0, 0 };
-
 struct ab {
     int a, b;
 };
-
 bool operator<(ab u, ab v) {
     return u.a > v.a;
 }
-
 int l, w, h;
 int n;
 vector<ab> arr;
 int ex2[20];
-
 void init() {
     ex2[0] = 1;
     for (int i = 1; i < 20; i++) {
         ex2[i] = 2 * ex2[i - 1];
     }
 }
-
 void input() {
     cin >> l >> w >> h;
 	cin >> n;
@@ -94,10 +88,7 @@ void input() {
 	    arr.push_back({ ex2[a], b });
 	}
 }
-
 ll f(int l, int w, int h) {
-    //cout << l << ' ' << w << ' ' << h << '\n';
-    
     int len = min({ l, w, h }), ff, bit = 1;
     
     if (len == 0) return 0;
@@ -117,19 +108,12 @@ ll f(int l, int w, int h) {
     
     int lm = l - ff, wm = w - ff, hm = h - ff;
     
-    ret += f(lm, ff, ff);
-    ret += f(ff, wm, ff);
+    ret += f(lm, w, h);
+    ret += f(ff, wm, h);
     ret += f(ff, ff, hm);
-    
-    ret += f(lm, wm, ff);
-    ret += f(lm, ff, hm);
-    ret += f(ff, wm, hm);
-    
-    ret += f(lm, wm, hm);
     
     return ret;
 }
-
 int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
@@ -144,6 +128,5 @@ int main() {
 	
 	if (ans >= INF) cout << -1;
 	else cout << ans;
-
 	return 0;
 }*/
