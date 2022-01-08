@@ -1,4 +1,64 @@
-#include <iostream>
+//divide & conquer
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
+using namespace std;
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
+
+const int MAXN = 1e5;
+
+int n, a[MAXN + 5];
+
+void input() {
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+}
+
+int f(int l, int r) {
+    if (l == r) return a[l];
+    
+    int mid = (l + r) / 2, ml = mid - 1, mr = mid + 2;
+    int mn = min(a[mid], a[mid + 1]), sz = 2 * mn;
+    
+    for (int i = 3; ; i++) {
+        if (l <= ml && (a[ml] >= a[mr] || r < mr)) {
+            mn = min(mn, a[ml]);
+            ml--;
+        }
+        else if (mr <= r && (a[ml] <= a[mr] || ml < l)) {
+            mn = min(mn, a[mr]);
+            mr++;
+        }
+        else break;
+        
+        sz = max(sz, i * mn);
+    }
+    
+    return max({ sz, f(l, mid), f(mid + 1, r) });
+}
+
+int main() {
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	
+	input();
+	
+	cout << f(0, n - 1);
+	
+	return 0;
+}
+
+//stack
+/*#include <iostream>
 #include <stack>
 #include <algorithm>
 using namespace std;
@@ -43,11 +103,11 @@ int main() {
 	printf("%d", ans);
 
 	return 0;
-}
+}*/
 /*//////////////////////////////////////////////////////////////////////
-¹®Á¦ ÇØ¹ı		: ½ºÅÃÀÇ È°¿ë
-Á¢±Ù ¹æ½Ä		: 
-°áÁ¤Àû ±ú´ŞÀ½		: 
-¿À´ä ¿øÀÎ		: 1. 
+ë¬¸ì œ í•´ë²•		: ìŠ¤íƒì˜ í™œìš©
+ì ‘ê·¼ ë°©ì‹		: 
+ê²°ì •ì  ê¹¨ë‹¬ìŒ		: 
+ì˜¤ë‹µ ì›ì¸		: 1. 
 				  2. 
 *///////////////////////////////////////////////////////////////////////
