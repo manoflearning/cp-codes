@@ -15,8 +15,7 @@ const int MAXN = 100;
 
 int n, m;
 ll a[MAXN + 5], b[MAXN + 5], dp[MAXN + 5][10005];
-//dp[i][j]는 구간 [0, i]에서 i번째 메모리를 포함하고,
-//총 j 이하의 비용을 소모해서 얻을 수 있는 메모리의 최댓값
+//dp[i][j]는 구간 [0, i]에서 총 j 이하의 비용을 소모해서 얻을 수 있는 메모리의 최댓값
 
 void init() {
     for (int i = 0; i < MAXN; i++) {
@@ -31,16 +30,13 @@ void input() {
 }
 
 ll f(int idx, int c) {
+    if (idx < 0) return 0;
+    
     ll& ret = dp[idx][c];
-    
     if (ret != -1) return ret;
-    if (b[idx] > c) return ret = 0;
     
-    ret = a[idx];
-    
-    for (int i = 0; i < idx; i++) {
-        ret = max(ret, a[idx] + f(i, c - b[idx]));
-    }
+    ret = f(idx - 1, c);
+    if (b[idx] <= c) ret = max(ret, a[idx] + f(idx - 1, c - b[idx]));
     
     return ret;
 }
