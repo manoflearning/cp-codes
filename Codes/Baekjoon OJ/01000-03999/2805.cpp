@@ -1,57 +1,52 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
+
+const int MAXN = 1e6;
 
 int n, m;
-vector<int> tree;
+ll a[MAXN + 5], mx;
 
-int binary_flag(int left, int right);
+void input() {
+    cin >> n >> m;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        mx = max(mx, a[i]);
+    }
+}
 
-bool fact_check(int flag);
+int bs(int l, int r) {
+    while (l < r) {
+        int mid = (l + r + 1) / 2;
+        
+        ll sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += max<ll>(0, a[i] - mid);
+        }
+        
+        if (sum < m) r = mid - 1;
+        else l = mid;
+    }
+    
+    return l;
+}
 
 int main() {
-	//input
-	scanf("%d %d", &n, &m);
-	tree.resize(n);
-	for (int i = 0; i < n; i++) {
-		scanf("%d", &tree[i]);
-	}
-	//
-	sort(tree.begin(), tree.end());
-	//output
-	int ans = binary_flag(0, 1000000000);
-	printf("%d", ans);
-
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	
+	input();
+	
+	cout << bs(0, mx - 1);
+	
 	return 0;
 }
-
-int binary_flag(int left, int right) {
-	int flag = (left + right) / 2;
-	
-	if (!fact_check(flag)) return binary_flag(left, flag - 1);
-	else {
-		if (!fact_check(flag + 1)) return flag;
-		else return binary_flag(flag + 1, right);
-	}
-}
-
-bool fact_check(int flag) {
-	long long int sum = 0;
-	for (int i = n - 1; i >= 0; i--) {
-		if (tree[i] >= flag)
-			sum += tree[i] - flag;
-		else break;
-	}
-
-	if (sum >= m) return true;
-	else return false;
-}
-
-/*
-문제 해법		: 이분탐색
-접근 방식		:
-결정적 깨달음	:
-오답 원인		: 1. sum 변수가 int형 범위를 넘어갈 수 있음
-				  2.
-*/
