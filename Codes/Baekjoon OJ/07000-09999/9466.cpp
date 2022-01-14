@@ -32,11 +32,11 @@ void dfs(int v) {
     
     int u = adj[v];
     
-    if (!a[u]) dfs(u);
-    else if (!b[u]) {
+    if (a[u] && !b[u]) {
         for (int i = u; i != v; i = adj[i]) ans--;
         ans--;
     }
+    if (!a[u]) dfs(u);
     
     b[v] = 1;
 }
