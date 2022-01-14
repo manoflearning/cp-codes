@@ -1,59 +1,69 @@
-#include <iostream>
-#include <vector>
-#include <cstring>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
 
-const int MAXV = 1e5;
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
 
-vector<int> adj[MAXV + 5];
-bool visited[MAXV + 5], finished[MAXV + 5];
-int ans;
+const int MAXN = 1e5 + 5;
 
-void init();
-void dfs(int now);
+int n, ans, adj[MAXN], a[MAXN], b[MAXN];
+
+void init() {
+    memset(a, 0, sizeof(a));
+    memset(b, 0, sizeof(b));
+}
+
+void input() {
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        cin >> adj[i];
+    }
+}
+
+void dfs(int v) {
+    a[v] = 1;
+    
+    int u = adj[v];
+    
+    if (!a[u]) dfs(u);
+    else if (!b[u]) {
+        for (int i = u; i != v; i = adj[i]) ans--;
+        ans--;
+    }
+    
+    b[v] = 1;
+}
+
+void f() {
+    for (int i = 1; i <= n; i++) {
+        if (!a[i]) dfs(i);
+    }
+}
 
 int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-
-	int T; cin >> T;
-
-	while (T--) {
-		init();
-
-		int N; cin >> N;
-
-		ans = N;
-
-		for (int u = 1; u <= N; u++) {
-			int v; cin >> v;
-			adj[u].push_back(v);
-		}
-		
-		for (int i = 1; i <= N; i++) {
-			if (!visited[i]) dfs(i);
-		}
-
-		cout << ans << '\n';
+	
+	int tc; cin >> tc;
+	
+	while (tc--) {
+	    init();
+	    
+	    input();
+	    
+	    ans = n;
+	    
+	    f();
+	    
+	    cout << ans << '\n';
 	}
-
+	
 	return 0;
-}
-
-void init() {
-	for (auto& i : adj) i.clear();
-	memset(visited, 0, sizeof(visited));
-	memset(finished, 0, sizeof(finished));
-}
-
-void dfs(int now) {
-	visited[now] = true;
-	for (int next : adj[now]) {
-		if (!visited[next]) dfs(next);
-		else if (!finished[next]) {
-			for (int i = next; i != now; i = adj[i][0]) ans--;
-			ans--;
-		}
-	}
-	finished[now] = true;
 }
