@@ -27,23 +27,20 @@ void input() {
     }
 }
 
-void dfs(int v) {
-    a[v] = 1;
+void dfs(int v, int cnt) {
+    a[v] = cnt;
     
     int u = adj[v];
     
-    if (a[u] && !b[u]) {
-        for (int i = u; i != v; i = adj[i]) ans--;
-        ans--;
-    }
-    if (!a[u]) dfs(u);
+    if (a[u] && !b[u]) ans -= (a[v] - a[u] + 1);
+    if (!a[u]) dfs(u, cnt + 1);
     
     b[v] = 1;
 }
 
 void f() {
     for (int i = 1; i <= n; i++) {
-        if (!a[i]) dfs(i);
+        if (!a[i]) dfs(i, 1);
     }
 }
 
