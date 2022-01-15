@@ -80,7 +80,7 @@ void findAll() {
 int f(int idx, int mx) {
     int& ret = dp[idx][mx];
     if (ret != -1) return ret;
-    if (!cSz[idx]) return ret = 0;
+    if (idx == cNum) return ret = 0;
     
     ret = max(ret, f(idx + 1, mx));
     
