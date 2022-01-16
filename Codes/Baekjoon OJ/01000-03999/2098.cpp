@@ -1,71 +1,60 @@
-#include <iostream>
-#include <cmath>
-#include <vector>
-#include <climits>
-#include <algorithm>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define vi vector<int>
+#define vvi vector<vector<int>>
 
-int n;
-vector< vector<int> > city;
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
 
-long long int dp[16][65536];
+int n, a[20][20];
+int dp[16][1 << 16];
 
-long long int path(int start, int count, vector<bool>& checker);
+void init() {
+    memset(dp, -1, sizeof(dp));
+}
 
-int checker_cal(vector<bool>& checker);
+void input() {
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> a[i][j];
+        }
+    }
+}
+
+int f(int v, int visited) {
+    int& ret = dp[v][visited];
+    if (ret != -1) return ret;
+    if (visited == (1 << n) - 1) {
+        return ret = (a[v][0] ? a[v][0] : INF);
+    }
+    
+    ret = INF;
+    for (int u = 0; u < n; u++) {
+        if ((1 << u) & visited) continue;
+        if (a[v][u] == 0) continue;
+        ret = min(ret, a[v][u] + f(u, visited | (1 << u)));
+    }
+    
+    return ret;
+}
 
 int main() {
-	scanf("%d", &n);
-
-	city.resize(n, vector<int>(n));
-
-	for (int i = 0; i < n; i++)
-		for (int l = 0; l < n; l++) {
-			//scanf(" %c", &city[i][l]);
-			cin >> city[i][l];
-		}
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
 	
-	vector<bool> checker(n, true);
-	printf("%lld", path(0, 0, checker));
-
+	init();
+	
+	input();
+	
+	cout << f(0, (1 << 0));
+	
 	return 0;
 }
-
-long long int path(int start, int count, vector<bool>& checker) {
-	int cal = checker_cal(checker);
-	//memoization
-	if (dp[start][cal] != 0) return dp[start][cal];
-	//base case
-	if (count == n - 1) {
-		if (city[start][0] != 0) return city[start][0];
-		else return INT_MAX;
-	}
-	//
-	dp[start][cal] = INT_MAX;
-
-	for (int i = 1; i < n; i++) {
-		if (!checker[i] || city[start][i] == 0) continue;
-		
-		checker[i] = false;
-		dp[start][cal] = min(dp[start][cal], path(i, count + 1, checker) + city[start][i]);
-		checker[i] = true;
-	}
-
-	return dp[start][cal];
-}
-
-int checker_cal(vector<bool>& checker) {
-	int cal = 0;
-	for (int i = 0; i < n; i++) {
-		if (checker[i]) cal += pow(2, i);
-	}
-	return cal;
-}
-/*
-문제 해법		: 동적 프로그래밍(외판원 순회)
-접근 방식		:
-결정적 깨달음	: 
-오답 원인		: 1. 
-				  2.
-*/
-//////////////////////////////////////////////////////////////////////
