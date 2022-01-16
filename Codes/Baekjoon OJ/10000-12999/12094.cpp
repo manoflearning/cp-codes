@@ -26,7 +26,7 @@ void input() {
     }
 }
 
-/*int purning(int l) {
+/*int pruning(int l) {
     vi cnt(21);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -137,7 +137,7 @@ int f2(int l) {
 }
 
 void f(int cnt) {
-    if (cnt == 11/* || purning(10 - cnt + 1)*/) return;
+    if (cnt == 11/* || pruning(10 - cnt + 1)*/) return;
     
     vvi b = a;
     for (int i = 1; i <= 4; i++) {
