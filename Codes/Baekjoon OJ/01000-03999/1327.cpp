@@ -1,4 +1,3 @@
-//저장용 제출
 #define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #include <cassert>
