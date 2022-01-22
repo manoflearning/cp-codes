@@ -1,46 +1,65 @@
-#include <iostream>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
 #define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define vi vector<int>
+#define vvi vector<vector<int>>
+#define vl vector<ll>
+#define vvl vector<vector<ll>>
 
-const int MAXN = 1e6;  // limit for array size
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
 
 struct Seg {
-	int N;  // array size
-	ll t[2 * MAXN];
+	int flag;  // array size
+	vector<ll> t;
 
-	void build() {
-		//cin >> N;
-		for (int i = 0; i < N; i++) cin >> t[N + i];
-		for (int i = N - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
+	void build(int N) {
+		for (flag = 1; flag < N; flag <<= 1);
+		t.resize(2 * flag);
+
+		for (int i = flag; i < flag + N; i++) cin >> t[i];
+		for (int i = flag - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
 	}
-	void modify(int p, int value) {  // set value at position p
-		for (t[p += N] = value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
+	void modify(int p, ll value) {  // set value at position p
+		for (t[p += flag - 1] = value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
 	}
-	ll query(int l, int r) {  // sum on interval [l, r)
-		ll ret = 0;
-		for (l += N, r += N; l < r; l >>= 1, r >>= 1) {
-			if (l & 1) ret += t[l++];
-			if (r & 1) ret += t[--r];
-		}
-		return ret;
+	ll query(int l, int r) {
+		return query(l, r, 1, 1, flag);
+	}
+	ll query(int l, int r, int n, int nl, int nr) {  // sum on interval [l, r]
+		if (r < nl || nr < l) return 0;
+		if (l <= nl && nr <= r) return t[n];
+
+		int mid = (nl + nr) / 2;
+		return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
 	}
 }seg;
+
+int n, m, k;
+
+void input() {
+    cin >> n >> m >> k;
+    seg.build(n);
+}
 
 int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-
-	int M, K;
-	cin >> seg.N >> M >> K;
-
-	seg.build();
-
-	for (int i = 0; i < M + K; i++) {
-		int a, b, c;
-		cin >> a >> b >> c;
-		if (a == 1) seg.modify(b - 1, c);
-		else cout << seg.query(b - 1, c) << '\n';
+	
+	input();
+	
+	for (int i = 0; i < m + k; i++) {
+	    ll a, b, c;
+	    cin >> a >> b >> c;
+	    if (a == 1) seg.modify(b, c);
+	    else cout << seg.query(b, c) << '\n';
 	}
-
+	
 	return 0;
 }
