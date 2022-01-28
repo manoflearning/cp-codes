@@ -16,13 +16,13 @@ const int dy[] = { 0, 0, 1, -1 };
 const int dx[] = { 1, -1, 0, 0 };
 
 struct ts {
-    double t, s;
+    ll t, s;
     int idx;
 };
 
 bool operator<(ts& a, ts& b) {
-    if (a.t / a.s != b.t / b.s) 
-        return a.t / a.s < b.t / b.s;
+    if (a.t * b.s != b.t * a.s) 
+        return a.t * b.s < b.t * a.s;
     else return a.idx < b.idx;
 }
 
