@@ -15,7 +15,7 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1 };
 const int dx[] = { 1, -1, 0, 0 };
 
-const int MAX = 93;
+const int MAX = 90;
 
 int L = 1;
 ll k, fibo[MAX], dp[MAX][2];
