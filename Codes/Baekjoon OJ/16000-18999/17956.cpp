@@ -45,22 +45,22 @@ void input() {
 }
 
 void f() {
-  dp[0][0] = 0;
+    dp[0][0] = 0;
 	for (auto& i : a) {
 	    for (int j = s1; j >= 0; j--) {
 	        for (int k = s2; k >= 0; k--) {
 	            if (dp[j][k] == INF) continue;
 	            
-	            int nj, nk;
 	            if (j < s1) {
-	                nj = j + i.x, nk = k;
-	                if (nj > s1) {
-	                    nk = min(s2, k + nj - s1);
-	                    nj = s1;
-	                }
+	                int nj = j + i.x, nk = k;
+	                
+	                if (s1 < nj) nk += nj - s1, nj = s1;
+	                if (s2 < nk) nk = s2;
+	                
 	                dp[nj][nk] = min(dp[nj][nk], dp[j][k] + i.t);
 	            }
-	            nk = min(s2, k + i.y);
+	            
+	            int nk = min(s2, k + i.y);
 	            dp[j][nk] = min(dp[j][nk], dp[j][k] + i.r);
 	        }
 	    }
