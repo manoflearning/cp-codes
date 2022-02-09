@@ -30,7 +30,7 @@ int main() {
 	return 0;
 }
 
-//sqrt decomposition
+//sqrt decomposition, mo's algorithm
 #define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #include <cassert>
