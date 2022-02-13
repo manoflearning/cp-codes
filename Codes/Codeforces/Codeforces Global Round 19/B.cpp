@@ -32,26 +32,14 @@ int main() {
 		for (auto& i : a) cin >> i;
 
 		ll ans = 0;
-		for (ll i = 1; i <= n; i++) ans += i * (n - i + 1);
-		
+		for (ll i = 0; i < n; i++) ans += (i + 1) * (n - i);
+
 		for (ll i = 0; i < n; i++) {
 			if (a[i]) continue;
 			ans += (i + 1) * (n - i);
 		}
 
 		cout << ans << '\n';
-
-		/*sort(a.begin(), a.end());
-
-		int ans = 0;
-		if (!a[0]) {
-			for (int i = 0; i < n - 1; i++) {
-				if (a[i] + 1 < a[i + 1]) break;
-				ans++;
-			}
-		}
-		
-		cout << (int)pow(2, n) + ans << '\n';*/
 	}
 
 	return 0;
