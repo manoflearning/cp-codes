@@ -36,11 +36,14 @@ int mnFac[MAX + 1];
 int n, a[(int)1e6 + 5];
 
 void getPrime() {
-	FOR(i, 2, MAX + 1) mnFac[i] = i;
+	FOR(i, 2, MAX + 1) {
+		if (i & 1) mnFac[i] = i;
+		else mnFac[i] = 2;
+	}
 
-	for (ll i = 2; i <= MAX; i++) {
+	for (ll i = 3; i <= MAX; i += 2) {
 		if (mnFac[i] == i) {
-			for (ll j = i * i; j <= MAX; j += i) 
+			for (ll j = i * i; j <= MAX; j += 2 * i) 
 				if (mnFac[j] == j) mnFac[j] = i;
 		}
 	}
