@@ -1,4 +1,4 @@
-// 원래 풀이
+// 내가 생각한 풀이
 #define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #include <cassert>
