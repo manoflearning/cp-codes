@@ -29,8 +29,12 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int main() {
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+	#ifndef ONLINE_JUDGE
+	// Enter the absolute path of the local file input.txt, output.txt
+	// Or just enter the "input.txt", "output.txt"
+    freopen("/Users/jeongwoo-kyung/Programming/PS-Codes/input.txt", "r", stdin);
+    freopen("/Users/jeongwoo-kyung/Programming/PS-Codes/output.txt", "w", stdout);
+	#endif
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
