@@ -37,9 +37,11 @@ bool operator<(const pt& a, const pt& b) {
     return a.p < b.p;
 }
 
-int k, m, n;
+int k, m, n, iCnt;
 vt<pt> gr;
 vt<int> f, a[202020];
+ll cow1[202020], cow2[202020];
+vt<ll> ans;
 
 void input() {
     cin >> k >> m >> n;
@@ -49,12 +51,61 @@ void input() {
     EACH(i, f) cin >> i;
 }
 
+// a[i] = { gr[j] | f[i - 1] <= gr[j].p <= f[i]}
 void interval() {
-    int j = 0;
     FOR(k) {
-        while (j < m - 1 && f[j] < gr[i].p) j++;
-        a[j].push_back(i);
+        while (iCnt < m && f[iCnt] < gr[i].p) iCnt++;
+        a[iCnt].push_back(i);
     }
+    /*FOR(iCnt + 1) {
+        if (i == 0) cout << "(-INF, " << f[i] << "]\n";
+        else if (i == iCnt) cout << "[" << f[i - 1] << ", INF)\n";
+        else cout << "[" << f[i - 1] << ", " << f[i] << "]\n";
+        EACH(j, a[i]) cout << gr[j].p << ' ';
+        cout << '\n';
+    }*/
+}
+
+void makingSum() {
+    FOR(iCnt + 1) {
+        EACH(j, a[i]) {
+            if (i == 0 || i == iCnt) cow1[i] += gr[j].t;
+            else cow2[i] += gr[j].t;
+        }
+    }
+
+    FOR(i, 1, iCnt) {
+        int len = f[i] - f[i - 1];
+        
+        ll res = (sz(a[i]) ? gr[a[i][0]].t : 0);
+        
+        int r = 0;
+        FOR(l, sz(a[i])) {
+            while (r < sz(a[i]) - 1 && 2 * (gr[a[i][r + 1]].p - gr[a[i][l]].p) < len) {
+                res += gr[a[i][++r]].t;
+            }
+            cow1[i] = max(cow1[i], res);
+            res -= gr[a[i][l]].t;
+        }
+    }
+}
+
+ll cal() {
+    ans.push_back(cow1[0]);
+    ans.push_back(cow1[iCnt]);
+    FOR(i, 1, iCnt) {
+        ans.push_back(cow1[i]);
+        ans.push_back(cow2[i] - cow1[i]);
+    }
+
+    sort(ans.rbegin(), ans.rend());
+
+    ans.resize(n);
+    
+    ll ret = 0;
+    EACH(i, ans) ret += i;
+
+    return ret;
 }
 
 int main() {
@@ -74,6 +125,10 @@ int main() {
     sort(all(f));
 
     interval();
+
+    makingSum();
+
+    cout << cal();
 
 	return 0;
 }
