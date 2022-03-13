@@ -28,33 +28,33 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-struct pt {
-    int p;
-    ll t;
+struct xy {
+    int x, y;
 };
 
-bool operator<(const pt& a, const pt& b) {
-    return a.p < b.p;
+struct idxx {
+    int idx, x;
+};
+
+bool operator<(const idxx& a, const idxx& b) {
+    return a.x < b.x;
 }
 
-int k, m, n;
-vt<pt> gr;
-vt<int> f, a[202020];
+int n;
+vt<xy> a;
+vt<int> b;
+vt<idxx> yy[404040];
+string s;
 
 void input() {
-    cin >> k >> m >> n;
-    gr.resize(k);
-    EACH(i, gr) cin >> i.p >> i.t;
-    f.resize(m);
-    EACH(i, f) cin >> i;
-}
-
-void interval() {
-    int j = 0;
-    FOR(k) {
-        while (j < m - 1 && f[j] < gr[i].p) j++;
-        a[j].push_back(i);
+    cin >> n;
+    a.resize(n);
+    EACH(i, a) {
+        cin >> i.x >> i.y;
+        b.push_back(i.x);
+        b.push_back(i.y);
     }
+    cin >> s;
 }
 
 int main() {
@@ -68,12 +68,29 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	input();
-    
-    sort(all(gr));
-    sort(all(f));
+    input();
 
-    interval();
+    sort(all(b));
+    b.erase(unique(all(b)), b.end());
+
+    FOR(n) {
+        a[i].x = lower_bound(all(b), a[i].x) - b.begin();
+        a[i].y = lower_bound(all(b), a[i].y) - b.begin();
+        yy[a[i].y].push_back({ i, a[i].x });
+    }
+
+    int ans = 0;
+    FOR(404040) {
+        sort(all(yy[i]));
+        int isR = 0;
+        EACH(j, yy[i]) {
+            if (s[j.idx] == 'R') isR = 1;
+            if (s[j.idx] == 'L' && isR) ans = 1;
+        }
+    }
+
+    if (ans) cout << "Yes";
+    else cout << "No";
 
 	return 0;
 }

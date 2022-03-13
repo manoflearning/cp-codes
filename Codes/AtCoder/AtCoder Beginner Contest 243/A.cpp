@@ -28,35 +28,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-struct pt {
-    int p;
-    ll t;
-};
-
-bool operator<(const pt& a, const pt& b) {
-    return a.p < b.p;
-}
-
-int k, m, n;
-vt<pt> gr;
-vt<int> f, a[202020];
-
-void input() {
-    cin >> k >> m >> n;
-    gr.resize(k);
-    EACH(i, gr) cin >> i.p >> i.t;
-    f.resize(m);
-    EACH(i, f) cin >> i;
-}
-
-void interval() {
-    int j = 0;
-    FOR(k) {
-        while (j < m - 1 && f[j] < gr[i].p) j++;
-        a[j].push_back(i);
-    }
-}
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -68,12 +39,14 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	input();
-    
-    sort(all(gr));
-    sort(all(f));
+    int v, a, b, c;
+    cin >> v >> a >> b >> c;
 
-    interval();
+    v %= (a + b + c);
+
+    if (v < a) cout << "F";
+    else if (v < a + b) cout << "M";
+    else if (v < a + b + c) cout << "T";
 
 	return 0;
 }

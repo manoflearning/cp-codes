@@ -28,34 +28,9 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-struct pt {
-    int p;
-    ll t;
-};
-
-bool operator<(const pt& a, const pt& b) {
-    return a.p < b.p;
-}
-
-int k, m, n;
-vt<pt> gr;
-vt<int> f, a[202020];
-
-void input() {
-    cin >> k >> m >> n;
-    gr.resize(k);
-    EACH(i, gr) cin >> i.p >> i.t;
-    f.resize(m);
-    EACH(i, f) cin >> i;
-}
-
-void interval() {
-    int j = 0;
-    FOR(k) {
-        while (j < m - 1 && f[j] < gr[i].p) j++;
-        a[j].push_back(i);
-    }
-}
+ll n, x;
+string s;
+vt<int> st;
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -68,12 +43,22 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	input();
-    
-    sort(all(gr));
-    sort(all(f));
+    cin >> n >> x >> s;
 
-    interval();
+    EACH(c, s) {
+        if (c == 'U') {
+            if (sz(st)) st.pop_back();
+            else x /= 2;
+        }
+        else st.push_back(c);
+    }
+
+    FOR(sz(st)) {
+        if (st[i] == 'L') x = 2 * x;
+        else x = 2 * x + 1;
+    }
+
+    cout << x;
 
 	return 0;
 }

@@ -23,38 +23,63 @@ using namespace std;
 #define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
 #define EACH(x, a) for (auto& x : a)
 
-const int INF = 1e9 + 7;
+const ll INF = 1e18 + 7;
 const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-struct pt {
-    int p;
-    ll t;
+struct Edge {
+    int u, v;
+    ll w;
 };
 
-bool operator<(const pt& a, const pt& b) {
-    return a.p < b.p;
-}
+int n, m;
+ll adj[303][303];
+vt<Edge> e;
 
-int k, m, n;
-vt<pt> gr;
-vt<int> f, a[202020];
+void init() {
+    FOR(303) {
+        FOR(j, 303) {
+            adj[i][j] = INF;
+        }
+    }
+}
 
 void input() {
-    cin >> k >> m >> n;
-    gr.resize(k);
-    EACH(i, gr) cin >> i.p >> i.t;
-    f.resize(m);
-    EACH(i, f) cin >> i;
+    cin >> n >> m;
+    e.resize(m);
+    EACH(i, e) {
+        cin >> i.u >> i.v >> i.w;
+        adj[i.u][i.v] = adj[i.v][i.u] = i.w;
+    }
 }
 
-void interval() {
-    int j = 0;
-    FOR(k) {
-        while (j < m - 1 && f[j] < gr[i].p) j++;
-        a[j].push_back(i);
+void floyd() {
+	for (int i = 1; i <= n; i++) adj[i][i] = 0;
+
+	for (int k = 1; k <= n; k++) {
+		for (int u = 1; u <= n; u++) {
+			for (int v = 1; v <= n; v++) {
+				adj[u][v] = min(adj[u][v], adj[u][k] + adj[k][v]);
+			}
+		}
+	}
+}
+
+int f() {
+    int ret = 0;
+
+    EACH(i, e) {
+        int res = 0;
+        FOR(k, 1, n + 1) {
+            if (k == i.u || k == i.v) continue;
+
+            if (adj[i.u][k] + adj[k][i.v] <= i.w) res = 1;
+        }
+        ret += res;
     }
+
+    return ret;
 }
 
 int main() {
@@ -68,12 +93,13 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	input();
-    
-    sort(all(gr));
-    sort(all(f));
+	init();
 
-    interval();
+    input();
+
+    floyd();
+
+    cout << f();
 
 	return 0;
 }
