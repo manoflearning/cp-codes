@@ -28,6 +28,21 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+struct xy {
+    ll x, y;
+};
+
+int n;
+vt<xy> a;
+xy en;
+
+void input() {
+    cin >> n;
+    cin >> en.x >> en.y;
+    a.resize(n);
+    EACH(i, a) cin >> i.x >> i.y;
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -39,7 +54,7 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	
+	cout << (int)pow(2, 20);
 
 	return 0;
 }
