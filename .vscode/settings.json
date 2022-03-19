@@ -2,6 +2,7 @@
     "files.associations": {
         "random": "cpp",
         "algorithm": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "numbers": "cpp"
     }
 }
