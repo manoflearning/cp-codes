@@ -1,3 +1,7 @@
+#pragma GCC optimize ("O3")
+#pragma GCC optimize ("Ofast")
+#pragma GCC optimize ("unroll-loops")
+#pragma GCC target("avx,avx2,fma")
 #define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #include <cassert>
@@ -28,19 +32,54 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-struct xy {
-    ll x, y;
-};
-
-int n;
-vt<xy> a;
-xy en;
+int n, mid;
+pll a[44], en;
+multiset<pll> mpl[25];
+map<pll, int> mpr[25];
+ll ans[44];
 
 void input() {
     cin >> n;
-    cin >> en.x >> en.y;
-    a.resize(n);
-    EACH(i, a) cin >> i.x >> i.y;
+    cin >> en.fr >> en.sc;
+    FOR(i, n) cin >> a[i].fr >> a[i].sc;
+}
+
+pll x;
+int cnt;
+
+void f(int p, int up) {
+	if (p == up + 1) {
+		if (up == mid) {
+			auto it = mpl[cnt].find(x);
+			mpl[cnt].insert(x);
+		}
+		else {
+			auto it = mpr[cnt].find(x);
+			if (it == mpr[cnt].end()) mpr[cnt].insert({ x, 1 });
+			else it->sc++;
+		}
+		return;
+	}
+
+	f(p + 1, up);
+	x.fr += a[p].fr, x.sc += a[p].sc, cnt++;
+	f(p + 1, up);
+	x.fr -= a[p].fr, x.sc -= a[p].sc, cnt--;
+}
+
+void f2() {
+	FOR(l, 0, 21) {
+		EACH(i, mpl[l]) {
+			pll rr = { en.fr - i.fr, en.sc - i.sc };
+
+			FOR(r, 0, 21) {
+				auto it = mpr[r].find(rr);
+
+				if (it != mpr[r].end())
+					ans[l + r] += it->sc;
+			}
+		}
+	}
 }
 
 int main() {
@@ -54,7 +93,23 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	cout << (int)pow(2, 20);
+	input();
+
+	if (n == 1) {
+		if (a[0] == en) cout << 1;
+		else cout << 0;
+		return 0;
+	}
+
+	mid = (0 + n - 1) / 2;
+
+	f(0, mid);
+	f(mid + 1, n - 1);
+	
+	f2();
+
+	FOR(i, 1, n + 1)
+		cout << ans[i] << '\n';
 
 	return 0;
 }
