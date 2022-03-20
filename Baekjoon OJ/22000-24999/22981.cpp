@@ -23,48 +23,37 @@ using namespace std;
 #define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
 #define EACH(x, a) for (auto& x : a)
 
-const int INF = 1e9 + 7;
+const ll INF = 1e18 + 7;
 const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, a[505][505];
-vt<int> adj[505], gifts[505];
+int n;
+ll k;
+vt<ll> v;
 
 void input() {
-    cin >> n;
-    FOR(i, 1, n + 1) {
-        FOR(j, 1, n + 1) {
-            cin >> a[i][j];
-        }
-    }
+    cin >> n >> k;
+    v.resize(n);
+    EACH(i, v) cin >> i;
 }
 
-void graphModeling() {
-    FOR(i, 1, n + 1) {
-        FOR(j, 1, n + 1) {
-            adj[i].push_back(a[i][j]);
-            if (a[i][j] == i) break;
-        }
+ll f() {
+    ll ret = INF;
+    FOR(i, 0, n - 1) {
+        ll lsz = i + 1, rsz = n - i - 1;
+        ll lv = v[0] * lsz, rv = v[i + 1] * rsz;
+        ret = min(ret, k / (lv + rv) + (k % (lv + rv) ? 1 : 0));
     }
-}
-
-int visited[505][505];
-
-void dfs(int st, int v) {
-    visited[st][v] = 1;
-    EACH(u, adj[v]) {
-        if (visited[st][u]) continue;
-        dfs(st, u);
-    }
+    return ret;
 }
 
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
 	// Or just enter the "input.txt", "output.txt"
-    freopen("/Users/jeongwoo-kyung/Programming/PS-Codes/input.txt", "r", stdin);
-    freopen("/Users/jeongwoo-kyung/Programming/PS-Codes/output.txt", "w", stdout);
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
 	#endif
 
 	cin.tie(NULL); cout.tie(NULL);
@@ -72,18 +61,9 @@ int main() {
 
 	input();
 
-    graphModeling();
+    sort(all(v));
 
-    FOR(i, 1, n + 1) dfs(i, i);
-
-    FOR(i, 1, n + 1) {
-        EACH(j, adj[i]) { 
-            if (visited[j][i]) {
-                cout << j << '\n';
-                break;
-            }
-        }
-    }
+    cout << f();
 
 	return 0;
 }
