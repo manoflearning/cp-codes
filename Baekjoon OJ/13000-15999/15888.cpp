@@ -28,60 +28,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ll dp[13][10000][9 * 12 + 1];
-
-void init() {
-    FOR(i, 13) {
-        FOR(j, 10000) {
-            FOR(k, 9 * 12 + 1) {
-                dp[i][j][k] = -1;
-            }
-        }
-    }
-}
-
-ll f1(int L, ll P, int S) {
-    ll& ret = dp[L][P][S];
-    if (ret != -1) return ret;
-    if (L == 0) return !(P % S);
-
-    ll ret = 0;
-    FOR(digit, 10) {
-        ret += f1(L - 1, P * digit, L + digit);
-    }
-
-    return ret;
-}
-
-ll CountInterestingIntegersWithPrefixOfN(string N, ll P, int S, int digit_index, int is_first_digit) {
-    if (digit_index == sz(N)) return !(P % S);
-
-    int digit_start;
-    if (is_first_digit) digit_start = 1;
-    else digit_start = 0;
-
-    ll count = 0;
-}
-
-ll CountInterestingIntegersWithNumberOfDigits(int L) {
-    ll count = 0;
-
-    FOR(digit, 1, 10)
-        count += f1(L - 1, digit, digit);
-
-    return count;
-}
-
-ll CountInterestingIntegers(string N) {
-    if (N == 0) return 0;
-
-    ll count = 0;
-    FOR(L, 1, sz(N))
-        count += CountInterestingIntegersWithNumberOfDigits(L);
-
-    count += CountInterestingIntegersWithPrefixOfN(N, 1, 0, 0, 0, 1);
-}
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -93,7 +39,41 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	
+    //최고차항이 1이고 판별식 D가 제곱수 또는 0이고 모든 계수가 정수이며 b와 c의 짝수/홀수 여부가 같으면 정수근
+
+    set<ll> p2;
+    for (ll i = 2; i < INF; i <<= 1) p2.insert(i);
+
+    ll a, b, c;
+    cin >> a >> b >> c;
+
+    ll p = min({ abs(a), abs(b), abs(c) });
+    a /= p, b /= p, c /= p;
+    if (a < 0) {
+        a = -a, b = -b, c = -c;
+    }
+
+    if (a != 1 || b * b - 4 * a * c <= 0) cout << "둘다틀렸근";
+    else {
+        ll d = -b / a, e = c / a, f = b * b - 4 * a * c;
+		if (p2.find(e) != p2.end()) {
+			ll x = 2, y = e / 2;
+			while (y > 1) {
+				if (x + y == d) {
+					cout << "이수근";
+					return 0;
+				}
+				x *= 2, y /= 2;
+			}
+		}
+
+        int is2 = 0;
+        for (ll i = 0; i <= 10000; i++)
+            if (i * i == f) is2 = 1;
+
+        if (is2) cout << "정수근";
+        else cout << "둘다틀렸근";
+    }
 
 	return 0;
 }
