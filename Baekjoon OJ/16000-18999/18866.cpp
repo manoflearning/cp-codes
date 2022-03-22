@@ -23,70 +23,39 @@ using namespace std;
 #define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
 #define EACH(x, a) for (auto& x : a)
 
-const int INF = 1e9 + 7;
+const int INF = 1e9;
 const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-struct Seg {
-	int flag;  // array size
-	vector<ll> t;
-
-	void build(int N, vt<ll>& a) {
-		for (flag = 1; flag < N; flag <<= 1);
-		t.resize(2 * flag);
-
-		for (int i = flag; i < flag + N; i++) {
-            t[i] = a[i - flag];
-        }
-		for (int i = flag - 1; i >= 1; i--) t[i] = max(t[i << 1], t[i << 1 | 1]);
-	}
-	void modify(int p, ll value) {  // set value at position p
-		for (t[p += flag - 1] = value; p > 1; p >>= 1) t[p >> 1] = max(t[p], t[p ^ 1]);
-	}
-	ll query(int l, int r) {
-		return query(l, r, 1, 1, flag);
-	}
-	ll query(int l, int r, int n, int nl, int nr) {  // sum on interval [l, r]
-		if (r < nl || nr < l) return -1;
-		if (l <= nl && nr <= r) return t[n];
-
-		int mid = (nl + nr) / 2;
-		return max(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-	}
-}segmxu, segmxv;
-
-struct Seg2 {
-	int flag;  // array size
-	vector<ll> t;
-
-	void build(int N, vt<ll>& a) {
-		for (flag = 1; flag < N; flag <<= 1);
-		t.resize(2 * flag);
-
-		for (int i = flag; i < flag + N; i++) {
-            t[i] = a[i - flag];
-            if (!t[i]) t[i] = INF;
-        }
-		for (int i = flag - 1; i >= 1; i--) t[i] = min(t[i << 1], t[i << 1 | 1]);
-	}
-	void modify(int p, ll value) {  // set value at position p
-		for (t[p += flag - 1] = value; p > 1; p >>= 1) t[p >> 1] = min(t[p], t[p ^ 1]);
-	}
-	ll query(int l, int r) {
-		return query(l, r, 1, 1, flag);
-	}
-	ll query(int l, int r, int n, int nl, int nr) {  // sum on interval [l, r]
-		if (r < nl || nr < l) return INF;
-		if (l <= nl && nr <= r) return t[n];
-
-		int mid = (nl + nr) / 2;
-		return min(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-	}
-}segmnu, segmnv;
-
 int n;
-vt<ll> u, v;
+vt<int> u, v, fmnu, fmxv, bmxu, bmnv;
+
+void input() {
+	cin >> n;
+    u.resize(n);
+    v.resize(n);
+	fmnu.resize(n); fmxv.resize(n); 
+	bmxu.resize(n); bmnv.resize(n);
+	FOR(n) {
+		cin >> u[i] >> v[i];
+	}
+}
+
+void pre() {
+	fmnu[0] = (u[0] > 0 ? u[0] : INF) ;
+	fmxv[0] = v[0];
+	FOR(i, 1, n) {
+		fmnu[i] = min((u[i] > 0 ? u[i] : INF), fmnu[i - 1]);
+		fmxv[i] = max(v[i], fmxv[i - 1]);
+	}
+	bmxu[n - 1] = u[n - 1];
+	bmnv[n - 1] = (v[n - 1] > 0 ? v[n - 1] : INF);
+	FOR(i, n - 2, -1, -1) {
+		bmxu[i] = max(u[i], bmxu[i + 1]);
+		bmnv[i] = min((v[i] > 0 ? v[i] : INF), bmnv[i + 1]);
+	}
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -99,25 +68,16 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	cin >> n;
-    u.resize(n);
-    v.resize(n);
-    FOR(n) {
-        cin >> u[i] >> v[i];
-    }
+	input();
 
-    segmxu.build(n, u);
-    segmnu.build(n, u);
-    segmxv.build(n, v);
-    segmnv.build(n, v);
+	pre();
 
-    int ans = -1;
+	int ans = -1;
+    FOR(k, 0, n - 1 ) {
+        if (!(fmnu[k] > bmxu[k + 1])) continue;
+        if (!(fmxv[k] < bmnv[k + 1])) continue;
 
-    FOR(k, 1, n) {
-        if (!(segmnu.query(1, k) > segmxu.query(k + 1, n))) continue;
-        if (!(segmxv.query(1, k) < segmnv.query(k + 1, n))) continue;
-
-        ans = k;
+        ans = k + 1;
     }
 
     cout << ans;
