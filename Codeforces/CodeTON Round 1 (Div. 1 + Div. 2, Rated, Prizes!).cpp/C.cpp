@@ -28,26 +28,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n;
-vt<ll> h;
-stack<int> st;
-
-void input() {
-    cin >> n;
-    h.resize(n);
-    EACH(i, h) cin >> i;
-}
-
-void f() {
-    int bit = (h[0] < h[1]), l = 0;
-
-    FOR(r, 1, n) {
-        if (bit) {
-            
-        } 
-    }
-}
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -59,7 +39,33 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    
+    int tc; cin >> tc;
+
+    FOR(tc) {
+        int n; cin >> n;
+
+        vt<ll> a(n);
+        int is0 = 0, is1 = 0;
+        EACH(i, a) {
+            cin >> i;
+            if (i == 0) is0 = 1;
+            if (i == 1) is1 = 1;
+        }
+
+        if (is0 && is1) cout << "NO\n";
+        else if (is1) {
+            sort(all(a));
+
+            int ans = 1;
+            FOR(n - 1) {
+                if (a[i] + 1 == a[i + 1]) ans = 0;
+            }
+
+            if (ans) cout << "YES\n";
+            else cout << "NO\n";
+        }
+        else cout << "YES\n";
+    }
 
 	return 0;
 }

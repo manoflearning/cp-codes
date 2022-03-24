@@ -28,24 +28,21 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n;
-vt<ll> h;
-stack<int> st;
+const int MAX = 5e6;
 
-void input() {
-    cin >> n;
-    h.resize(n);
-    EACH(i, h) cin >> i;
-}
+bool isPrime[MAX + 1];
+vector<int> prime;
 
-void f() {
-    int bit = (h[0] < h[1]), l = 0;
+void getPrime() {
+	fill(isPrime + 2, isPrime + MAX + 1, 1);
 
-    FOR(r, 1, n) {
-        if (bit) {
-            
-        } 
-    }
+	for (ll i = 4; i <= MAX; i += 2)
+		isPrime[i] = 0;
+	for (ll i = 3; i <= MAX; i++) {
+		if (isPrime[i]) prime.push_back(i);
+		for (ll j = i * i; j <= MAX; j += i * 2)
+			isPrime[j] = 0;
+	}
 }
 
 int main() {
@@ -59,7 +56,66 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    
+    getPrime();
+
+    int tc; cin >> tc;
+
+    FOR(tc) {
+        ll n; cin >> n;
+
+        if (n & 1) {
+            cout << 2 << '\n';
+            continue;
+        }
+
+        // n is even
+
+        if (n == 6) {
+            cout << 3 << '\n';
+            continue;
+        }
+
+        if (n < 10) {
+            cout << -1 << '\n';
+            continue;
+        }
+
+        // n is even && n >= 10
+
+        if (n % 4 == 2) {
+            cout << 4 << '\n';
+            continue;
+        }
+
+        // n is multiple of 4 && n >= 10 
+
+        ll ans = -1;
+
+        for (ll i = 8; i * (i + 1) / 2 <= n; i <<= 1) {
+            if ((n - i * (i + 1) / 2) % i == 0) {
+                ans = i;
+                break;
+            }
+        }
+
+        if (ans != -1) {
+            cout << ans << '\n';
+            continue;
+        }
+
+        // answer must be prime number
+
+        while (n % 2 == 0) n /= 2;
+
+        EACH(p, prime) {
+            if (n % p == 0) {
+                ans = p;
+                break;
+            }
+        }
+
+        cout << ans << '\n';
+    }
 
 	return 0;
 }
