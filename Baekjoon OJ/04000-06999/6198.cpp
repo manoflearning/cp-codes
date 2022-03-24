@@ -28,6 +28,35 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int n;
+vt<ll> h;
+
+void input() {
+    cin >> n;
+    h.resize(n);
+    EACH(i, h) cin >> i;
+}
+
+ll f() {
+    ll ret = 0;
+    stack<int> st;
+
+    FOR(n) {
+        while (!st.empty() && h[st.top()] <= h[i]) {
+            ret += i - st.top() - 1;
+            st.pop();
+        }
+        st.push(i);
+    }
+
+    while (!st.empty()) {
+        ret += n - st.top() - 1;
+        st.pop();
+    }
+
+    return ret;
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -38,6 +67,10 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
+
+    input();
+
+    cout << f();
 
 	return 0;
 }
