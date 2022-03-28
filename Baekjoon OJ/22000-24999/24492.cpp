@@ -50,6 +50,8 @@ ll naive() {
 
             ret += j - i + 1;
             mx = max(mx, a[j]);
+
+            if (a[i] < a[j]) break;
         }
     }
 
