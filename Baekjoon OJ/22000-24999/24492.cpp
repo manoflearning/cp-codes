@@ -28,24 +28,32 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n;
-vt<ll> h;
-stack<int> st;
+int n, a[303030];
+int lb[303030], rb[303030];
 
 void input() {
     cin >> n;
-    h.resize(n);
-    EACH(i, h) cin >> i;
+    FOR(n) cin >> a[i];
 }
 
-void f() {
-    int bit = (h[0] < h[1]), l = 0;
+// lb[i]는 0 <= j < i인 모든 j에 대해 a[j] >= a[i]를 만족하는 j의 최댓값.
+// rb[i]는 i < j < n인 모든 j에 대해 a[j] >= a[i]를 만족하는 j의 최댓값.
+// 임의의 정수 쌍 (i, j)(i < j)에 대해 j <= rb[i] && lb[j] <= i라면 (i, j)는 frisbee 가능
 
-    FOR(r, 1, n) {
-        if (bit) {
-            
-        } 
+ll naive() {
+    ll ret = 0;
+    
+    FOR(i, n) {
+        int mx = -1;
+        FOR(j, i + 1, n) {
+            if (mx >= a[i] || mx >= a[j]) continue;
+
+            ret += j - i + 1;
+            mx = max(mx, a[j]);
+        }
     }
+
+    return ret;
 }
 
 int main() {
@@ -59,7 +67,9 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    
+    input();
+
+    cout << naive();
 
 	return 0;
 }
