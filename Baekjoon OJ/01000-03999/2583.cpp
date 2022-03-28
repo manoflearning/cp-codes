@@ -81,7 +81,7 @@ int main() {
 			}
 		}
 	}
-
+	
 	cout << ans << '\n';
 
 	sort(all(ans2));
