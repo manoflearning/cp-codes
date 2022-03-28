@@ -60,6 +60,24 @@ int dfs(int y, int x) {
 	return ret;
 }
 
+void solve() {
+	FOR(y, 0, m) {
+		FOR(x, 0, n) {
+			if (!a[y][x] && !visited[y][x]) {
+				ans++;
+				ans2.push_back(dfs(y, x));
+			}
+		}
+	}
+}
+
+void output() {
+	cout << ans << '\n';
+
+	sort(all(ans2));
+	EACH(i, ans2) cout << i << ' ';
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -73,19 +91,9 @@ int main() {
 
 	input();
 
-	FOR(y, 0, m) {
-		FOR(x, 0, n) {
-			if (!a[y][x] && !visited[y][x]) {
-				ans++;
-				ans2.push_back(dfs(y, x));
-			}
-		}
-	}
-	
-	cout << ans << '\n';
+	solve();
 
-	sort(all(ans2));
-	EACH(i, ans2) cout << i << ' ';
+	output();
 
 	return 0;
 }
