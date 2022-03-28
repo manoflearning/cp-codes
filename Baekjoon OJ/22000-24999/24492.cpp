@@ -29,32 +29,31 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int n, a[303030];
-int lb[303030], rb[303030];
+priority_queue<pii> pq;
+set<int> s;
 
 void input() {
     cin >> n;
-    FOR(n) cin >> a[i];
+    FOR(n) {
+        cin >> a[i];
+        pq.push({ a[i], i });
+    }
 }
 
-// lb[i]는 0 <= j < i인 모든 j에 대해 a[j] >= a[i]를 만족하는 j의 최댓값.
-// rb[i]는 i < j < n인 모든 j에 대해 a[j] >= a[i]를 만족하는 j의 최댓값.
-// 임의의 정수 쌍 (i, j)(i < j)에 대해 j <= rb[i] && lb[j] <= i라면 (i, j)는 frisbee 가능
-
-ll naive() {
+ll f() {
     ll ret = 0;
-    
-    FOR(i, n) {
-        int mx = -1;
-        FOR(j, i + 1, n) {
-            if (mx >= a[i] || mx >= a[j]) continue;
-
-            ret += j - i + 1;
-            mx = max(mx, a[j]);
-
-            if (a[i] < a[j]) break;
+    while (sz(pq)) {
+        int idx = pq.top().sc;
+        pq.pop();
+        
+        auto it = s.lower_bound(idx);
+        if (it != s.end()) ret += *it - idx + 1;
+        if (it != s.begin()) {
+            ret += idx - *(--it) + 1;
         }
-    }
 
+        s.insert(idx);
+    }
     return ret;
 }
 
@@ -71,7 +70,7 @@ int main() {
 
     input();
 
-    cout << naive();
+    cout << f();
 
 	return 0;
 }
