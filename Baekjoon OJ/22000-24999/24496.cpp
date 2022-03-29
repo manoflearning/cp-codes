@@ -23,11 +23,48 @@ using namespace std;
 #define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
 #define EACH(x, a) for (auto& x : a)
 
-const double EPS = 1e-9;
-const int INF = 1e9 + 7;
+const ll INF = 1e18 + 7;
 const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+ll st, en;
+set<ll> visited;
+
+ll bfs() {
+    ll ret = INF;
+
+    visited.clear();
+
+    queue<pll> q;
+    visited.insert(st);
+    q.push({ st, 0 });
+
+    while (!q.empty()) {
+        ll v = q.front().fr, d = q.front().sc;
+        q.pop();
+
+        if (v < en) ret = min(ret, en - v + d);
+
+        if (v == en) return d;
+        if (d >= ret) return ret;
+
+        if (visited.find(v * 2) == visited.end()) {
+            visited.insert(v * 2);
+            q.push({ v * 2, d + 1 });
+        }
+
+        if (visited.find(v + 1) == visited.end()) {
+            visited.insert(v + 1);
+            q.push({ v + 1, d + 1 });
+        }
+
+        if (v % 2 == 0 && visited.find(v / 2) == visited.end()) {
+            visited.insert(v / 2);
+            q.push({ v / 2, d + 1 });
+        }
+    }
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -39,6 +76,14 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
+
+    int tc; cin >> tc;
+
+    FOR(tc) {
+        cin >> st >> en;
+
+        cout << bfs() << '\n';
+    }
 
 	return 0;
 }
