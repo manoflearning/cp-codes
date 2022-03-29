@@ -40,8 +40,6 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    //for (ll i = 0; i * i <= 1e9; i++) s.insert(i * i);
-
     int tc; cin >> tc;
 
     FOR(tc) {
@@ -56,7 +54,6 @@ int main() {
         for (ll i = 1; i * i <= n; i++) {
             if (n % i == 0) {
                 if ((i & 1 && (n / i) & 1) || ((i % 2 == 0) && (n / i) % 2 == 0)) {
-
                     a = (n / i - i) / 2;
                     b = (n / i + i) / 2;
                 }
