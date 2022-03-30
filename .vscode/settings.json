@@ -27,6 +27,8 @@
         "iostream": "cpp",
         "atomic": "cpp",
         "ios": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
 }
