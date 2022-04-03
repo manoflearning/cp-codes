@@ -64,7 +64,7 @@ int main() {
 			if (cntT + cntW == n) break;
 
 			if (s.empty() || i & 1) {
-				cout << 'W' << endl;
+				cout << 'W' << '\n';
 				cin >> v >> deg;
 				
 				if (visited[v]) continue;
@@ -72,14 +72,14 @@ int main() {
 				modify(cntW, resW);
 			}
 			else {
-				cout << "T " << *s.begin() << endl;
+				cout << "T " << *s.begin() << '\n';
 				cin >> v >> deg;
 				
 				modify(cntT, resT);
 			}
 		}
 
-		cout << "E " << (resW + resT + (cntT > 0 ? resT / cntT * (n - cntW - cntT) : 0)) / 2 << endl;
+		cout << "E " << (resW + resT + (cntT > 0 ? resT / cntT * (n - cntW - cntT) : 0)) / 2 << '\n';
 	}
 
 	return 0;
