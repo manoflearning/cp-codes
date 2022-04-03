@@ -29,6 +29,7 @@
         "ios": "cpp",
         "system_error": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "ostream": "cpp"
     }
 }
