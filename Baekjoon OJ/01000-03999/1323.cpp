@@ -31,7 +31,7 @@ const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 ll n, k;
 int len;
-ll dp[1010101];
+ll dp[1010101], p;
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -48,17 +48,19 @@ int main() {
 
     for (ll i = 0, j = 1; j <= n; i++, j *= 10) len = i + 1;
 
-    dp[0] = 1;
+    dp[0] = n % k;
     ll x = dp[0];
-    if (n * x % k == 0) {
+    if (x % k == 0) {
         cout << 1;
         return 0;
     }
 
+    p = (ll)pow(10, len);
+
     FOR(i, 1, 1010101) {
-        dp[i] = (ll)pow(10, len) * dp[i - 1] % k;
+        dp[i] = p * dp[i - 1] % k;
         x = (x + dp[i]) % k;
-        if (n * x % k == 0) {
+        if (x % k == 0) {
             cout << i + 1;
             return 0;
         }
