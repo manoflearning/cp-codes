@@ -29,9 +29,16 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ll n, k;
-int len;
-ll dp[1010101], p;
+int n, en;
+vt<int> x;
+int dp[1010101];
+
+void input() {
+    cin >> n;
+    x.resize(n);
+    EACH(i, x) cin >> i;
+    en = x.back();
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -44,29 +51,30 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    cin >> n >> k;
+    input();
 
-    for (ll i = 0, j = 1; j <= n; i++, j *= 10) len = i + 1;
+    FOR(x[0]) dp[i] = 1;
 
-    dp[0] = n % k;
-    ll x = dp[0];
-    if (x % k == 0) {
-        cout << 1;
-        return 0;
-    }
+    int prv = 0;
+    FOR(i, 1, n) {
+        if (x[prv] <= x[i]) continue;
 
-    p = (ll)pow(10, len);
-
-    FOR(i, 1, k + 1) {
-        dp[i] = p * dp[i - 1] % k;
-        x = (x + dp[i]) % k;
-        if (x % k == 0) {
-            cout << i + 1;
-            return 0;
+        FOR(j, x[i], x[prv]) {
+            dp[j % x[i]] += dp[j];
+            dp[j] = 0;
         }
+        prv = i;
     }
 
-    cout << -1;
+    double sum = 0;
+    FOR(en) sum += dp[i];
+
+    double ans = 0;
+    FOR(en) ans += (double)i * dp[i] / sum;
+
+    cout << fixed;
+    cout.precision(9);
+    cout << ans;
 
 	return 0;
 }
