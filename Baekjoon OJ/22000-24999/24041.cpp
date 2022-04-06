@@ -29,17 +29,46 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, en;
-vt<int> x;
-int dp[1010101];
+struct slo {
+    ll s, l;
+    int o;
+};
+
+int n, k;
+ll g;
+vt<slo> a;
 
 void input() {
-    cin >> n;
-    FOR(n) {
-        int a; cin >> a;
-        if (x.empty() || x.back() > a) x.push_back(a);
-        if (i == n - 1) en = a;
+    cin >> n >> g >> k;
+    a.resize(n);
+    EACH(i, a) {
+        cin >> i.s >> i.l >> i.o;
     }
+}
+
+ll f() {
+    ll s = 1, e = 2e9;
+    while (s < e) {
+        ll mid = (s + e + 1) >> 1, sum = 0;
+
+        priority_queue<ll> pq;
+
+        EACH(i, a) {
+            sum += i.s * max(1ll, mid - i.l);
+
+            if (i.o) pq.push(i.s * max(1ll, mid - i.l));
+        }
+
+        for (int i = 0; i < k && sz(pq); i++) {
+            sum -= pq.top();
+            pq.pop();
+        }
+
+        if (sum > g) e = mid - 1;
+        else s = mid;
+    }
+
+    return s;
 }
 
 int main() {
@@ -55,24 +84,7 @@ int main() {
 
     input();
 
-    FOR(x[0]) dp[i] = 1;
-
-    FOR(i, 1, sz(x)) {
-        FOR(j, x[i], x[i - 1]) {
-            dp[j % x[i]] += dp[j];
-            dp[j] = 0;
-        }
-    }
-
-    double sum = 0;
-    FOR(en) sum += dp[i];
-
-    double ans = 0;
-    FOR(en) ans += (double)i * dp[i] / sum;
-
-    cout << fixed;
-    cout.precision(9);
-    cout << ans;
+    cout << f();
 
 	return 0;
 }
