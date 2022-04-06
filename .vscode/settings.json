@@ -30,6 +30,7 @@
         "system_error": "cpp",
         "queue": "cpp",
         "stack": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "utility": "cpp"
     }
 }
