@@ -31,6 +31,11 @@
         "queue": "cpp",
         "stack": "cpp",
         "ostream": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "barrier": "cpp",
+        "chrono": "cpp",
+        "latch": "cpp",
+        "limits": "cpp",
+        "semaphore": "cpp"
     }
 }
