@@ -66,9 +66,9 @@ int bfs(vt<int> a, int bit) {
         vt<int> a = q.front().a;
         int bit = q.front().bit, d = dist[mp.find(a)->sc][bit];
         q.pop();
-
+        
         if (mp.find(a)->sc == 0 && bit == p2[n] - 1) return d;
-
+        
         FOR(i, 0, n) {
             int nbit = 0;
             vt<int> b;
@@ -90,6 +90,8 @@ int bfs(vt<int> a, int bit) {
             dist[mp.find(b)->sc][nbit] = d + 1;
         }
     }
+
+    return 0;
 }
 
 int main() {
