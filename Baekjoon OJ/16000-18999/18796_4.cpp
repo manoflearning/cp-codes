@@ -32,9 +32,9 @@ const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 struct frac {
     ll a, b; // a / b
 
-    ll gcd(ll a, ll b) {
-	    if (b == 0) return a;
-	    else return gcd(b, a % b);
+    ll gcd(ll x, ll y) {
+	    if (y == 0) return x;
+	    else return gcd(y, x % y);
     }
     void trim() {
         ll g = gcd(a, b);
@@ -46,33 +46,40 @@ struct frac {
 /*bool operator==(const frac& x, const frac& y) {
     return x.a * y.b == y.a * x.b;
 }*/
-bool operator<(const frac& x, const frac& y) {
+bool operator<(frac x, frac y) {
+    x.trim(); y.trim();
     return x.a * y.b < y.a * x.b;
 }
-bool operator<=(const frac& x, const frac& y) {
+bool operator<=(frac x, frac y) {
+    x.trim(); y.trim();
     return x.a * y.b <= y.a * x.b;
 }
-bool operator>(const frac& x, const frac& y) {
+bool operator>(frac x, frac y) {
+    x.trim(); y.trim();
     return x.a * y.b > y.a * x.b;
 }
-bool operator<(const frac& x, int y) {
+bool operator<(frac x, int y) {
+    x.trim();
     return x.a < y * x.b;
 }
-frac operator+(const frac& x, const frac& y) {
+frac operator+(frac x, frac y) {
+    x.trim(); y.trim();
     frac ret;
     ret.b = x.b * y.b;
     ret.a = y.b * x.a + x.b * y.a;
     ret.trim();
     return ret;
 }
-frac operator*(const frac& x, const frac& y) {
+frac operator*(frac x, frac y) {
+    x.trim(); y.trim();
     frac ret;
     ret.b = x.b * y.b;
     ret.a = x.a * y.a;
     ret.trim();
     return ret;
 }
-frac operator*(int x, const frac& y) {
+frac operator*(int x, frac y) {
+    y.trim();
     frac ret;
     ret.b = y.b;
     ret.a = x * y.a;
@@ -95,6 +102,7 @@ void input() {
 void makingRC() {
     r.resize(n + 1);
     c.resize(m + 1);
+    r[0] = c[0] = { 0, 1 };
     FOR(n) r[n - i] = { a[i] - a[i + 1], 1 };
     FOR(m) c[i + 1] = { b[i + 1] - b[i], 1 };
 }
@@ -102,6 +110,14 @@ void makingRC() {
 struct point {
     ll x, y;
     int idx;
+    ll px, py;
+    point() : point(0, 0, 0, 0, 0) {}
+	point(ll sx, ll sy, int sidx) : point(sx, sy, sidx, 0, 0) {}
+	point(ll sx, ll sy, int sidx, ll spx, ll spy) : x(sx), y(sy), idx(sidx), px(spx), py(spy) {}
+    bool operator<(const point& O) const {
+		if (O.px * py != px * O.py) return O.px * py < px * O.py;
+		return x < O.x;
+	}
 };
 
 ll ccw(point& a, point& b, point& c) {
@@ -118,6 +134,15 @@ void convexHull(vt<frac>& a) {
     FOR(i, 1, sz(psum))
         p.push_back({ i, psum[i], i });
     
+    sort(all(p));
+
+    for (int i = 1; i < sz(p); i++) {
+		p[i].px = p[i].x - p[0].x;
+		p[i].py = p[i].y - p[0].y;
+	}
+
+    sort(p.begin() + 1, p.end());
+
     vt<int> st;
     st.push_back(0);
     st.push_back(1);
@@ -180,7 +205,8 @@ ll f() {
         
         res = res + psumr[prv] + prv * c[y];
     }
-
+    assert(res.a / res.b <= 0);
+    //assert(!(res.a % res.b));
     return n * b[0] + m * a[n] + res.a / res.b;
 }
 
@@ -199,8 +225,8 @@ int main() {
 
     makingRC();
 
-    /*if (sz(r) > 2) */convexHull(r);
-    /*if (sz(c) > 2) */convexHull(c);
+    if (sz(r) > 2) convexHull(r);
+    if (sz(c) > 2) convexHull(c);
 
     cout << f();
 
