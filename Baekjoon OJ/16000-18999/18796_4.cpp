@@ -43,9 +43,9 @@ struct frac {
     }
 };
 
-bool operator==(const frac& x, const frac& y) {
+/*bool operator==(const frac& x, const frac& y) {
     return x.a * y.b == y.a * x.b;
-}
+}*/
 bool operator<(const frac& x, const frac& y) {
     return x.a * y.b < y.a * x.b;
 }
@@ -83,18 +83,6 @@ frac operator*(int x, const frac& y) {
 int n, m;
 vt<ll> a, b;
 vt<frac> r, c;
-
-ll naive(int x, int y) {
-    ll cost = 0;
-    FOR(i, 1, x + 1) cost += r[i].a + c[y].a;
-   
-    if (y == m) return cost;
-
-    ll res = INF;
-    FOR(i, 0, x + 1) res = min(res, naive(i, y + 1));
-    
-    return cost + res;
-}
 
 void input() {
     cin >> n >> m;
@@ -207,33 +195,14 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	while (1) {
-        input();
+	input();
 
-        makingRC();
+    makingRC();
 
-        ll naiveAns = INF;
-        FOR(i, 0, n + 1) {
-            naiveAns = min(naiveAns, naive(i, 1));
-        }
+    /*if (sz(r) > 2) */convexHull(r);
+    /*if (sz(c) > 2) */convexHull(c);
 
-        if (sz(r) > 2) convexHull(r);
-        if (sz(c) > 2) convexHull(c);
-
-        ll ans = f();
-
-        if (naiveAns != ans) {
-            cout << "naiveAns\t: " << naiveAns << '\n';
-            cout << "ans\t\t\t: " << ans << '\n';
-
-            cout << n << ' ' << m << '\n';
-            EACH(i, a) cout << i << ' ';
-            cout << '\n';
-            EACH(i, b) cout << i << ' ';
-            cout << '\n';
-            break;
-        }
-    }
+    cout << f();
 
 	return 0;
 }

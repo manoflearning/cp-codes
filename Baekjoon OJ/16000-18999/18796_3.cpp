@@ -29,10 +29,21 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+struct frac {
+    ll nu, de;
+};
+
+frac add(frac a, frac b);
+frac sub(frac a, frac b);
+frac mul(frac a, frac b);
+frac div(frac a, frac b);
+ll cmp(frac a, frac b);
+ll gcd(ll a, ll b);
+void trim(frac & a);
+
 int n, m;
 vt<ll> a, b;
-vt<pll> r, c;
-vt<int> visitedR, visitedC;
+vt<frac> r, c;
 
 void input() {
     cin >> n >> m;
@@ -45,10 +56,8 @@ void input() {
 void makingRC() {
     r.resize(n + 1);
     c.resize(m + 1);
-    visitedR.resize(n + 1);
-    visitedC.resize(m + 1);
-    FOR(n) r[n - i].fr = a[i] - a[i + 1];
-    FOR(m) c[i + 1].fr = b[i + 1] - b[i];
+    FOR(n) r[n - i] = { a[i] - a[i + 1], 1 };
+    FOR(m) c[i + 1] = { b[i + 1] - b[i], 1 };
 }
 
 struct point {
@@ -60,10 +69,10 @@ ll ccw(point& a, point& b, point& c) {
 	return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
 }
 
-void convexHull(vt<pll>& a, vt<int>& visited) {
+void convexHull(vt<frac>& a) {
     vt<ll> psum(sz(a));
     FOR(i, 1, sz(psum))
-        psum[i] = a[i].fr + psum[i - 1];
+        psum[i] = a[i].nu + psum[i - 1];
 
     vt<point> p;
     p.push_back({ 0, 0, 0 });
@@ -87,58 +96,53 @@ void convexHull(vt<pll>& a, vt<int>& visited) {
         st.push_back(i);
     }
 
-    vt<ll> aa;
-    aa.push_back(0);
+    vt<frac> aa;
+    aa.push_back({ 0, 0 });
     
     int prv = 0;
     FOR(i, 1, sz(st)) {
         int now = p[st[i]].idx;
         ll val = psum[now] - psum[prv];
         
-        FOR(j, now - prv - 1) {
-            aa.push_back({ 0, 0 });
-            visited[j + prv + 1] = 1;
-        }   
-        aa.push_back({ val, now - prv });
+        FOR(j, now - prv)
+            aa.push_back({ val, now - prv });
         
         prv = now;
     }
     a = aa;
 
-    EACH(i, a) cout << i << ' ';
-    cout << '\n';
+    //EACH(i, a) cout << i << ' ';
+    //cout << '\n';
 }
 
 ll f() {
-    vt<ll> psumr(sz(r));
+    vt<frac> psumr(sz(r));
+    psumr[0] = { 0, 1 };
     FOR(i, 1, sz(psumr))
-        psumr[i] = r[i].fr + psumr[i - 1];
+        psumr[i] = add(r[i], psumr[i - 1]);
 
-    ll res = 0;
-
+    frac res = { 0, 1 };
+    
     int prv = n;
     FOR(x, 1, n + 1) {
-        if (visitedR[x - 1]) continue;
-        if ((double)r[x].fr / r[x].sc + c[1] > 0) {
+        if (cmp(add(r[x], c[1]), { 0, 1 }) > 0) {
             prv = x - 1; break;
         }
     }
-    res += psumr[prv] + prv * c[1];
-
+    res = add(res, add(psumr[prv], mul({ prv, 1 }, c[1])));
+    
     FOR(y, 2, m + 1) {
-        if (visitedC[y]) continue;
         FOR(x, prv, 0, -1) {
-            if (visitedR[x]) continue;
-            if ((double)r[x].fr + c[y] <= 0) {
+            if (cmp(add(r[x], c[y]), { 0, 1 }) <= 0) {
                 prv = x; break;
             }
         }
-        if (prv > 0 && r[prv].fr + c[y] > 0) prv = 0;
+        if (prv > 0 && cmp(add(r[prv], c[y]), { 0, 1 }) > 0) prv = 0;
         
-        res += psumr[prv] + prv * c[y];
+        res = add(res, add(psumr[prv], mul({ prv, 1 }, c[y])));
     }
-    
-    return n * b[0] + m * a[n] + res;
+
+    return n * b[0] + m * a[n] + res.nu / res.de;
 }
 
 int main() {
@@ -156,10 +160,38 @@ int main() {
 
     makingRC();
 
-    if (sz(r) > 2) convexHull(r, visitedR);
-    if (sz(c) > 2) convexHull(c, visitedC);
+    if (sz(r) > 2) convexHull(r);
+    if (sz(c) > 2) convexHull(c);
 
     cout << f();
 
 	return 0;
+}
+
+frac add(frac a, frac b) {
+    frac c;
+    c.de = a.de * b.de;
+    c.nu = b.de * a.nu + a.de * b.nu;
+    trim(c);
+    return c;
+}
+frac mul(frac a, frac b) {
+    frac c;
+    c.de = a.de * b.de;
+    c.nu = a.nu * b.nu;
+    trim(c);
+    return c;
+}
+ll cmp(frac a, frac b) {
+    ll val = b.de * a.nu - a.de * b.nu;
+    return val;
+}
+ll gcd(ll a, ll b) {
+	if (b == 0) return a;
+	else return gcd(b, a % b);
+}
+void trim(frac & a) {
+    ll g = gcd(a.nu, a.de);
+    a = { a.nu / g, a.de / g };
+    if (a.de < 0) a.nu *= -1, a.de *= -1;
 }
