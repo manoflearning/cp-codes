@@ -29,6 +29,13 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int n, a[101010];
+
+void input() {
+    cin >> n;
+    FOR(n) cin >> a[i];
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -40,32 +47,7 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	while (1) {
-        ll n, k, ans = 1;
-        cin >> n >> k;
-        
-        if (cin.eof()) break;
-        
-        for (ll i = 2; i * i <= k; i++) {
-            int cnt = 0, cnt2 = 0;
-            while (k % i == 0) {
-                k /= i;
-                cnt++;
-            }
-
-            if (!cnt) continue;
-
-            for (ll j = i; j <= n; j *= i) {
-                cnt2 += n / j;
-            }
-            
-            ans *= (ll)pow(i, min(cnt, cnt2));
-        }
-
-        if (k <= n) ans *= k;
-
-        cout << ans << '\n';
-    }
+	
 
 	return 0;
 }
