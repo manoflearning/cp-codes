@@ -92,6 +92,7 @@ void simul(int idx) {
         EACH(i, fac) {
             FOR(j, i.sc) p *= i.fr;
         }
+        
         cal();
         return;
     }

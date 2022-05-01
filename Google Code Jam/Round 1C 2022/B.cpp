@@ -47,15 +47,7 @@ void input() {
 }
 
 ll f(int idx, ll sum, ll x) {
-    //cout << idx << ' ' << sum << ' ' << x << '\n';
-
     if (idx == k) return sum;
-
-    /*ll y = sum > 0 ? sum : -sum;
-    
-    b[idx] = y / x;
-    if (y % x > y / 2) b[idx]++;
-    if (sum > 0) b[idx] *= -1;*/
 
     if (sum == 0) b[idx] = 0;
     else {
@@ -101,36 +93,6 @@ int main() {
             cout << '\n';
         }
         else cout << "IMPOSSIBLE\n";
-
-        /*FOR(n) {
-            FOR(j, k) {
-                sum += a[i] * b[j];
-            }
-        }
-
-        FOR(k) {
-            FOR(j, i + 1, k) {
-                sum += b[i] * b[j];
-            }
-        }*/
-
-        /*ll y = 0, z = 0;
-        EACH(i, a) {
-            y += i;
-            z += i * i;
-        }*/
-
-        // (y + p)^2 = z + q
-        
-
-        /*if (sum == 0) {
-            if (sum2 != 0) cout << "IMPOSSIBLE\n";
-            else cout << 0 << '\n';
-        }
-        else if ((sum2 - sum * sum) % (2 * sum) == 0) {
-            cout << (sum2 - sum * sum) / (2 * sum) << '\n';
-        }
-        else cout << "IMPOSSIBLE\n";*/
     }
 
 	return 0;
