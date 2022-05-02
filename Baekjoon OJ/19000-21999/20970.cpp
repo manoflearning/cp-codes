@@ -30,22 +30,35 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-string s;
+int n, k;
+vt<pii> a;
+vt<int> e[202020], adj[202020];
+int adj2[202020];
 
-int f(int a, int b) {
-    int bit = -1;
-    EACH(i, s) {
-        if (i - 'a' == a) {
-            if (bit == 0) return 0;
-            bit = 0;
-        }
-        if (i - 'a' == b) {
-            if (bit == 1) return 0;
-            bit = 1;
-        }
+int v[202020], v2[202020], res, ans[202020];
+
+void input() {
+    cin >> n >> k;
+    a.resize(k);
+    FOR(k) {
+        cin >> a[i].fr >> a[i].sc;
+        e[a[i].fr].push_back(i);
+        e[a[i].sc].push_back(i); 
     }
+}
 
-    return 1;
+void f(int x) {
+    EACH(i, adj[x]) {
+        if (v[i]) continue;
+        v[i] = 1;
+        res++;
+    }
+}
+
+void init(int x) {
+    EACH(i, adj[x]) {
+        v[i] = 0;
+    }
 }
 
 int main() {
@@ -59,28 +72,44 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
+    input();
 
-    FOR(tc) {
-        cin >> s;
+    FOR(i, 1, n + 1) {
+        int now = i, t = 0;
+        while (1) {
+            adj[i].push_back(now);
 
-        int ans = 1;
+            auto it = lower_bound(all(e[now]), t);
+            if (it == e[now].end()) break;
+            
+            t = *it;
+            if (now == a[t].fr) now = a[t].sc;
+            else now = a[t].fr;
 
-        vt<int> visited(26);
-        EACH(c, s) visited[c - 'a']++;
-
-        FOR(26) {
-            if (!visited[i]) continue;
-            FOR(j, i + 1, 26) {
-                if (!visited[j]) continue;
-
-                ans &= f(i, j);
-            }
+            t++;
         }
 
-        if (ans) cout << "YES\n";
-        else cout << "NO\n";
+        adj2[i] = now;
     }
+
+    FOR(i, 1, n + 1) {
+        if (v2[i]) continue;
+
+        f(i);
+        for (int j = adj2[i]; j != i; j = adj2[j]) f(j);
+        
+
+        ans[i] = res;
+        init(i);
+        v2[i] = 1;
+        for (int j = adj2[i]; j != i; j = adj2[j]) {
+            init(j); v2[j] = 1; ans[j] = res;
+        }
+        res = 0;
+    }
+
+    FOR(i, 1, n + 1) 
+        cout << ans[i] << '\n';
 
 	return 0;
 }

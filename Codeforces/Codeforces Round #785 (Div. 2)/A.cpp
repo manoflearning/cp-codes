@@ -46,18 +46,23 @@ int main() {
     FOR(tc) {
         string s; cin >> s;
 
-        int st = s.front() - 'a' + 1, en = s.back() - 'a' + 1;
+        int n = sz(s);
+        vt<int> a(n);
+        FOR(n) a[i] = s[i] - 'a' + 1;
 
-        if (sz(s) % 2) {
-            int sum = -min(st, en), sum2 = min(st, en);
-            EACH(i, s) sum += i - 'a' + 1;
+        int st = a[0], en = a[n - 1];
+
+        int sum = 0;
+        EACH(i, a) sum += i;
+
+        if (n & 1) {
+            sum -= min(st, en);
+            int sum2 = min(st, en);
             
             if (sum > sum2) cout << "Alice " << sum - sum2 << '\n';
             else cout << "Bob " << sum2 - sum << '\n';
         }
         else {
-            int sum = 0;
-            EACH(i, s) sum += i - 'a' + 1;
             cout << "Alice " << sum << '\n';
         }
     }
