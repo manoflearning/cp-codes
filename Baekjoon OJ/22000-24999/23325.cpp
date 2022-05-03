@@ -76,7 +76,7 @@ int main() {
     init();
 
 	cin >> s;
-
+    
     cout << f(0);
     
 	return 0;
