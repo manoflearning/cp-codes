@@ -30,21 +30,23 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-string s;
+int n;
+vt<int> a, v(26);
 
-int f(int a, int b) {
-    int bit = -1;
-    EACH(i, s) {
-        if (i - 'a' == a) {
-            if (bit == 0) return 0;
-            bit = 0;
+int f(int x, int y) {
+    int prv = -1;
+    FOR(n) {
+        if (a[i] != x && a[i] != y) continue;
+
+        if (a[i] == x) {
+            if (prv == x) return 0;
+            prv = x;
         }
-        if (i - 'a' == b) {
-            if (bit == 1) return 0;
-            bit = 1;
+        if (a[i] == y) {
+            if (prv == y) return 0;
+            prv = y;
         }
     }
-
     return 1;
 }
 
@@ -61,25 +63,28 @@ int main() {
 
 	int tc; cin >> tc;
 
-    FOR(tc) {
-        cin >> s;
+    while (tc--) {
+        string s; cin >> s;
+        
+        n = sz(s);
+        a.resize(n);
+        FOR(n) a[i] = s[i] - 'a';
 
-        int ans = 1;
+        FOR(n) v[a[i]] = 1;
 
-        vt<int> visited(26);
-        EACH(c, s) visited[c - 'a']++;
-
+        int res = 1;
         FOR(26) {
-            if (!visited[i]) continue;
+            if (!v[i]) continue;
             FOR(j, i + 1, 26) {
-                if (!visited[j]) continue;
-
-                ans &= f(i, j);
+                if (!v[j]) continue;
+                res &= f(i, j);
             }
         }
 
-        if (ans) cout << "YES\n";
+        if (res) cout << "YES\n";
         else cout << "NO\n";
+
+        FOR(26) v[i] = 0;
     }
 
 	return 0;

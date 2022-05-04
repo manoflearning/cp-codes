@@ -37,6 +37,7 @@
         "latch": "cpp",
         "limits": "cpp",
         "semaphore": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "functional": "cpp"
     }
 }

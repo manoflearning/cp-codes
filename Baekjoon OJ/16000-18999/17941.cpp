@@ -58,6 +58,7 @@ struct Seg {
 
 int n, m;
 vt<vt<int>> a;
+map<int, int> mp;
 
 void input() {
     cin >> n >> m;
@@ -78,6 +79,18 @@ void makingSeg() {
         FOR(j, n + 1) b.push_back(a[j][i]);
         seg[i][1].build(n, b);
     }
+}
+
+void push(int x) {
+    auto it = mp.find(x);
+    if (it != mp.end()) it->sc++;
+    else mp.insert({ x, 1 });
+}
+
+void del(int x) {
+    auto it = mp.find(x);
+    if (it->sc == 1) mp.erase(x);
+    else it->sc--;
 }
 
 int main() {
@@ -102,61 +115,61 @@ int main() {
         int x, y, r, c, k, d;
         cin >> x >> y >> r >> c >> k >> d;
 
-        multiset<int> s;
+        mp.clear();
 
         int res = 0;
         if (d == 1) {
             FOR(i, x, x + r) {
-                s.insert(seg[i][0].query(y, y + c - 1));
+                push(seg[i][0].query(y, y + c - 1));
             }
 
-            res = *(--s.end());
+            res = (--mp.end())->fr;
 
             FOR(i, k - 1) {
-                s.insert(seg[x + r + i][0].query(y, y + c - 1));
-                s.erase(seg[x + i][0].query(y, y + c - 1));
-                res ^= *(--s.end());
+                push(seg[x + r + i][0].query(y, y + c - 1));
+                del(seg[x + i][0].query(y, y + c - 1));
+                res ^= (--mp.end())->fr;
             }
         }
         if (d == 2) {
             FOR(i, x, x + r) {
-                s.insert(seg[i][0].query(y, y + c - 1));
+                push(seg[i][0].query(y, y + c - 1));
             }
 
-            res = *(--s.end());
+            res = (--mp.end())->fr;
 
             FOR(i, k - 1) {
-                s.insert(seg[x - i - 1][0].query(y, y + c - 1));
-                s.erase(seg[x + r - i - 1][0].query(y, y + c - 1));
-                res ^= *(--s.end());
+                push(seg[x - i - 1][0].query(y, y + c - 1));
+                del(seg[x + r - i - 1][0].query(y, y + c - 1));
+                res ^= (--mp.end())->fr;
             }
         }
         if (d == 3) {
             FOR(i, y, y + c) {
-                s.insert(seg[i][1].query(x, x + r - 1));
+                push(seg[i][1].query(x, x + r - 1));
             }
 
-            res = *(--s.end());
+            res = (--mp.end())->fr;
 
             FOR(i, k - 1) {
-                s.insert(seg[y + c + i][1].query(x, x + r - 1));
-                s.erase(seg[y + i][1].query(x, x + r - 1));
-                res ^= *(--s.end());
+                push(seg[y + c + i][1].query(x, x + r - 1));
+                del(seg[y + i][1].query(x, x + r - 1));
+                res ^= (--mp.end())->fr;
             }
         }
         if (d == 4) {
             FOR(i, y, y + c) {
-                s.insert(seg[i][1].query(x, x + r - 1));
+                push(seg[i][1].query(x, x + r - 1));
             }
 
-            res = *(--s.end());
+            res = (--mp.end())->fr;
 
             //cout << *(--s.end()) << '\n';
 
             FOR(i, k - 1) {
-                s.insert(seg[y - i - 1][1].query(x, x + r - 1));
-                s.erase(seg[y + c - i - 1][1].query(x, x + r - 1));
-                res ^= *(--s.end());
+                push(seg[y - i - 1][1].query(x, x + r - 1));
+                del(seg[y + c - i - 1][1].query(x, x + r - 1));
+                res ^= (--mp.end())->fr;
                 //cout << *(--s.end()) << '\n';
             }
         }

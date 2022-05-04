@@ -44,7 +44,8 @@ void init() {
     a = p = x = 0;
     b = q = y = 0;
     c = r = z = 0;
-    stB = enB = stC = enC = 0;
+    stB = enB = 0;
+    stC = enC = 0;
 
     ans = 0, isInf = 0;
     facA.clear();
@@ -76,9 +77,6 @@ void FacA() {
 }
 
 void cal() {
-    if (stC - stB < p) isInf = 1;
-    if (enB - enC < p) isInf = 1;
-
     ll cnt1 = min(r, stC - stB) / p + (min(r, stC - stB) % p ? 1 : 0);
     ll cnt2 = min(r, enB - enC) / p + (min(r, enB - enC) % p ? 1 : 0);
 
@@ -139,6 +137,11 @@ int main() {
         // now stB <= stC AND enC <= enB
         if ((stC - stB) % q > 0) {
             cout << 0 << '\n';
+            continue;
+        }
+
+        if (stC - r < stB || enB < enC + r) {
+            cout << -1 << '\n';
             continue;
         }
 

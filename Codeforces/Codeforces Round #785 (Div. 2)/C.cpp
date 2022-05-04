@@ -36,27 +36,10 @@ int isP[40404];
 vt<int> P;
 ll dp[40404][MXP + 5];
 
-/*void findP(int x, int d) {
-    if (x > 40000 || d >= 6) return;
-
-    if (x != 0) {
-        isP[x] = 1;
-        P.push_back(x);
-    }
-
-    FOR(i, 10) {
-        findP((int)pow(10, d + 1) * i + 10 * x + i, d + 2);
-    }
-}*/
-
 void init() {
-    //findP(0, 0);
-    //FOR(i, 10) findP(i, 1);
-
     for (int i = 1; i <= 40000; i++) {
         vt<int> s;
-        int d;
-        for (d = 0; pow(10, d) <= i; d++) {
+        for (int d = 0; pow(10, d) <= i; d++) {
             s.push_back(i / (int)pow(10, d) % 10);
         }
 
@@ -68,8 +51,6 @@ void init() {
         if (res) P.push_back(i);
     }
 
-    //sort(all(P));
-
     FOR(40404) {
         FOR(j, MXP) {
             dp[i][j] = -1;
@@ -80,8 +61,8 @@ void init() {
 ll f(int x, int y) {
     ll& ret = dp[x][y];
     if (ret != -1) return ret;
-    if (y == MXP) return ret = 0;
     if (x == 0) return ret = 1;
+    if (y == MXP) return ret = 0;
     if (x < P[y]) return ret = 0;
     
     return ret = (f(x, y + 1) + f(x - P[y], y)) % MOD;
@@ -99,9 +80,6 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
     init();
-
-    //cout << sz(P) << '\n';
-    //EACH(i, P) cout << i << '\n';
     
 	int tc; cin >> tc;
 
