@@ -4,6 +4,7 @@
 
 input.txt
 output.txt
+.gitignore
 
 .vscode/
 UCPC 2022/
