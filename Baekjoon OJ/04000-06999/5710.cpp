@@ -30,10 +30,45 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAX = 65536 / 12 + 1;
+ll cal(ll x) { // 사용량 -> 요금
+    ll ret = 0;
 
-int n, k;
-vt<int> a, b;
+    ret += 2 * min(100ll, x);
+    x -= 100;
+    if (x <= 0) return ret;
+
+    ret += 3 * min(10000ll - 100, x);
+    x -= 10000ll - 100;
+    if (x <= 0) return ret;
+
+    ret += 5 * min(1000000ll - 10000, x);
+    x -= 1000000ll - 10000;
+    if (x <= 0) return ret;
+
+    ret += 7 * x;
+
+    return ret;
+}
+
+ll rcal(ll x) { // 요금 -> 사용량
+    ll ret = 0;
+
+    ret += min(2ll * 100, x) / 2;
+    x -= 200;
+    if (x <= 0) return ret;
+    
+    ret += min(3ll * (10000 - 100), x) / 3;
+    x -= 3ll * (10000 - 100);
+    if (x <= 0) return ret;
+
+    ret += min(5ll * (1000000 - 10000), x) / 5;
+    x -= 5ll * (1000000 - 10000);
+    if (x <= 0) return ret;
+
+    ret += x / 7;
+
+    return ret;
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -45,32 +80,25 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
+	
+    while (1) {
+        ll a, b;
+        cin >> a >> b;
 
-	cin >> n >> k;
-    FOR(n) {
-        int x; cin >> x;
-        a.push_back(x / 12 + 1);
+        if (a == 0 && b == 0) break;
+
+        ll c = rcal(a);
+        
+        ll l = 0, r = c;
+        while (l < r) {
+            ll mid = (l + r) / 2;
+
+            if (cal(c - mid) - cal(mid) > b) l = mid + 1;
+            else r = mid; 
+        }
+        
+        cout << cal(l) << '\n';
     }
-    k--;
-    
-    sort(all(a));
-    a.erase(unique(all(a)), a.end());
-
-    int ans = 12 * sz(a);
-
-    int prv = 0;
-    EACH(i, a) {
-        b.push_back(i - prv - 1);
-        prv = i;
-    }
-
-    sort(all(b));
-
-    FOR(sz(b) - k) {
-        ans += 12 * b[i];
-    }
-
-    cout << ans;
 
 	return 0;
 }

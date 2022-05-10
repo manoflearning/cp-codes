@@ -30,10 +30,29 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAX = 65536 / 12 + 1;
+ll x, dp[5000][2];
 
-int n, k;
-vt<int> a, b;
+ll f(int t, int bit) {
+    ll& ret = dp[t][bit];
+    if (ret != -1) return ret;
+    if (t == x) {
+        if (bit == 0) return ret = 1;
+        if (bit == 1) return ret = 0;
+    }
+    if (t > x) return ret = INF;
+
+    ret = INF;
+    ret = min(ret, f(t + 10, bit) + 1);
+    ret = min(ret, f(t + 60, bit) + 1);
+    ret = min(ret, f(t + 600, bit) + 1);
+    if (!bit) {
+        if (t > 0) ret = min(ret, f(t, 1) + 1);
+        if (t == 0) ret = min(ret, f(30, 1) + 1);
+    }
+    if (bit) ret = min(ret, f(t + 30, bit) + 1);
+
+    return ret;
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -45,32 +64,20 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-
-	cin >> n >> k;
-    FOR(n) {
-        int x; cin >> x;
-        a.push_back(x / 12 + 1);
-    }
-    k--;
     
-    sort(all(a));
-    a.erase(unique(all(a)), a.end());
-
-    int ans = 12 * sz(a);
-
-    int prv = 0;
-    EACH(i, a) {
-        b.push_back(i - prv - 1);
-        prv = i;
+    FOR(5000) {
+        FOR(j, 2) {
+            dp[i][j] = -1;
+        }
     }
 
-    sort(all(b));
+	string s; cin >> s;
 
-    FOR(sz(b) - k) {
-        ans += 12 * b[i];
-    }
-
-    cout << ans;
+    x += 10 * (s[0] - '0') + (s[1] - '0');
+    x *= 60;
+    x += 10 * (s[3] - '0') + (s[4] - '0');
+    
+    cout << f(0, 0) << '\n';
 
 	return 0;
 }

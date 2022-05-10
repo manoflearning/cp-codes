@@ -30,10 +30,17 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAX = 65536 / 12 + 1;
+int n, m, b[2020];
+vt<int> adj[2020];
+int ans = 1;
 
-int n, k;
-vt<int> a, b;
+void dfs(int v, int bit) {
+    b[v] = bit;
+    EACH(u, adj[v]) {
+        if (b[u] == -1) dfs(u, !bit);
+        else if (b[u] == bit) ans = 0;
+    }
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -45,29 +52,19 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-
-	cin >> n >> k;
-    FOR(n) {
-        int x; cin >> x;
-        a.push_back(x / 12 + 1);
-    }
-    k--;
     
-    sort(all(a));
-    a.erase(unique(all(a)), a.end());
+    memset(b, -1, sizeof(b));
 
-    int ans = 12 * sz(a);
-
-    int prv = 0;
-    EACH(i, a) {
-        b.push_back(i - prv - 1);
-        prv = i;
+	cin >> n >> m;
+    FOR(m) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
 
-    sort(all(b));
-
-    FOR(sz(b) - k) {
-        ans += 12 * b[i];
+    FOR(i, 1, n + 1) {
+        if (b[i] == -1) dfs(i, 0);
     }
 
     cout << ans;

@@ -30,10 +30,60 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAX = 65536 / 12 + 1;
+struct wv {
+    ll w;
+    int v;
+};
 
-int n, k;
-vt<int> a, b;
+struct dw {
+    int d;
+    ll w;
+    bool operator<(const dw& rhs) const {
+        if (d != rhs.d) return d > rhs.d;
+        return w < rhs.w;
+    }
+};
+
+int n, m;
+vt<wv> adj[50505];
+int mxd = 0;
+ll mnw = 1e18;
+
+void input() {
+    cin >> n >> m;
+    FOR(n - 1) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].push_back({ w, v });
+        adj[v].push_back({ w, u });
+    }
+}
+
+dw f(int v, int prv, int d, ll w) {
+    if (sz(adj[v]) == 1 && v != 1) {
+        if (d > mxd || (d == mxd && w < mnw)) mxd = d, mnw = w;
+        return { 0, 0 };
+    }
+
+    vt<dw> a;
+    EACH(i, adj[v]) {
+        if (i.v == prv) continue;
+        dw res = f(i.v, v, d + 1, w + i.w);
+        a.push_back({ res.d + 1, res.w + i.w });
+    }
+
+    if (sz(a) > 1) {
+        sort(a.begin(), a.end());
+
+        int D = a[0].d + a[1].d + 1;
+        ll W = a[0].w + a[1].w;
+        if (D > mxd || (D == mxd && W < mnw)) {
+            mxd = D, mnw = W;
+        }
+    }
+
+    return a[0];
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -45,32 +95,13 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
+	
+	input();
 
-	cin >> n >> k;
-    FOR(n) {
-        int x; cin >> x;
-        a.push_back(x / 12 + 1);
-    }
-    k--;
+    f(1, 0, 1, 0);
     
-    sort(all(a));
-    a.erase(unique(all(a)), a.end());
-
-    int ans = 12 * sz(a);
-
-    int prv = 0;
-    EACH(i, a) {
-        b.push_back(i - prv - 1);
-        prv = i;
-    }
-
-    sort(all(b));
-
-    FOR(sz(b) - k) {
-        ans += 12 * b[i];
-    }
-
-    cout << ans;
+    //cout << mxd << ' ' << mnw << '\n';
+    cout << (mnw + m - 1) / m;
 
 	return 0;
 }
