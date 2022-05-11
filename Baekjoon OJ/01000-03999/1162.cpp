@@ -25,13 +25,71 @@ using namespace std;
 #define EACH(x, a) for (auto& x : a)
 
 const double EPS = 1e-9;
-const int INF = 1e9 + 7;
+const ll INF = 1e18 + 7;
 const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, k, c[101];
-ll dp[10101];
+struct wv {
+    ll w;
+    int v;
+};
+
+struct wvcnt {
+    ll w;
+    int v, cnt;
+    bool operator<(const wvcnt& rhs) const {
+        return w > rhs.w;
+    }
+};
+
+int n, m, k;
+vt<wv> adj[10101];
+ll dist[10101][22];
+
+void init() {
+    FOR(10101) {
+        FOR(j, 22) {
+            dist[i][j] = INF;
+        }
+    }
+}
+
+void input() {
+    cin >> n >> m >> k;
+    FOR(m) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].push_back({ w, v });
+        adj[v].push_back({ w, u });
+    }
+}
+
+void dijkstra() {
+    priority_queue<wvcnt> pq;
+    
+    pq.push({ 0, 1, 0 });
+    dist[1][0] = 0;
+
+    while (sz(pq)) {
+        int v = pq.top().v, cnt = pq.top().cnt;
+        ll w = pq.top().w;
+        pq.pop();
+
+        if (w > dist[v][cnt]) continue;
+
+        EACH(i, adj[v]) {
+            if (dist[i.v][cnt] > w + i.w) {
+                pq.push({ w + i.w, i.v, cnt });
+                dist[i.v][cnt] = w + i.w;
+            }
+            if (cnt < k && dist[i.v][cnt + 1] > w) {
+                pq.push({ w, i.v, cnt + 1 });
+                dist[i.v][cnt + 1] = w;
+            }
+        }
+    }
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -43,20 +101,19 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
+    
+    init();
 
-	cin >> n >> k;
+	input();
 
-	FOR(n) cin >> c[i];
+    dijkstra();
 
-	dp[0] = 1;
-	FOR(i, n) {
-		FOR(j, k + 1) {
-			int cnt = 1;
-			if (j + c[i] <= k) dp[j + c[i]] += dp[j];
-		}
-	}
+    ll ans = INF;
+    FOR(i, k + 1) {
+        ans = min(ans, dist[n][i]);
+    }
 
-	cout << dp[k];
+    cout << ans;
 
 	return 0;
 }

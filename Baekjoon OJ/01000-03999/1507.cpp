@@ -1,49 +1,84 @@
-#include <iostream>
-#include <algorithm>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
+#define ll long long
+#define ull unsigned long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define fr first
+#define sc second
+#define vt vector
+#define all(c) (c).begin(), (c).end()
+#define sz(x) (int)(x).size()
 
-const int MAXV = 20;
+#define EXPAND( x ) x // Use this if MS Visual Studio doesn't expand __VA_ARGS__ correctly
+#define F_OR(i, a, b, s) for (int i = (a); (s) > 0 ? i < (b) : i > (b); i += (s))
+#define F_OR1(e) F_OR(i, 0, e, 1)
+#define F_OR2(i, e) F_OR(i, 0, e, 1)
+#define F_OR3(i, b, e) F_OR(i, b, e, 1)
+#define F_OR4(i, b, e, s) F_OR(i, b, e, s)
+#define GET5(a, b, c, d, e, ...) e
+#define F_ORC(...) EXPAND( GET5(__VA_ARGS__, F_OR4, F_OR3, F_OR2, F_OR1) )
+#define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
+#define EACH(x, a) for (auto& x : a)
 
-int N, dist[MAXV + 5][MAXV + 5], adj[MAXV + 5][MAXV + 5];
+const double EPS = 1e-9;
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
+const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int main() {
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
+int n, adj[22][22], vi[22][22];
+int bit;
 
-	cin >> N;
+void floyd() {
+	for (int i = 0; i < n; i++) adj[i][i] = 0;
 
-	for (int u = 1; u <= N; u++) {
-		for (int v = 1; v <= N; v++) {
-			cin >> dist[u][v];
-			adj[u][v] = dist[u][v];
-		}
-	}
-
-	bool cannot = false;
-
-	for (int u = 1; u <= N; u++) {
-		//v = u + 1인 이유: 양방향 간선이기에 u에서 v까지의 최단경로는 v에서 u까지의 최단경로와 같음
-		for (int v = u + 1; v <= N; v++) {
-			for (int k = 1; k <= N; k++) {
+	for (int k = 0; k < n; k++) {
+		for (int u = 0; u < n; u++) {
+			for (int v = 0; v < n; v++) {
 				if (k == u || k == v) continue;
-				//어떤 두 경로의 거리가 같을 경우, 경유점이 없는 경로가 아닌 경유점이 있는 경로를 택한다. 그것이 더 많은 정점 간의 경로를 규정하기 때문이다.
-				if (dist[u][v] == dist[u][k] + dist[k][v]) {
-					adj[u][v] = adj[v][u] = 0;
-				}
-				//dist[u][v]보다 dist[u][k] + dist[k][v]가 작다면, dist[u][v]가 최단거리가 아닌 것. 따라서 모순.
-				else if (dist[u][v] > dist[u][k] + dist[k][v]) {
-					cout << -1;
-					return 0;
-				}
+
+				if (adj[u][v] == adj[u][k] + adj[k][v]) vi[u][v] = 1;
+				if (adj[u][v] > adj[u][k] + adj[k][v]) bit = 1;
+				//adj[u][v] = min(adj[u][v], adj[u][k] + adj[k][v]);
 			}
 		}
 	}
+}
+
+int main() {
+	#ifndef ONLINE_JUDGE
+	// Enter the absolute path of the local file input.txt, output.txt
+	// Or just enter the "input.txt", "output.txt"
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	#endif
+
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
 	
-	
-	int ans = 0;
-	for (int u = 1; u <= N; u++) {
-		for (int v = u + 1; v <= N; v++) {
-			ans += adj[u][v];
+	cin >> n;
+	FOR(n) {
+		FOR(j, n) {
+			int x; cin >> x;
+			adj[i][j] = adj[j][i] = x;
+		}
+	}
+
+	floyd();
+
+	if (bit) {
+		cout << -1;
+		return 0;
+	}
+
+	ll ans = 0;
+	FOR(n) {
+		FOR(j, i + 1, n) {
+			if (!vi[i][j]) ans += adj[i][j];
 		}
 	}
 
@@ -51,10 +86,3 @@ int main() {
 
 	return 0;
 }
-/*////////////////////////////////////////////////////////////////////
-문제 해법		: 플로이드 와샬 알고리즘인가..?
-결정적 깨달음		: 모든 정점 쌍에 대해, 그 최단 거리를 다른 정점 쌍의 최단거리의 합으로 표현 가능하다면 간선이 없는 것으로 한다.
-시간복잡도		: O(|V|^3)
-오답 원인		: 1. 
-				  2. 
-*/////////////////////////////////////////////////////////////////////
