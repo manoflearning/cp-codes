@@ -1,102 +1,112 @@
-#include <iostream>
-#include <cstring>
-#include <queue>
-#include <vector>
-#include <algorithm>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
+#define ll long long
+#define ull unsigned long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define fr first
+#define sc second
+#define vt vector
+#define all(c) (c).begin(), (c).end()
+#define sz(x) (int)(x).size()
 
-const int MAXV = 26;
+#define EXPAND( x ) x // Use this if MS Visual Studio doesn't expand __VA_ARGS__ correctly
+#define F_OR(i, a, b, s) for (int i = (a); (s) > 0 ? i < (b) : i > (b); i += (s))
+#define F_OR1(e) F_OR(i, 0, e, 1)
+#define F_OR2(i, e) F_OR(i, 0, e, 1)
+#define F_OR3(i, b, e) F_OR(i, b, e, 1)
+#define F_OR4(i, b, e, s) F_OR(i, b, e, s)
+#define GET5(a, b, c, d, e, ...) e
+#define F_ORC(...) EXPAND( GET5(__VA_ARGS__, F_OR4, F_OR3, F_OR2, F_OR1) )
+#define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
+#define EACH(x, a) for (auto& x : a)
 
-vector<int> adj[MAXV + 5], indeg(MAXV + 5), node;
-bool exist[MAXV + 5], isCycle, isMany;
-string word[100], res;
+const double EPS = 1e-9;
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
+const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-void topological_sort();
+int n;
+vt<string> s;
+vt<int> adj[26];
+int ex[26], indeg[26], vi[26];
 
 int main() {
+	#ifndef ONLINE_JUDGE
+	// Enter the absolute path of the local file input.txt, output.txt
+	// Or just enter the "input.txt", "output.txt"
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	#endif
+
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
+	
+	cin >> n;
+	s.resize(n);
+	EACH(i, s) cin >> i;
 
-	int M;  cin >> M;
-
-	for (int i = 0; i < M; i++) {
-		cin >> word[i];
-		for (int l = 0; l < word[i].size(); l++) {
-			int v = word[i][l] - 'a';
-			if (exist[v]) continue;
-			exist[v] = true;
-			node.push_back(v);
-		}
+	EACH(i, s) {
+		EACH(j, i) ex[j - 'a'] = 1;
 	}
 
-	for (int i = 0; i < M; i++) {
-		for (int l = i + 1; l < M; l++) {
-			string ustr = word[i], vstr = word[l];
-			
-			int len = min(ustr.size(), vstr.size());
-			for (int j = 0; j < len; j++) {
-				if (ustr[j] == vstr[j]) {
-					if (j == len - 1 && ustr.size() > vstr.size()) isCycle = true;
-					continue;
+	int isM = 0, isI = 0;
+
+	FOR(i, n) {
+		FOR(j, i + 1, n) {
+			FOR(k, min(sz(s[i]), sz(s[j]))) {
+				int v = s[i][k] - 'a', u = s[j][k] - 'a';
+				if (v != u) {
+					adj[v].push_back(u);
+					indeg[u]++;
+					break;
 				}
 
-				int u = ustr[j] - 'a', v = vstr[j] - 'a';
-
-				bool already = false;
-				for(int next : adj[u])
-					if (next == v) {
-						already = true;
-						break;
-					}
-
-				if (!already) {
-					adj[u].push_back(v);
-					indeg[v]++;
-				}
-				
-				break;
+				if (k == min(sz(s[i]), sz(s[j])) - 1 && sz(s[i]) > sz(s[j])) isI = 1;
 			}
 		}
 	}
 
-	//위상 정렬
-	topological_sort();
-
-	if (isCycle) cout << "!";
-	else if (isMany) cout << "?";
-	else cout << res;
-
-	return 0;
-}
-
-void topological_sort() {
+	vt<int> ans;
 	queue<int> q;
 
-	for (int v : node)
-		if (indeg[v] == 0) q.push(v);
-
-	for (int i : node) {
-		if (q.empty()) {
-			isCycle = true;
-			break;
+	FOR(26) {
+		if (ex[i] && !indeg[i]) {
+			q.push(i);
+			vi[i] = 1;
 		}
-		if (q.size() > 1) isMany = true;
+	}
 
+	while (sz(q)) {
+		if (sz(q) >= 2) isM = 1;
+		
 		int v = q.front();
 		q.pop();
 
-		res.push_back(v + 'a');
+		ans.push_back(v);
 
-		for (int next : adj[v]) {
-			indeg[next]--;
-			if (indeg[next] == 0) q.push(next);
+		EACH(i, adj[v]) {
+			indeg[i]--;
+			if (!indeg[i]) {
+				q.push(i);
+				vi[i] = 1;
+			}
 		}
 	}
+
+	FOR(26) {
+		if (ex[i] && !vi[i]) isI = 1;
+	}
+
+	if (isI) cout << '!';
+	else if (isM) cout << '?';
+	else {
+		EACH(i, ans) cout << char(i + 'a');
+	}
+
+	return 0;
 }
-/*////////////////////////////////////////////////////////////////////
-문제 해법		: 위상 정렬
-결정적 깨달음		:
-시간복잡도		: O(|V| + |E|)
-오답 원인		: 1. 2 / ab / a와 같은 케이스를 처리하지 못함. 
-				  2.
-*/////////////////////////////////////////////////////////////////////
