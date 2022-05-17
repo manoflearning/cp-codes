@@ -7,7 +7,7 @@ using namespace std;
 #define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-#define fr first
+#define fr first 
 #define sc second
 #define vt vector
 #define all(c) (c).begin(), (c).end()
