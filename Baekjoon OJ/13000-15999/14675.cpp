@@ -30,6 +30,9 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int n, deg[101010];
+vt<pii> a;
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -41,7 +44,22 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 	
-	
+	cin >> n;
+    a.resize(n - 1);
+    EACH(i, a) {
+        cin >> i.fr >> i.sc;
+        deg[i.fr]++, deg[i.sc]++;
+    }
+
+    int q; cin >> q;
+    while (q--) {
+        int op, x;
+        cin >> op >> x;
+        if (op == 1) {
+            cout << (deg[x] > 1 ? "yes" : "no") << '\n';
+        }
+        else cout << "yes\n";
+    }
 
 	return 0;
 }
