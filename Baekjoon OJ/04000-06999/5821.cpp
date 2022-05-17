@@ -52,7 +52,7 @@ int main() {
     psum.resize(n);
     rpsum.resize(n);
     FOR(i, 1, n) psum[i] = a[i] - a[0] + psum[i - 1]; 
-    FOR(i, n - 2, -1, -1) psum[i] = a[n - 1] - a[i] + psum[i + 1];
+    FOR(i, n - 2, -1, -1) rpsum[i] = a[n - 1] - a[i] + rpsum[i + 1];
 
     ll ans = 0;
 
