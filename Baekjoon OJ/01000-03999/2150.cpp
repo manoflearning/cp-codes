@@ -1,85 +1,98 @@
+// Tarjan's strongly connected components algorithm
 #include <iostream>
-#include <vector>
 #include <stack>
+#include <vector>
+#include <cstring>
 #include <algorithm>
 using namespace std;
 
-const int MAXV = 1e4;
+const int MAXV = 101010;
 
-int N, cnt = 1, dfsn[MAXV + 5], cntSCC, sn[MAXV + 5];
-vector<int> adj[MAXV + 5];
+int n, m, label[MAXV], labelCnt;
+int SCCnum[MAXV], SCCcnt, finished[MAXV];
+vector<int> adj[MAXV];
+stack<int> stk;
 vector<vector<int>> SCC;
-stack<int> S;
-bool finished[MAXV + 5];
 
-int dfs(int v);
-
-int main() {
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
-
-	int M;
-	cin >> N >> M;
-
-	for (int i = 0; i < M; i++) {
-		int a, b; cin >> a >> b;
-		adj[a].push_back(b);
+void input() {
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
 	}
-
-	//dfs 스패닝 트리 생성
-	for (int v = 1; v <= N; v++)
-		if (dfsn[v] == 0) dfs(v);
-
-	sort(SCC.begin(), SCC.end());
-
-	//출력
-	cout << cntSCC << '\n';
-	for (int i = 0; i < SCC.size(); i++) {
-		for (int v : SCC[i])
-			cout << v << ' ';
-		cout << "-1\n";
-	}
-
-	return 0;
 }
 
 int dfs(int v) {
-	//방문 순서를 기준으로 labeled
-	dfsn[v] = cnt++;
-	S.push(v);
+	label[v] = labelCnt++;
+	stk.push(v);
 
-	int result = dfsn[v];
+	int ret = label[v];
 	for (int next : adj[v]) {
-		//visited의 역할
-		if (dfsn[next] == 0) result = min(result, dfs(next));
-		else if (!finished[next]) result = min(result, dfsn[next]);
+		// Unvisited node.
+		if (label[next] == -1) ret = min(ret, dfs(next));
+		// Visited but not yet classified as SCC. In other words, edge { v, next } is back edge.
+		else if (!finished[next]) ret = min(ret, label[next]);
 	}
-
-	//조상 노드에게로 향하는 간선이 없을 때, v를 루트로 하는 서브트리는 SCC
-	if (result == dfsn[v]) {
+	
+	// If there is no edge to the ancestor node among itself and its descendants, find scc.
+	if (ret == label[v]) {
 		vector<int> vSCC;
+		while (1) {
+			int t = stk.top();
+			stk.pop();
 
-		while (true) {
-			int t = S.top();
-			S.pop();
 			vSCC.push_back(t);
-			finished[t] = true;
-			sn[t] = cntSCC;
+			SCCnum[t] = SCCcnt;
+			finished[t] = 1;
+
 			if (t == v) break;
 		}
 
-		sort(vSCC.begin(), vSCC.end());
-
 		SCC.push_back(vSCC);
-		cntSCC++;
+		SCCcnt++;
 	}
 
-	return result;
+	return ret;
 }
-/*////////////////////////////////////////////////////////////////////
-문제 해법		: 강한 연결 요소
-결정적 깨달음		: 
-시간복잡도		: O(|V| + |E|)
-오답 원인		: 1. 
-				  2.
-*/////////////////////////////////////////////////////////////////////
+
+void getSCC() {
+	memset(label, -1, sizeof(label));
+
+	for (int v = 1; v <= n; v++)
+		if (label[v] == -1) dfs(v);
+}
+
+void print() {
+	for (int i = 0; i < (int)SCC.size(); i++) 
+		sort(SCC[i].begin(), SCC[i].end());
+
+	sort(SCC.begin(), SCC.end());
+
+	cout << (int)SCC.size() << '\n';
+
+	for (int i = 0; i < (int)SCC.size(); i++) {
+		for (auto& j : SCC[i]) cout << j << ' ';
+		cout << -1 << '\n';
+	}
+}
+
+int main() {
+	#ifndef ONLINE_JUDGE
+	// Enter the absolute path of the local file input.txt, output.txt
+	// Or just enter the "input.txt", "output.txt"
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	#endif
+
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	
+	input();
+
+	getSCC();
+
+	print();
+
+	return 0;
+}
