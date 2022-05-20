@@ -7,7 +7,7 @@ using namespace std;
 #define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-#define fr first
+#define fr first 
 #define sc second
 #define vt vector
 #define all(c) (c).begin(), (c).end()
@@ -46,86 +46,39 @@ int main() {
     while (tc--) {
         int n; cin >> n;
 
-        vt<string> a(2);
-        cin >> a[0] >> a[1];
+        vt<string> s(2);
+        EACH(i, s) cin >> i;
 
-        int l0 = -1, r0 = -1, l1 = -1, r1 = -1;
+        vt<vt<int>> a(2);
+        int bit = 0;
         FOR(n) {
-            if (a[0][i] == '*') {
-                if (l0 == -1) l0 = i;
-                r0 = i;
-            }
-            if (a[1][i] == '*') {
-                if (l1 == -1) l1 = i;
-                r1 = i;
+            if (s[0][i] == '*' || s[1][i] == '*') bit = 1;
+
+            if (bit) {
+                a[0].push_back((s[0][i] == '.' ? 0 : 1));
+                a[1].push_back((s[1][i] == '.' ? 0 : 1));
             }
         }
 
-        // 1. if one row is empty
-        if (l0 == -1 || l1 == -1) {
-            if (l0 == -1) cout << r1 - l1 << '\n';
-            else cout << r0 - l0 << '\n';
-            continue;
+        while (1) {
+            if (a[0].back() == 1 || a[1].back() == 1) break;
+            a[0].pop_back();
+            a[1].pop_back();
         }
 
-        // 2. if both rows are filled
+        n = sz(a[0]);
 
-        // 2.1. [l0, r0] ^ [l1, r1] = 0
-        if (r0 < l1 || r1 < l0) {
-            if (r0 < l1) cout << r1 - l0 + 1 << '\n';
-            if (r1 < l0) cout << r0 - l1 + 1 << '\n';
-            continue;
+        vt<vt<int>> dp(2, vt<int>(n));
+
+        dp[0][0] = a[1][0], dp[1][0] = a[0][0];
+        FOR(i, 0, n - 1) {
+            dp[0][i + 1] = dp[0][i] + 1 + a[1][i + 1];
+            dp[1][i + 1] = dp[1][i] + 1 + a[0][i + 1];
+            dp[1][i + 1] = min(dp[1][i + 1], dp[0][i] + 2);
+            dp[0][i + 1] = min(dp[0][i + 1], dp[1][i] + 2);
         }
 
-        // 2.2.
-        int ans = max(r0, r1) - min(l0, l1);
-
-        int bit = (l0 <= l1 ? 0 : 1);
-        FOR(i, min(l0, l1), max(r0, r1) + 1) {
-            if (a[!bit][i] == '*') {
-                ans++;
-                bit = (bit ? 0 : 1);
-            }
-        }
-
-        cout << min(ans, r0 - l0 + r1 - l1 + 1) << '\n';
-
-        /*
-        // 2.2. [l0, r0] C [l1, r1] OR [l1, r1] C [l0, r0]
-        if (l0 <= l1 && r1 <= r0) {
-            int ans = r0 - l0;
-
-            int bit = 0;
-            FOR(i, l0, r0 + 1) {
-                if (a[!bit][i] == '*') {
-                    ans++;
-                    bit != bit;
-                }
-            }
-
-            cout << ans << '\n';
-
-            continue;
-        }
-        if (l1 <= l0 && r0 <= r1) {
-            int ans = r1 - l1;
-
-            int bit = 1;
-            FOR(i, l1, r1 + 1) {
-                if (a[!bit][i] == '*') {
-                    ans++;
-                    bit != bit;
-                }
-            }
-
-            cout << ans << '\n';
-
-            continue;
-        }
-
-        // 2.3. 
-        cout << max(r0, r1) - min(l0, l1) + 1 << '\n';
-        */
+        cout << min(dp[0][n - 1], dp[1][n - 1]) << '\n';
     }
 
 	return 0;
