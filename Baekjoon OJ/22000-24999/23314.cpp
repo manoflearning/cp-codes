@@ -161,7 +161,8 @@ int main() {
             sum -= cost[x];
             sum2 -= max(0ll, *bccMx[y].rbegin());
             
-            bccMx[y].erase(cost[x]);
+            auto it = bccMx[y].find(cost[x]);
+            bccMx[y].erase(it);
             cost[x] = w;
             bccMx[y].insert(cost[x]);
 
