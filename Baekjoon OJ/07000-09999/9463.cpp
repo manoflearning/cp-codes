@@ -30,6 +30,65 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+struct Seg {
+	int flag;  // array size
+	vector<ll> t;
+
+	void build(int N) {
+		for (flag = 1; flag < N; flag <<= 1);
+		t.resize(2 * flag);
+
+		for (int i = flag; i < flag + N; i++) t[i] = 0;
+		for (int i = flag - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
+	}
+	void modify(int p, ll value) {  // set value at position p
+		for (t[p += flag - 1] = value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
+	}
+	ll query(int l, int r) {
+		return query(l, r, 1, 1, flag);
+	}
+	ll query(int l, int r, int n, int nl, int nr) {  // sum on interval [l, r]
+		if (r < nl || nr < l) return 0;
+		if (l <= nl && nr <= r) return t[n];
+
+		int mid = (nl + nr) / 2;
+		return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
+	}
+}seg;
+
+struct uv {
+    ll u, v;
+    bool operator<(const uv& rhs) const {
+        return u < rhs.u;
+    }
+};
+
+int n;
+vt<int> p0, p1;
+vt<uv> a;
+
+void input() {
+    cin >> n;
+    p0.resize(n);
+    p1.resize(n);
+    EACH(i, p0) cin >> i;
+    EACH(i, p1) cin >> i;
+}
+
+ll f() {
+    ll ret = 0;
+    seg.build(n);
+
+    sort(all(a));
+    
+    FOR(i, n) {
+        ret += seg.query(a[i].v + 1, n);
+        seg.modify(a[i].v, 1);
+    }
+
+    return ret;
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -41,7 +100,19 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 	
-	
+	int tc; cin >> tc;
+
+    FOR(tc) {
+        input();
+
+        a.resize(n);
+        FOR(i, n) {
+            a[p0[i] - 1].u = i + 1;
+            a[p1[i] - 1].v = i + 1;
+        }
+
+        cout << f() << '\n';
+    }
 
 	return 0;
 }
