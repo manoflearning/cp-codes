@@ -34,10 +34,7 @@ int gcd(ll a, ll b) {
 	if (b == 0) return 0;
 
 	int ret = !gcd(b, a % b);
-	
-	int cnt = (a - a % b) / b;
-	if (cnt >= 2 && ret == 0) ret = 1; 
-
+	if (a / b >= 2) ret = 1;
 	return ret;
 }
 
