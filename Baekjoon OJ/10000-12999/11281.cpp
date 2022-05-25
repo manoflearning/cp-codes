@@ -1,62 +1,42 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include <cstring>
-#include <algorithm>
 #include <stack>
-#define pii pair<int, int>
+#include <algorithm>
 using namespace std;
+#define pii pair<int, int>
+#define fr first
+#define sc second
 
-const int MAXV = 2 * 1e4;
-
-int N, dfsn[MAXV + 5], dCnt, sNum[MAXV + 5], sCnt, ans[MAXV / 2 + 5];
-vector<int> adj[MAXV + 5];
+const int MAXV = 20202;
+	
+int n, m;
+int dfsn[MAXV], dCnt, sNum[MAXV], sCnt;
+int finished[MAXV];
+vector<int> adj[MAXV];
 stack<int> stk;
-bool finished[MAXV + 5];
-pii p[MAXV + 5];
+pii p[MAXV];
+int ans[MAXV / 2];
 
-inline int trans(int x);
-int dfs(int now);
-void print();
-
-int main() {
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
-
-	memset(dfsn, -1, sizeof(dfsn));
-	memset(ans, -1, sizeof(ans));
-
-	int M;
-	cin >> N >> M;
-
-	for (int i = 0; i < M; i++) {
-		int a, b;
-		cin >> a >> b;
-		adj[trans(-a)].push_back(trans(b));
-		adj[trans(-b)].push_back(trans(a));
-	}
-
-	//scc
-	for (int v = 0; v < 2 * N; v++)
-		if (dfsn[v] == -1) dfs(v);
-
-	//ÃæÁ· °¡´É¼º ÆÇº°
-	for (int v = 0; v < 2 * N; v += 2) {
-		if (sNum[v] == sNum[v + 1]) {
-			cout << 0;
-			return 0;
-		}
-	}
-
-	//´ä Ãâ·Â
-	cout << 1 << '\n';
-
-	print();
-
-	return 0;
+inline int inv(int x) {
+	// negative number -a indicates Â¬a.
+	return (x > 0) ? 2 * (x - 1) : 2 * (-x - 1) + 1;
 }
 
-inline int trans(int x) {
-	return (x > 0) ? 2 * (x - 1) : 2 * (-x - 1) + 1;
+void twoCnf(int a, int b) {
+	// (a âˆ¨ b) iff (Â¬a â†’ b) iff (Â¬b â†’ a)
+	adj[inv(-a)].push_back(inv(b));
+	adj[inv(-b)].push_back(inv(a));
+}
+
+void buildGraph() {
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		twoCnf(a, b);
+	}
 }
 
 int dfs(int now) {
@@ -70,13 +50,13 @@ int dfs(int now) {
 	}
 
 	if (ret >= dfsn[now]) {
-		while (true) {
+		while (1) {
 			int t = stk.top();
 			stk.pop();
 
 			sNum[t] = sCnt;
-			finished[t] = true;
-
+			finished[t] = 1;
+			
 			if (t == now) break;
 		}
 		sCnt++;
@@ -85,25 +65,56 @@ int dfs(int now) {
 	return ret;
 }
 
-void print() {
-	for (int v = 0; v < 2 * N; v++)
-		p[v] = pii(sNum[v], v);
+int isSatisfiable() {
+	// determining satisfiability 
+	int isS = 1;
+	for (int v = 0; v < 2 * n; v += 2) {
+		// if v and (v + 1) is in same scc, then the proposition is not satisfiable
+		if (sNum[v] == sNum[v + 1]) {
+			isS = 0;
+			break;
+		}
+	}
+	return isS;
+}
 
-	sort(p, p + 2 * N);
-
-	for (int i = 2 * N - 1; i >= 0; i--) {
-		int v = p[i].second;
-
-		if (ans[v / 2 + 1] == -1) ans[v / 2 + 1] = (v % 2) ? 1 : 0;
+void findValueOfEachVariable() {
+	// order of scc is the reverse of the topological sort
+	for (int v = 0; v < 2 * n; v++) {
+		p[v] = { sNum[v], v };
 	}
 
-	for (int v = 1; v <= N; v++)
+	sort(p, p + 2 * n);
+
+	// determining true/false of each variable
+	for (int i = 2 * n - 1; i >= 0; i--) {
+		int v = p[i].sc;
+		if (ans[v / 2 + 1] == -1) 
+			ans[v / 2 + 1] = (v & 1) ? 1 : 0;
+	}
+		
+	for (int v = 1; v <= n; v++)
 		cout << ans[v] << ' ';
 }
-/*////////////////////////////////////////////////////////////////////
-¹®Á¦ ÇØ¹ý		: 2-SAT
-°áÁ¤Àû ±ú´ÞÀ½		: sccÀÇ ¼ø¼­´Â À§»ó Á¤·ÄÀÇ ¿ª¼ø.
-½Ã°£º¹Àâµµ		: O(|V| + |E|)
-¿À´ä ¿øÀÎ		: 1. 
-				  2.
-*/////////////////////////////////////////////////////////////////////
+
+int main() {
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+
+	memset(dfsn, -1, sizeof(dfsn));
+	memset(ans, -1, sizeof(ans));
+
+	buildGraph();
+
+	// finding scc
+	for (int v = 0; v < 2 * n; v++)
+		if (dfsn[v] == -1) dfs(v);
+
+	if (isSatisfiable()) {
+		cout << 1 << '\n';
+		findValueOfEachVariable();
+	}
+	else cout << 0;
+
+	return 0;
+}
