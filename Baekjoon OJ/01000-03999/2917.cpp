@@ -30,18 +30,18 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, m, d0[505][505], d1[505][505], d2[505][505], d3[505][505], d[505][505];
+int n, m/*, d0[505][505], d1[505][505], d2[505][505], d3[505][505]*/, d[505][505];
 vt<vt<char>> a;
 int sy, sx, ey, ex;
 int vi[505][505];
 
-void init() {
+/*void init() {
     FOR(505) {
         FOR(j, 505) {
             d0[i][j] = d1[i][j] = d2[i][j] = d3[i][j] = INF;
         }
     }
-}
+}*/
 
 void input() {
     cin >> n >> m;
@@ -55,7 +55,7 @@ void input() {
     }
 }
 
-void buildD() {
+/*void buildD() {
     FOR(i, 1, n + 1) {
         FOR(j, 1, m + 1) {
             d0[i][j] = min(d0[i - 1][j], d0[i][j - 1]) + 1;
@@ -89,6 +89,33 @@ void buildD() {
             d[i][j] = min({ d0[i][j], d1[i][j], d2[i][j], d3[i][j] });
         }
     }
+}*/
+
+void bfs() {
+    queue<pii> q;
+
+    FOR(i, 1, n + 1) {
+        FOR(j, 1, m + 1) {
+            if (a[i][j] == '+') {
+                q.push({ i, j });
+                d[i][j] = 0;
+            }
+        }
+    }
+
+    while (sz(q)) {
+        int y = q.front().fr, x = q.front().sc;
+        q.pop();
+
+        FOR(4) {
+            int ny = y + dy[i], nx = x + dx[i];
+            if (ny < 1 || n < ny || nx < 1 || m < nx) continue;
+            if (d[ny][nx] == -1) {
+                d[ny][nx] = d[y][x] + 1;
+                q.push({ ny, nx });
+            }
+        }
+    }
 }
 
 int dfs(int y, int x, int l) {
@@ -117,19 +144,26 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
     
-    init();
+    //init();
 
 	input();
 
-    buildD();
+    //buildD();
 
-    FOR(i, d[sy][sx], -1, -1) {
+    FOR(505) memset(d[i], -1, sizeof(d[i]));
+
+    bfs();
+
+    int l = 0, r = d[sy][sx];
+    while (l < r) {
+        int mid = (l + r + 1) >> 1;
         memset(vi, 0, sizeof(vi));
-        if (dfs(sy, sx, i)) {
-            cout << i;
-            break;
-        }
+
+        if (dfs(sy, sx, mid)) l = mid;
+        else r = mid - 1;
     }
+
+    cout << l;
 
 	return 0;
 }
