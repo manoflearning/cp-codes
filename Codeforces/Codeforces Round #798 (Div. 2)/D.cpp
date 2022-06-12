@@ -30,20 +30,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, m;
-vt<vt<int>> a;
-vt<pair<int, pii>> b;
-
-void init() {
-    n = m = 0;
-    a.clear();
-    b.clear();
-}
-
-int dist(int x, pii y) {
-    return max(abs(x - y.fr), abs(x - y.sc));
-}
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -58,60 +44,36 @@ int main() {
 	int tc; cin >> tc;
 
     while (tc--) {
-        init();
-
+        int n, m;
         cin >> n >> m;
-        a.resize(n + 1, vt<int>(m + 1));
+        vt<vt<int>> a(n + 1, vt<int>());
         FOR(i, 1, n + 1) {
+            a[i].push_back(0);
             string s; cin >> s;
-            FOR(j, sz(s)) {
-                a[i][j + 1] = (s[j] == 'B');
-            }
+            EACH(j, s) a[i].push_back(j == 'B' ? 1 : 0);
         }
-
+        pii p1 = { -1, -1 }, p2 = { -1, -1 }, p3 = { -1, -1 }, p4 = { -1, -1 };
         FOR(i, 1, n + 1) {
-            int l = -1, r = -1;
             FOR(j, 1, m + 1) {
                 if (a[i][j]) {
-                    if (l == -1) l = j;
-                    r = j;
+                    if (p1.fr == -1 || p1.fr - p1.sc < i - j) p1 = { i, j };
+                    if (p2.fr == -1 || p2.fr - p2.sc > i - j) p2 = { i, j };
+                    if (p3.fr == -1 || p3.fr + p3.sc < i + j) p3 = { i, j };
+                    if (p4.fr == -1 || p4.fr + p4.sc > i + j) p4 = { i, j };
                 }
             }
-            if (l != -1) {
-                b.push_back({ i, { l, r }});
-            }
         }
-
-        int mn = INF;
+        vt<pii> b = { p1, p2, p3, p4 };
+        int mx = INF;
         pii ans = { -1, -1 };
-        FOR(x, 1, m + 1) {
-            vt<int> pmx(sz(b)), rpmx(sz(b));
-            pmx[0] = dist(x, b[0].sc);
-            FOR(i, 1, sz(b)) {
-                pmx[i] = max(pmx[i - 1] + (b[i].fr - b[i - 1].fr), dist(x, b[i].sc));
-            }
-
-            rpmx[sz(b) - 1] = dist(x, b[sz(b) - 1].sc);
-            FOR(i, sz(b) - 2, -1, -1) {
-                rpmx[i] = max(rpmx[i + 1] + (b[i + 1].fr - b[i].fr), dist(x, b[i].sc));
-            }
-
-            FOR(i, sz(b) - 1) {
-                if (b[i].fr == b[i + 1].fr) continue;
-
-                int len = (b[i + 1].fr - b[i].fr), diff = abs(pmx[i] - rpmx[i + 1]);
-                int res = min(pmx[i], rpmx[i + 1]) + diff + (len - diff) / 2 + ((len - diff) & 1);
-                //cout << len << ' ' << diff << ' ' << res << '\n';
-                if (res < mn) {
-                    mn = res;
-                    ans.fr = b[i].fr + (pmx[i] < rpmx[i + 1] ? diff + (len - diff) / 2 + ((len - diff) & 1) : len - diff - (len - diff) / 2 - ((len - diff) & 1));
-                    ans.sc = x;
-                }
+        FOR(i, 1, n + 1) {
+            FOR(j, 1, m + 1) {
+                int d = 0;
+                EACH(k, b) d = max(d, abs(k.fr - i) + abs(k.sc - j));
+                if (d < mx) { mx = d; ans.fr = i, ans.sc = j; }
             }
         }
-
         cout << ans.fr << ' ' << ans.sc << '\n';
-        cout << mn << '\n';
     }
 
 	return 0;
