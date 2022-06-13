@@ -41,46 +41,17 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-
-    while (tc--) {
-        int n; cin >> n;
-        string ss, ts;
-        cin >> ss >> ts;
-        vt<int> s, t;
-        EACH(i, ss) s.push_back(i - 'a');
-        EACH(i, ts) t.push_back(i - 'a');
-
-        vt<int> a, b;
-        FOR(n) {
-            if (s[i] != 1) a.push_back(s[i]);
-            if (t[i] != 1) b.push_back(t[i]);
-        }
-
-        if (a != b) {
-            cout << "NO\n";
-            continue;
-        }
-        
-        vt<int> s0, s2, t0, t2;
-        FOR(n) {
-            if (s[i] == 0) s0.push_back(i);
-            if (s[i] == 2) s2.push_back(i);
-            if (t[i] == 0) t0.push_back(i);
-            if (t[i] == 2) t2.push_back(i);
-        }
-
-        int isP = 1;
-        FOR(sz(s0)) {
-            if (s0[i] > t0[i]) isP = 0;
-        }
-        FOR(sz(s2)) {
-            if (s2[i] < t2[i]) isP = 0;
-        }
-
-        if (isP) cout << "YES\n";
-        else cout << "NO\n";
+	int n; cin >> n;
+    vt<ll> a(n);
+    EACH(i, a) cin >> i;
+    a.push_back(0);
+    sort(all(a));
+    ll idx = 1, val = 1, ans = 0;
+    while (idx <= n) {
+        if (a[idx] >= val) ans += a[idx] - val, idx++, val++;
+        else idx++;
     }
+    cout << ans;
 
 	return 0;
 }

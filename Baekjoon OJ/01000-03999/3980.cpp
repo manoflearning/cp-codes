@@ -30,6 +30,19 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+ll a[11][11];
+
+ll f(int bit, int idx) {
+    if (idx == 11) return 0;
+    ll ret = -INF;
+    FOR(11) {
+        if (!a[idx][i]) continue;
+        if (bit & (1 << i)) continue;
+        ret = max(ret, f(bit | (1 << i), idx + 1) + a[idx][i]);
+    }
+    return ret;
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -42,44 +55,11 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
 	int tc; cin >> tc;
-
     while (tc--) {
-        int n; cin >> n;
-        string ss, ts;
-        cin >> ss >> ts;
-        vt<int> s, t;
-        EACH(i, ss) s.push_back(i - 'a');
-        EACH(i, ts) t.push_back(i - 'a');
-
-        vt<int> a, b;
-        FOR(n) {
-            if (s[i] != 1) a.push_back(s[i]);
-            if (t[i] != 1) b.push_back(t[i]);
+        FOR(11) {
+            FOR(j, 11) cin >> a[i][j];
         }
-
-        if (a != b) {
-            cout << "NO\n";
-            continue;
-        }
-        
-        vt<int> s0, s2, t0, t2;
-        FOR(n) {
-            if (s[i] == 0) s0.push_back(i);
-            if (s[i] == 2) s2.push_back(i);
-            if (t[i] == 0) t0.push_back(i);
-            if (t[i] == 2) t2.push_back(i);
-        }
-
-        int isP = 1;
-        FOR(sz(s0)) {
-            if (s0[i] > t0[i]) isP = 0;
-        }
-        FOR(sz(s2)) {
-            if (s2[i] < t2[i]) isP = 0;
-        }
-
-        if (isP) cout << "YES\n";
-        else cout << "NO\n";
+        cout << f(0, 0) << '\n';
     }
 
 	return 0;
