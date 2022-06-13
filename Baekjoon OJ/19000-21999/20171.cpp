@@ -67,9 +67,9 @@ int main() {
 
     int ans = 0;
     FOR(i, 1, n + 1) {
-        if (dp2[i] >= 2) ans++;
+        if (isA[i]) ans++;
+        else if (dp2[i] >= 2) ans++;
         else if (dp2[i] == 1 && (k - dp[i] - isA[i]) >= 1) ans++;
-        else if (isA[i]) ans++;
     }
 
     cout << ans;

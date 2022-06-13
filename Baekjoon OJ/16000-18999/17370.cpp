@@ -31,7 +31,6 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int n, vi[111][111];
-ll dp[111][111][4][30];
 
 ll f(int ny, int nx, int prv, int cnt) {
     ll ret = 0;
@@ -77,8 +76,6 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-
-    //FOR(111) FOR(j, 111) FOR(k, 4) FOR(a, 30) dp[i][j][k][a] = -1;
 
     cin >> n;
 

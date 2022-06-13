@@ -48,7 +48,7 @@ int main() {
     vt<ll> a(k + 1);
     FOR(i, 1, k + 1) {
         cin >> a[i];
-        if (a[i] >= n / 2 + 1 + (n & 1 ? 1 : 0)) isP = 0;
+        if (a[i] >= (n + 1) / 2 + 1) isP = 0;
     }
 
     if (!isP) {
@@ -63,14 +63,14 @@ int main() {
 
     while (sz(pq)) {
         int cnt = pq.top().fr, now = pq.top().sc;
-        cout << now << ' ';
         pq.pop();
+        cout << now << ' ';
 
         if (pq.empty()) break;
 
         int cnt2 = pq.top().fr, now2 = pq.top().sc;
-        cout << now2 << ' ';
         pq.pop();
+        cout << now2 << ' ';
 
        if (cnt > 1) pq.push({ cnt - 1, now });
        if (cnt2 > 1) pq.push({ cnt2 - 1, now2 });

@@ -69,7 +69,7 @@ int main() {
         q.pop();
         EACH(i, adj[now]) {
             cnt[i]++;
-            if (dist[i] == -1 && deg[i] / 2 + (deg[i] & 1) <= cnt[i]) { 
+            if (dist[i] == -1 && (deg[i] + 1) / 2 <= cnt[i]) { 
                 q.push(i);
                 dist[i] = dist[now] + 1;
             }
