@@ -71,7 +71,7 @@ int main() {
 
     cin >> n;
 
-    q1(1);
+    last[q1(1) - 'a'] = 1;
     FOR(i, 2, n + 1) {
         if (q2(1, i - 1) < q2(1, i)) { last[q1(i) - 'a'] = i; continue; }
 
