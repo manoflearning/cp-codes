@@ -25,35 +25,30 @@ using namespace std;
 #define EACH(x, a) for (auto& x : a)
 
 const double EPS = 1e-9;
-const ll INF = 1e18 + 7;
+const int INF = 1e9 + 7;
 const int MOD = 1e9 + 7;
-const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+const int dy[] = { 0, 1, 1, -1, 1, 1, -1, -1 };
+const int dx[] = { 1, 0, 0, 0, 1, -1, 1, -1 };
 
-int n;
-vt<pll> a;
+const int MAX = 2525;
 
-ll cal(int bit) {
-    int cnt = 0;
-    FOR(n) if (bit & (1 << i)) cnt++;
-    if (cnt != n / 2) return INF;
-    pll ret = { 0, 0 };
-    FOR(n) {
-        if (bit & (1 << i)) ret.fr += a[i].fr, ret.sc += a[i].sc;
-        else ret.fr -= a[i].fr, ret.sc -= a[i].sc;
-    }
-    return ret.fr * ret.fr + ret.sc * ret.sc;
+int N;
+vector<int> p(MAX + 1, -1);
+
+int find(int x) {
+	if (p[x] < 0) return x;
+	return p[x] = find(p[x]);
 }
 
-ll bt(int bit, int idx) {
-    if (idx == n) return cal(bit);
-
-    ll ret = INF;
-    ret = min(ret, bt(bit, idx + 1));
-    ret = min(ret, bt(bit | (1 << idx), idx + 1));
-
-    return ret;
+void merge(int a, int b) {
+	int A = find(a), B = find(b);
+	if (A == B) return;
+	p[A] += p[B];
+	p[B] = A;
 }
+
+int n, m;
+vt<vt<int>> a;
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -66,17 +61,34 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
+	cin >> n >> m;
+    a.resize(n);
 
-    cout << fixed;
-    cout.precision(8);
-    while (tc--) {
-        cin >> n;
-        a.resize(n);
-        EACH(i, a) cin >> i.fr >> i.sc;
-
-        cout << sqrt(bt(0, 0)) << '\n';
+    FOR(n) {
+        string s; cin >> s;
+        EACH(j, s) a[i].push_back(j - 'A'); 
     }
+
+    int ans = 0;
+    FOR(i, n) {
+        FOR(j, m) {
+            FOR(k, 2) {
+                int y = i + dy[k], x = j + dx[k];
+                if (y < 0 || n <= y) continue;
+                if (x < 0 || m <= x) continue;
+                if (a[y][x] != a[i][j]) continue;
+
+                if (find(y * 50 + x) == find(i * 50 + j)) {
+                    ans = 1;
+                    //cout << "YYY" << ' ' << y << ' ' <<x<< '\n';
+                }
+                merge(y * 50 + x, i * 50 + j);
+            }
+        }
+    }
+
+    if (ans) cout << "Yes";
+    else cout << "No";
 
 	return 0;
 }
