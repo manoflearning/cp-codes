@@ -37,7 +37,7 @@ ll dp[202020], dp2[202020];
 
 void init() {
     FOR(i, n + 1) {
-        par[i] = dp[i] = dp2[i] =0;
+        par[i] = dp[i] = dp2[i] = 0;
         chd[i].clear();
         lr[i] = { 0, 0 };
     }

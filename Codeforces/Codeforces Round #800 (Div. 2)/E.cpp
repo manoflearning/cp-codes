@@ -30,54 +30,16 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, m, vi[202020];
+struct wv {
+    ll w; int v;
+    bool operator<(const wv& rhs) const {
+        return w > rhs.w;
+    }
+};
+
+int n, m, ind[202020];
 vt<int> adj[202020];
-ll dp[202020];
-
-void input() {
-    cin >> n >> m;
-    FOR(m) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-    }
-}
-
-ll f(int v) {
-    ll& ret = dp[v];
-    if (ret != -1) return ret;
-    if (v == n) return ret = 0;
-
-    vi[v] = 1;
-    
-    ll degvi = 0;
-    vt<ll> res;
-    EACH(i, adj[v]) {
-        if (vi[i]) degvi++;
-        //if (!vi[i]) res.push_back(f(i));
-    }
-    EACH(i, adj[v]) res.push_back(f(i));
-
-    if (res.empty()) return ret = INF;
-
-    sort(all(res));
-
-    map<ll, ll> mp;
-    FOR(sz(res)) {
-        if (res[i] == res[0]) continue;
-
-        auto it = mp.find(-res[i] + res[0]);
-        if (it != mp.end()) it->sc++;
-        else mp.insert({ -res[i] + res[0], 1 });
-    }
-
-    ret = res[0] + 1 + degvi;
-    EACH(i, mp) {
-        if (-i.fr <= i.sc) return -i.fr + ret;
-        else ret += i.sc;
-    }
-    return ret;
-}
+ll dist[202020];
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -90,11 +52,36 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    FOR(202020) dp[i] = -1;
+    FOR(202020) dist[i] = INF;
 
-	input();
+	cin >> n >> m;
+    FOR(m) {
+        int u, v;
+        cin >> u >> v;
+        adj[v].push_back(u);
+        ind[u]++;
+    }
 
-    cout << f(1);
+    priority_queue<wv> pq;
+    pq.push({ 0, n });
+    dist[n] = 0;
+
+    while (sz(pq)) {
+        int v = pq.top().v, w = pq.top().w;
+        pq.pop();
+
+        if (dist[v] < w) continue;
+
+        EACH(i, adj[v]) {
+            if (dist[i] > w + ind[i]) {
+                dist[i] = w + ind[i];
+                pq.push({ dist[i], i });
+            }
+            ind[i]--;
+        }
+    }
+
+    cout << dist[1];
 
 	return 0;
 }
