@@ -30,36 +30,27 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, rt = -1;
+int n, deg[202020], rt = -1; 
 vt<int> adj[202020];
 
 void init() {
-	rt = -1;
-	FOR(n + 1) adj[i].clear();
-	n = 0;
+	FOR(n + 1) {
+		deg[i] = 0;
+		adj[i].clear();
+	}
+	n = 0, rt = -1;
 }
 
-ll f(int v, int prv) {
-	//cout <<v << ' ' << prv << '\n';
-	if (sz(adj[v]) == 1) return 1;
-
-	vt<ll> a;
+int f(int v, int prv) {
+	int ret = 0, cnt = 0;
 	EACH(i, adj[v]) {
 		if (i == prv) continue;
-		a.push_back(f(i, v));
+		int res = f(i, v);
+		if (res) ret += res;
+		else cnt++;
 	}
-
-	if (v != rt && sz(adj[v]) == 2) return a[0];
-
-	ll ret = 0;
-	int cnt1 = 0;
-	EACH(i, a) {
-		if (i == 1) cnt1++;
-		else ret += i;
-	}
-	//cout << v << ' ' << ret + max(0, cnt1 - 1) << '\n';
-	return ret + cnt1;
-}	
+	return ret + max(0, cnt - 1);
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -73,36 +64,28 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
 	int tc; cin >> tc;
+
 	while (tc--) {
 		cin >> n;
-
-		// 예외 처리 1: 답이 0인 경우
-		if (n == 1) {
-			cout << 0 << '\n';
+		FOR(n - 1) {
+			int u, v;
+			cin >> u >> v;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+			deg[u]++, deg[v]++;
 		}
-		else {
-			FOR(n - 1) {
-				int u, v;
-				cin >> u >> v;
-				adj[u].push_back(v);
-				adj[v].push_back(u);
-			}
 
+		if (n == 1) cout << 0 << '\n';
+		else {
 			int cnt1 = 0, cnt2 = 0;
 			FOR(i, 1, n + 1) {
-				if (sz(adj[i]) == 1) cnt1++;
-				else if (rt == -1) rt = i;
-				if (sz(adj[i]) == 2) cnt2++;
+				if (deg[i] == 1) cnt1++;
+				if (deg[i] == 2) cnt2++;
+				if (deg[i] >= 3) rt = i;
 			}
 
-			// 예외 처리 2: 답이 1인 경우
-			if (cnt1 == 2 && cnt2 == n - 2) {
-				cout << 1 << '\n';
-			}
-			// 이제 답은 항상 2 이상이다
-			else {
-				cout << f(rt, -1) - 1 << '\n';
-			}
+			if (cnt1 == 2 && cnt2 == n - 2) cout << 1 << '\n';
+			else cout << f(rt, 0) << '\n';
 		}
 
 		init();

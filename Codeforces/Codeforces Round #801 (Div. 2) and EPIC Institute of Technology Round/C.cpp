@@ -106,12 +106,6 @@ int main() {
         }
 
         int cnt = (n + m - 1) / 2;
-        /*FOR(n) {
-            FOR(j, m) {
-                cout << fmn(i, j) << ' ';
-            }
-            cout << '\n';
-        }*/
         if (fmn(0, 0) <= cnt && cnt <= fmx(0, 0)) {
             cout << "YES\n";
         }
