@@ -33,21 +33,13 @@ const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 struct Seg { // 1-based
 	int flag;  // array size
     vector<ll> p10, len;
-	vector<vt<ll>> t, lazy;
+	vector<vt<ll>> t;
+    vector<vt<int>> lazy;
 
-    vt<ll> concat(const vt<ll>& u, const vt<ll>& v, ll len) {
+    vt<ll> concat(const vt<ll>& u, const vt<ll>& v, int len) {
         vt<ll> ret(10);
         FOR(10) ret[i] = (p10[len - 1] * u[i] + v[i]) % MOD;
         return ret;
-    }
-    void compose(vt<ll>& a, int from, int to) {
-        FOR(10) {
-            if (i != from && a[i] == from) {
-                a[i] = to;
-                if (to == i) a[i] = -1;
-            }
-        }
-        if (a[from] == -1) a[from] = to;
     }
 
 	void build(int N, const string& s) {
@@ -56,13 +48,15 @@ struct Seg { // 1-based
         FOR(i, 1, N + 1) p10[i] = 10 * p10[i - 1] % MOD;
 
 		for (flag = 1; flag < N; flag <<= 1);
-		t.resize(2 * flag, vt<ll>(10));
-		lazy.resize(2 * flag, vt<ll>(10, -1));
+
+		lazy.resize(2 * flag, vt<int>(10));
+        FOR(i, 2 * flag) FOR(j, 10) lazy[i][j] = j;
+
         len.resize(2 * flag);
-
         len[1] = flag;
-        for (int i = 1; i < flag; i++) len[i << 1] = len[i << 1 | 1] = (len[i] >> 1);
+        for (int i = 1; i < flag; i++) len[i << 1] = len[i << 1 | 1] = len[i] / 2;
 
+        t.resize(2 * flag, vt<ll>(10));
 		for (int i = flag; i < flag + N; i++) t[i][s[i - flag] - '0']++;
         for (int i = flag - 1; i >= 1; i--) t[i] = concat(t[i << 1], t[i << 1 | 1], len[i << 1 | 1] + 1);
 	}
@@ -74,7 +68,8 @@ struct Seg { // 1-based
 
 		if (r < nl || nr < l) return;
 		if (l <= nl && nr <= r) {
-			compose(lazy[n], from, to);
+			//compose(lazy[n], from, to);
+            lazy[n][from] = to;
 			propagate(n, nl, nr);
 			return;
 		}
@@ -98,29 +93,30 @@ struct Seg { // 1-based
 		if (l <= nl && nr <= r) return t[n];
 
 		int mid = (nl + nr) / 2;
-		return concat(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr), max(1, min(nr, r) - mid + 1));
+        if (mid + 1 <= r) return concat(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr), max(1, min(nr, r) - mid + 1));
+        else return query(l, r, n << 1, nl, mid);
 	}
 	void propagate(int n, int nl, int nr) {
-        int bit = 0;
-        FOR(10) if (lazy[n][i] != -1) bit = 1;
-        if (!bit) return;
+        int bit = 1;
+        FOR(10) if (lazy[n][i] != i) bit = 0;
+        if (bit) return;
         
 		if (n < flag) {
+            vt<int> tmpLazy1(10), tmpLazy2(10);
             FOR(10) {
-                if (lazy[n][i] != -1) {
-                    compose(lazy[n << 1], i, lazy[n][i]);
-                    compose(lazy[n << 1 | 1], i, lazy[n][i]);
-                }
+                tmpLazy1[i] = lazy[n][lazy[n << 1][i]];
+                tmpLazy2[i] = lazy[n][lazy[n << 1 | 1][i]];
             }
+            lazy[n << 1] = tmpLazy1;
+            lazy[n << 1 | 1] = tmpLazy2;
 		}
-        
+
+        vt<ll> tmp(10);
 		FOR(10) {
-            if (t[n][i] && lazy[n][i] != -1) {
-                t[n][lazy[n][i]] += t[n][i];
-                t[n][i] = 0;
-            }
-            lazy[n][i] = -1;
+            tmp[lazy[n][i]] = (tmp[lazy[n][i]] + t[n][i]) % MOD;
+            lazy[n][i] = i;
         }
+        t[n] = tmp;
 	}
 }seg;
 
@@ -163,6 +159,6 @@ int main() {
             cout << seg.query(aa, bb) << '\n';
         }
     }
-
+    
 	return 0;
 }
