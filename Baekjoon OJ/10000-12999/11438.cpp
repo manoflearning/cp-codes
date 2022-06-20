@@ -2,79 +2,81 @@
 #include <vector>
 using namespace std;
 
-const int MAX = 1e5;
+const int MAX = 101010, MAXD = 16;  // 2^MAXD = 65536
 
-vector<int> adj[MAX + 5];
-int par[MAX + 5], sz[MAX + 5];
-vector<int> chain[MAX + 5];
-int depth[MAX + 5], chain_num[MAX + 5], chain_idx[MAX + 5];
+vector<int> adj[MAX];
+int n, dep[MAX], par[MAX][MAXD + 1];
 
-int dfs(int now, int prv);
-void HLD(int now, int prv, int num, int d);
-int LCA(int u, int v);
-
-int main() {
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
-
-	int N; cin >> N;
-
-	for (int i = 0; i < N - 1; i++) {
+void input() {
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
+}
+
+void dfs(int now, int prv) {
+	par[now][0] = prv;
+	dep[now] = dep[prv] + 1;
+	for (auto i : adj[now]) {
+		if (i == prv) continue;
+		dfs(i, now);
+	}
+}
+
+void buildSparseTable() {
+	for (int i = 1; i <= MAXD; i++) {
+		for (int v = 1; v <= n; v++) {
+			par[v][i] = par[par[v][i - 1]][i - 1];
+		}
+	}
+}
+
+int lca(int u, int v) {
+	if (dep[u] < dep[v]) swap(u, v);
+
+	int diff = dep[u] - dep[v];
+	for (int i = MAXD; i >= 0; i--)
+		if (diff & (1 << i)) u = par[u][i];
+
+	if (u == v) return u;
+
+	for (int i = MAXD; i >= 0; i--) {
+		if (par[u][i] ^ par[v][i]) {
+			u = par[u][i];
+			v = par[v][i];
+		}
+	}
+	
+	return par[u][0];
+}
+
+int main() {
+	#ifndef ONLINE_JUDGE
+	// Enter the absolute path of the local file input.txt, output.txt
+	// Or just enter the "input.txt", "output.txt"
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	#endif
+
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	
+	input();
 
 	dfs(1, 0);
-	
-	HLD(1, 0, 1, 0);
-	
-	int M; cin >> M;
 
-	while (M--) {
+	buildSparseTable();
+
+	int Q; cin >> Q;
+	while (Q--) {
 		int u, v;
 		cin >> u >> v;
 
-		cout << LCA(u, v) << '\n';
+		cout << lca(u, v) << '\n';
 	}
 
 	return 0;
-}
-
-int dfs(int now, int prv) {
-	par[now] = prv;
-	sz[now] = 1;
-	for (int next : adj[now]) {
-		if (next != prv) sz[now] += dfs(next, now);
-	}
-	return sz[now];
-}
-
-void HLD(int now, int prv, int num, int d) {
-	depth[now] = d;
-	chain_idx[now] = chain[num].size();
-	chain_num[now] = num;
-
-	chain[num].push_back(now);
-
-	int heavy = -1;
-	for (int next : adj[now]) {
-		if (next != prv && (heavy == -1 || sz[next] > sz[heavy])) heavy = next;
-	}
-
-	if (heavy != -1) HLD(heavy, now, num, d);
-
-	for (int next : adj[now]) {
-		if (next != prv && next != heavy)
-			HLD(next, now, next, d + 1);
-	}
-}
-
-int LCA(int u, int v) {
-	while (chain_num[u] != chain_num[v]) {
-		if (depth[u] > depth[v]) u = par[chain_num[u]];
-		else v = par[chain_num[v]];
-	}
-	return chain_idx[u] > chain_idx[v] ? v : u;
 }
