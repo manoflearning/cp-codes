@@ -44,9 +44,7 @@ void split(string a, vt<string>& aa) {
             aa.push_back(s);
             s.clear();
         }
-        else {
-            s.push_back(a[i]);
-        }
+        else s.push_back(a[i]);
     }
     if (sz(s)) aa.push_back(s);
 }
