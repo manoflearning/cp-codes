@@ -47,15 +47,12 @@ int main() {
         int n; cin >> n;
         vt<int> a(n);
         EACH(i, a) cin >> i;
+        a.push_back(0);
 
-        int ans = 0, cnt = 0;
-        EACH(i, a) {
-            if (i == 0) {
-                if (cnt) ans++, cnt = 0;
-            }
-            else cnt++;
+        int ans = 0;
+        FOR(i, 1, sz(a)) {
+            if (a[i] == 0 && a[i - 1] > 0) ans++;
         }
-        if (cnt) ans++;
 
         cout << min(ans, 2) << '\n';
     }

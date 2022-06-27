@@ -64,6 +64,7 @@ int main() {
         }
 
         // now the sum of a and b are equal
+
         vt<pll> c;
         EACH(i, a) {
             ll x = i, cnt = 1;
@@ -72,7 +73,6 @@ int main() {
             if (sz(c) && c.back().fr == x) c.back().sc += cnt;
             else c.push_back({ x, cnt });
         }
-        //EACH(i, c) cout << i.fr << ' ' << i.sc << '\n';
         
         vt<ll> pm(1, 1);
         while (1) {
@@ -86,7 +86,6 @@ int main() {
             
             if (c[idx].fr * c[idx].sc < i) { ans = 0; break; }
             if (i % c[idx].fr) { ans = 0; break; }
-            if (i / c[idx].fr > c[idx].sc) { ans = 0; break; }
             
             int x = lower_bound(all(pm), i / c[idx].fr) - pm.begin();
             if (x < sz(pm) && pm[x] == i / c[idx].fr) {
@@ -94,24 +93,6 @@ int main() {
                 if (c[idx].sc == 0) idx++;
             }
             else { ans = 0; break; }
-
-            /*if (idx < sz(c) && ) {
-                if (c[idx].fr >= i && *lower_bound(all(pm), i) == i) {
-                    c[idx].fr -= i;
-                    if (c[idx].fr == 0) idx++;
-                }
-                else {
-                    ans = 0;
-                    break;
-                }
-            }
-            else {
-                if (c[idx].fr ^ i) {
-                    ans = 0;
-                    break;
-                }
-                idx++;
-            }*/
         }
 
         if (ans) cout << "Yes\n";
