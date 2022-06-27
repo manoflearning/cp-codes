@@ -32,65 +32,49 @@ const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int flag;  // array size
 struct Seg {  // 1-based
-	vector<ll> t, lazy;
+	vector<ll> t, cnt;
 
 	void build(int n) {
 		for (flag = 1; flag < n; flag <<= 1);
 		t.resize(2 * flag);
-		lazy.resize(2 * flag);
+		cnt.resize(2 * flag);
 
 		//for (int i = flag; i < flag + n; i++) cin >> t[i];
 		//for (int i = flag - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
 	}
-	// add a value to all elements in interval [l, r]
-	void modify(int l, int r, ll value, int n = 1, int nl = 1, int nr = flag) {
-		propagate(n, nl, nr);
-
+	void modify(int l, int r, int val, int n = 1, int nl = 1, int nr = flag) {
 		if (r < nl || nr < l) return;
-		if (l <= nl && nr <= r) {
-			lazy[n] += value;
-			propagate(n, nl, nr);
-			return;
+		
+		if (l <= nl && nr <= r) cnt[n] += val;
+		else {
+			int mid = (nl + nr) >> 1;
+			modify(l, r, val, n << 1, nl, mid);
+			modify(l, r, val, n << 1 | 1, mid + 1, nr);
 		}
-
-		int mid = (nl + nr) >> 1;
-		modify(l, r, value, n << 1, nl, mid);
-		modify(l, r, value, n << 1 | 1, mid + 1, nr);
-
-		t[n] = t[n << 1] + t[n << 1 | 1];
+		
+		if (cnt[n]) t[n] = nr - nl + 1;
+		else {
+			if (nl == nr) t[n] = 0;
+			else t[n] = t[n << 1] + t[n << 1 | 1];
+		}
 	}
 	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {  // sum on interval [l, r]
-		propagate(n, nl, nr);
-
 		if (r < nl || nr < l) return 0;
 		if (l <= nl && nr <= r) return t[n];
 
 		int mid = (nl + nr) / 2;
 		return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
 	}
-	void propagate(int n, int nl, int nr) {
-		if (lazy[n] != 0) {
-			if (n < flag) {
-				lazy[n << 1] += lazy[n];
-				lazy[n << 1 | 1] += lazy[n];
-			}
-			t[n] += lazy[n] * (nr - nl + 1);
-			lazy[n] = 0;
-		}
-	}
 }seg;
 
 struct LineSeg {
-	int x, ys, ye;
-	bool operator<(const LineSeg& rhs) const {
-		return x < rhs.x;
-	}
+	int ys, ye, isO;
 };
 
 const int mxy = 30001;
 
 int n;
-vt<LineSeg> a;
+vt<LineSeg> a[30303];
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -108,11 +92,23 @@ int main() {
 		int x1, y1, x2, y2;
 		cin >> x1 >> y1 >> x2 >> y2;
 		x1++, y1++, x2++, y2++;
-		a.push_back({ x1, y1, y2 });
-		a.push_back({ x2, y1, y2 });
+		a[x1].push_back({ y1, y2, 1 });
+		a[x2].push_back({ y1, y2, 0 });
 	}
 
 	seg.build(mxy);
+
+	ll ans = 0;
+	FOR(i, 1, 30303) {
+		EACH(j, a[i]) {
+			if (j.isO) seg.modify(j.ys, j.ye - 1, 1);
+			else seg.modify(j.ys, j.ye - 1, -1);
+		}
+
+		ans += seg.query(1, mxy);
+	}
+
+	cout << ans;
 
 	return 0;
 }
