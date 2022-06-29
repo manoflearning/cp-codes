@@ -47,7 +47,7 @@ int main() {
         int n; cin >> n;
         vt<int> a(n);
         EACH(i, a) cin >> i;
-
+        
         int ans = 0;
         FOR(i, n) {
             int res = 0;

@@ -54,7 +54,7 @@ int main() {
         }
 
         int ans = 0;
-        FOR(i, 1, n - 1) {
+        for (int i = 1; i <= n - 2; i++) {
             if (a[i] > a[i - 1] + a[i + 1]) ans++;
         }
         cout << ans << '\n';

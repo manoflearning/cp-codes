@@ -30,8 +30,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int vi[10101];
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -51,23 +49,17 @@ int main() {
         while (l < r) {
             int mid = (l + r) >> 1;
             cout << "? " << l << ' ' << mid << endl;
-            cout.flush();
 
             vt<int> a(mid - l + 1);
             EACH(i, a) cin >> i;
             
-            EACH(i, a) vi[i] = 1;
-            
             int cnt = 0;
-            FOR(i, l, mid + 1) if (vi[i]) cnt++;
-
-            EACH(i, a) vi[i] = 0;
+            EACH(i, a) if (l <= i && i <= mid) cnt++;
 
             if (cnt & 1) r = mid;
             else l = mid + 1;
         }
         cout << "! " << l << endl;
-        cout.flush();
     }
 
 	return 0;

@@ -34,9 +34,9 @@ int vi[10];
 
 int bt(int idx, ll sum, const vt<ll>& b) {
     if (idx == 3) {
-        int idx2 = lower_bound(all(b), sum) - b.begin();
-        if (idx2 < sz(b) && b[idx2] == sum) return 1;
-        else return 0;
+        int bit = 0;
+        EACH(i, b) if (i == sum) bit = 1;
+        return bit;
     }
 
     int ret = 1;
@@ -46,7 +46,6 @@ int bt(int idx, ll sum, const vt<ll>& b) {
         ret &= bt(idx + 1, sum + b[i], b);
         vi[i] = 0;
     }
-    //ret &= bt(idx + 1, sum, b);
 
     return ret;
 }
@@ -71,15 +70,11 @@ int main() {
         int pCnt = 0, nCnt = 0, cnt0 = 0;
         vt<ll> b;
         EACH(i, a) {
-            if (i > 0) {
-                pCnt++;
-                b.push_back(i);
-            }
-            if (i < 0) {
-                nCnt++;
-                b.push_back(i);
-            }
-            if (i == 0) cnt0++;
+            if (i > 0) pCnt++;
+            if (i < 0) nCnt++;
+
+            if (i != 0) b.push_back(i);
+            else cnt0++;
         }
 
         if (pCnt >= 3 || nCnt >= 3) {
@@ -88,37 +83,10 @@ int main() {
         }
 
         // now pCnt <= 2 AND nCnt <= 2
-        FOR(min(2, cnt0)) b.push_back(0);
-        sort(all(b));
+        FOR(min(3, cnt0)) b.push_back(0);
+        
         if (bt(0, 0, b)) cout << "YES\n";
         else cout << "NO\n";
-
-        /*if (pCnt < nCnt) {
-            swap(pCnt, nCnt);
-            swap(pa, na);
-        }
-
-        if (pCnt == 0 && nCnt == 0) {
-            cout << "YES\n";
-            continue;
-        }
-        if (pCnt == 1 && nCnt == 0) {
-            cout << "YES\n";
-            continue;
-        }
-        if (pCnt == 2 && nCnt == 0) {
-            cout << "NO\n";
-            continue;
-        }
-
-        if (pCnt == 1 && nCnt == 1) {
-            if (pa[0] == na[0]) cout << "YES\n";
-            else cout << "NO\n"; 
-            continue;
-        }
-        if (pCnt == 2 && nCnt == 1) {
-            
-        }*/
     }
 
 	return 0;
