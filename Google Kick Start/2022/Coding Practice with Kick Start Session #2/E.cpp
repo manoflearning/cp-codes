@@ -30,74 +30,39 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int r, c;
-int a[255][255], dist[255][255];
-int mx = -1;
+int r, c, a[255][255], dist[255][255];
+int mx, mxy, mxx;
 
 void init() {
-    FOR(255) FOR(j, 255) dist[i][j] = -1;
-    mx = -1;
+    r = c = 0;
+    FOR(255) FOR(j, 255) a[i][j] = 0;
+    mx = mxy = mxx = -1;
 }
 
-void input() {
-    cin >> r >> c;
-
-    FOR(r) {
-        string s; cin >> s;
-        FOR(j, c) a[i][j] = s[j] - '0';
-    }
-}
-
-pii bfs1() {
-    queue<pii> q;
-    FOR(r) FOR(j, c) {
-        if (a[i][j]) {
-            q.push({ i, j });
-            dist[i][j] = 0;
-        }
-    }
-
-    if (q.empty()) return { 1, r / 2 + c / 2 };
-    if (sz(q) == r * c) return { 1, 0 };
-
-    while (sz(q)) {
-        int y = q.front().fr, x = q.front().sc;
-        q.pop();
-
-        mx = max(mx, dist[y][x]);
-
-        FOR(4) {
-            int ny = y + dy[i], nx = x + dx[i];
-            if (ny < 0 || r <= ny || nx < 0 || c <= nx) continue;
-            if (dist[ny][nx] != -1) continue;
-            q.push({ ny, nx });
-            dist[ny][nx] = dist[y][x] + 1;
-        }
-    }
-
-    return { 0, 0 };
-}
-
-int bfs2() {
-    //a[mxy][mxx] = 1;
+int bfs() {
     FOR(r) FOR(j, c) dist[i][j] = -1;
-    
-    queue<pii> q;
-    FOR(r) FOR(j, c) {
-        if (a[i][j]) {
-            q.push({ i, j });
-            dist[i][j] = 0;
-        }
-    }
 
+    queue<pii> q;
+    
     int ret = 0;
 
+    FOR(r) FOR(j, c) {
+        if (a[i][j]) {
+            q.push({ i, j });
+            dist[i][j] = 0;
+        }
+    }
+
     while (sz(q)) {
         int y = q.front().fr, x = q.front().sc;
         q.pop();
 
+        if (mx < dist[y][x]) {
+            mx = dist[y][x];
+            mxy = y, mxx = x;
+        }
         ret = max(ret, dist[y][x]);
-            
+
         FOR(4) {
             int ny = y + dy[i], nx = x + dx[i];
             if (ny < 0 || r <= ny || nx < 0 || c <= nx) continue;
@@ -106,7 +71,6 @@ int bfs2() {
             dist[ny][nx] = dist[y][x] + 1;
         }
     }
-
     return ret;
 }
 
@@ -114,8 +78,8 @@ int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
 	// Or just enter the "input.txt", "output.txt"
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	// freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	// freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
 	#endif
 
 	cin.tie(NULL); cout.tie(NULL);
@@ -127,26 +91,17 @@ int main() {
 
         init();
 
-        input();
-
-        pii res1 = bfs1();
-        if (res1.fr) {
-            cout << res1.sc << '\n';
-            continue;
+        cin >> r >> c;
+        FOR(r) {
+            string s; cin >> s;
+            FOR(j, c) a[i][j] = s[j] - '0';
         }
 
-        vt<pii> mxc;
-        FOR(r) FOR(j, c) {
-            if (dist[i][j] == mx) mxc.push_back({ i, j });
-        }
+        bfs();
 
-        int ans = res1.sc;
-        EACH(i, mxc) {
-            a[i.fr][i.sc] = 1;
-            ans = min(ans, bfs2());
-            a[i.fr][i.sc] = 0;
-        }
-        cout << ans << '\n';
+        a[mxy][mxx] = 1;
+
+        cout << bfs() << '\n';
     }
 
 	return 0;
