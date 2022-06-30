@@ -1,4 +1,5 @@
-/*#define _USE_MATH_DEFINES
+// solution 1: time complexity O(n^2)
+#define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #include <cassert>
 using namespace std;
@@ -71,23 +72,24 @@ int main() {
 
 	input();
 
+    for (int i = 0; i < n; i++) dist[i][i] = 0;
     for (int i = 0; i < n - 1; i++) {
         dist[i][i + 1] = (arr[i] == arr[i + 1]);
     }
 
     for (int len = 3; len <= n; len++) {
         for (int l = 0, r; r = l + len - 1, r < n; l++) {
-            dist[l][r] = dist[l + 1][r - 1] + (arr[l] == arr[r]);
+            if (arr[l] == arr[r]) dist[l][r] = dist[l + 1][r - 1] + 1;
         }
     }
 
     cout << (f(0) < INF ? f(0) : 0);
 
 	return 0;
-}*/
+}
 
-// solution 1: worst case time complexity O(n^3)
-#define _USE_MATH_DEFINES
+// solution 2: worst case time complexity O(n^3)
+/*#define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #include <cassert>
 using namespace std;
@@ -173,4 +175,4 @@ int main() {
     cout << (f(0) < INF ? f(0) : 0);
 
 	return 0;
-}
+}*/
