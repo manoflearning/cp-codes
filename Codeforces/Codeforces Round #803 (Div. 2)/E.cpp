@@ -30,8 +30,6 @@ const int MOD = 998244353;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ll fac[202020];
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -43,53 +41,54 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    fac[0] = 1;
-    FOR(i, 1, 202020) fac[i] = i * fac[i - 1] % MOD;
-
 	int tc; cin >> tc;
     while (tc--) {
         int n, s;
         cin >> n >> s;
 
-        vt<ll> a(n), b(n), d, e;
-        EACH(i, a) cin >> i;
-        EACH(i, b) cin >> i;
+        vt<pii> a(n + 1);
+        vt<int> vi(n + 1);
 
-        vt<pll> c(n + 1, { -1, -1 });
-        FOR(n) c[a[i]].fr = i;
-        FOR(n) {
-            if (b[i] != -1) c[b[i]].sc = i; 
-            else e.push_back(a[i]);
-        }
-
+        FOR(i, 1, n + 1) cin >> a[i].fr;
         FOR(i, 1, n + 1) {
-            if (c[i].sc == -1) d.push_back(i);
+            cin >> a[i].sc;
+            if (a[i].sc != -1) vi[a[i].sc] = 1;
         }
 
-        sort(all(d));
-        sort(all(e));
-
-        int bit = 0;
+        vt<int> missing;
         FOR(i, 1, n + 1) {
-            if (c[i].sc == -1) continue;
-            if (c[i].sc - c[i].fr > s) bit = 1;
+            if (!vi[i]) missing.push_back(i);
         }
-        
-        if (bit) {
+
+        sort(a.begin() + 1, a.end(), [&](const pii& a, const pii& b) {
+            return a.sc < b.sc;
+        });
+
+        int mx = 0;
+        for (int i = 1; i <= n; i++) {
+            if (a[i].sc != -1) {
+                mx = max(mx, a[i].fr - a[i].sc);
+            }
+        }
+
+        if (mx > s) {
             cout << 0 << '\n';
             continue;
         }
 
-        vt<pll> res;
-        FOR(sz(d)) {
-            int r = upper_bound(all(e), d[i] + s) - e.begin() - 1;
-            int l = lower_bound(all(e), d[i] - s) - e.begin();
-            res.push_back({ l, r });
+        vt<int> cnts;
+        for (int i = 1; i <= n; i++) {
+            if (a[i].sc == -1) {
+                cnts.push_back(missing.end() - lower_bound(all(missing), a[i].fr - s));
+            }
         }
 
-        ll ans = 1, cnt = 0;
-        EACH(i, res) ans = (ans * fac[i.sc - i.fr + 1]) % MOD;
-        cout << ans << '\n';
+        sort(all(cnts));
+        ll res = 1;
+        FOR(sz(cnts)) {
+            res = (res * (cnts[i] - i)) % MOD;
+        }
+        cout << res << '\n';
     }
 
 	return 0;
