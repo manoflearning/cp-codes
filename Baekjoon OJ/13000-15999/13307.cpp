@@ -31,24 +31,25 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 struct point {
-	ll x, y, px, py; // (px, py) is the relative coordinate value at the reference point
-    int isB, idx;
-	point() : point(0, 0, 0, 0, 0, 0) {}
-	point(int sx, int sy, int sisB, int sidx) : point(sx, sy, 0, 0, sisB, sidx) {}
-	point(int sx, int sy, int spx, int spy, int sisB, int sidx) : x(sx), y(sy), px(spx), py(spy), isB(sisB), idx(sidx) {}
-	bool operator<(const point& rhs) const {
-		if (rhs.px * py != px * rhs.py) return rhs.px * py < px * rhs.py;
-		if (y != rhs.y) return y < rhs.y;
-		return x < rhs.x;
-	}
-    bool operator!=(const point& rhs) const {
-        return isB != rhs.isB || idx != rhs.idx;
+    ll x, y;
+    bool operator<(const point& rhs) const {
+        if (x != rhs.x) return x < rhs.x;
+        return y < rhs.y;
     }
 };
 
-int N;
-vt<point> p;
+int n;
+point p[3030], p2[3030];
 pll ans[1010];
+
+void input() {
+    cin >> n;
+    FOR(3 * n) {
+        ll x, y;
+        cin >> x >> y;
+        p[i].x = x, p[i].y = y;
+    }
+}
 
 ll ccw(const point& a, const point& b, const point& c) {
 	// res > 0 -> ccw, res < 0 -> cw, res = 0 -> colinear
@@ -56,140 +57,112 @@ ll ccw(const point& a, const point& b, const point& c) {
 	return (res > 0 ? 1 : (res < 0 ? -1 : 0));
 }
 
-void input() {
-	cin >> N;
-	for (int i = 0; i < N; i++) {
-		int x, y;
-		cin >> x >> y;
-		p.push_back(point(x, y, 1, i + 1));
-	}
-    for (int i = 0; i < 2 * N; i++) {
-		int x, y;
-		cin >> x >> y;
-		p.push_back(point(x, y, 0, i + 1));
-	}
+bool cmp(const int& a, const int& b) { return p[a] < p[b]; }
+
+//point o = { 0, 0 };
+bool cmp2(const int& a, const int& b){
+    //return ccw(o, p[a], p[b]) < 0;
+    return p2[b].x * p2[a].y < p2[a].x * p2[b].y;
 }
 
-int getBlInCH(vt<point>& a) {
-	sort(a.begin(), a.end());
+int getB(vt<int>& a) {
+    sort(all(a), cmp);
 
-	for (int i = 1; i < sz(a); i++) {
-		a[i].px = a[i].x - a[0].x;
-		a[i].py = a[i].y - a[0].y;
-	}
-
-	sort(a.begin() + 1, a.end());
-
-    vt<int> st;
-	st.push_back(0);
-	st.push_back(1);
+    // calculate lower hull
+    vt<int> dh;
+	dh.push_back(a[0]);
+	dh.push_back(a[1]);
 	for (int next = 2; next < sz(a); next++) {
-		while (st.size() >= 2) {
-			int first = st.back();
-			st.pop_back();
-			int second = st.back();
-			if (ccw(p[second], p[first], p[next]) > 0) {
-				st.push_back(first);
+		while (dh.size() >= 2) {
+			int first = dh.back();
+			dh.pop_back();
+			int second = dh.back();
+			if (ccw(p[second], p[first], p[a[next]]) > 0) {
+				dh.push_back(first);
 				break;
 			}
 		}
-		st.push_back(next);
+		dh.push_back(a[next]);
 	}
 
-    vt<point> tmp;
-    int ret = 0;
-    EACH(i, st) {
-        if (a[i].isB) { tmp.push_back(a[i]); ret = 1; break; }
-    }
-    if (tmp.empty()) tmp.push_back(a[st[0]]);
+	// calculate upper hull
+    vt<int> uh;
+	uh.push_back(a[sz(a) - 1]);
+	uh.push_back(a[sz(a) - 2]);
+	for (int next = sz(a) - 3; next >= 0; next--) {
+		while (uh.size() >= 2) {
+			int first = uh.back();
+			uh.pop_back();
+			int second = uh.back();
+			if (ccw(p[second], p[first], p[a[next]]) > 0){
+				uh.push_back(first);
+				break;
+			}
+		}
+		uh.push_back(a[next]);
+	}
 
-    EACH(i, a) if (i != tmp[0]) tmp.push_back(i);
-    EACH(i, tmp) i.px = i.py = 0;
-    a = tmp;
-    
+    int ret = 0, x = -1;
+    EACH(i, dh) if (i < n) { ret = 1; x = i; }
+    EACH(i, uh) if (i < n) { ret = 1; x = i; }
+
+    if (ret) {
+        FOR(sz(a)) {
+            if (a[i] == x) { swap(a[0], a[i]); break; }
+        }
+    }
+
     return ret;
 }
 
-int isValid(const vt<point>& a) {
-    int ret = 0;
-    EACH(i, a) {
-        if (i.isB) ret += 2;
-        else ret -= 1;
-    }
-    return ret == 0;
-}
-
-void dc(vt<point> a) {
+void dc(vt<int>& a) {
     if (a.empty()) return;
-    assert(isValid(a));
 
-    int isBlChSt = getBlInCH(a);
-
-    for (int i = 1; i < sz(a); i++) {
-		a[i].px = a[i].x - a[0].x;
-		a[i].py = a[i].y - a[0].y;
-	}
-
-    sort(a.begin() + 1, a.end());
-    
-    /*cout << a[0].x << ' ' << a[0].y << ' ' << a[0].idx << '\n';
-    for (int i = 1; i < sz(a); i++)
-        cout << a[i].x << ' ' << a[i].y << ' ' << a[i].idx << '\n';
-    cout << '\n';**/
-    if (isBlChSt) {
+    int bit = getB(a);
+    FOR(i, 1, sz(a)) {
+        p2[a[i]].x = p[a[i]].x - p[a[0]].x;
+        p2[a[i]].y = p[a[i]].y - p[a[0]].y;
+    }
+    //o = p[a[0]];
+    sort(a.begin() + 1, a.end(), cmp2);
+    //EACH(i, a) cout << i << ' ';
+    //cout << '\n';
+    if (bit) {
         int res = 0, idx1 = -1, idx2 = -1;
-        for (int i = 1; i < sz(a); i++) {
-            if (a[i].isB) res += 2;
+        FOR(i, 1, sz(a)) {
+            if (a[i] < n) res += 2;
             else res -= 1;
-
+            
             if (res == -1 && idx1 == -1) idx1 = i;
             if (res == -2 && idx2 == -1) idx2 = i;
         }
+        
+        ans[a[0]] = { a[idx1], a[idx2] };
 
-        ans[a[0].idx] = { a[idx1].idx, a[idx2].idx };
-
-        vt<point> b, c, d;
-        for (int i = 1; i < idx1; i++) 
-            b.push_back(point(a[i].x, a[i].y, a[i].isB, a[i].idx));
-        for (int i = idx1 + 1; i < idx2; i++)
-            c.push_back(point(a[i].x, a[i].y, a[i].isB, a[i].idx));
-        for (int i = idx2 + 1; i < sz(a); i++)
-            d.push_back(point(a[i].x, a[i].y, a[i].isB, a[i].idx));
+        vt<int> b, c, d;
+        FOR(i, 1, idx1) b.push_back(a[i]);
+        FOR(i, idx1 + 1, idx2) c.push_back(a[i]);
+        FOR(i, idx2 + 1, sz(a)) d.push_back(a[i]);
 
         dc(b); dc(c); dc(d);
-        /*if (sz(b)) dc(b);
-        if (sz(c)) dc(c);
-        if (sz(d)) dc(d);*/
     }
     else {
-        int res = -1, idx = -1;
-        for (int i = 1; i < sz(a); i++) {
-            if (a[i].isB) res += 2;
+        int res = 0, idx = -1;
+        FOR(i, sz(a)) {
+            if (a[i] < n) res += 2;
             else res -= 1;
-
-            if (res == 0) { idx = i; break; } 
+            
+            if (res == 0 && idx == -1) idx = i;
         }
-        
-        /*if (idx == sz(a) - 1) {
-            res = 0;
-            reverse(all(a));
-            for (int i = 0; i < sz(a); i++) {
-                if (a[i].isB) res += 2;
-                else res -= 1;
 
-                if (res == 0) { idx = i; break; } 
-            }
-        }*/
-
-        vt<point> b, c;
-        for (int i = 0; i <= idx; i++) 
-            b.push_back(point(a[i].x, a[i].y, a[i].isB, a[i].idx));
-        for (int i = idx + 1; i < sz(a); i++) 
-            c.push_back(point(a[i].x, a[i].y, a[i].isB, a[i].idx));
-
+        vt<int> b, c;
+        for (int i = 0; i < sz(a); i++) {
+            if (1 <= i && i <= idx) b.push_back(a[i]);
+            else c.push_back(a[i]);
+        }
+        assert(sz(a) > sz(b));
+        assert(sz(a) > sz(c));
         dc(b); dc(c);
-        /*if (sz(b)) dc(b);
-        if (sz(c)) dc(c);*/
     }
 }
 
@@ -206,10 +179,11 @@ int main() {
 
 	input();
 
-    dc(p);
+    vt<int> a;
+    FOR(3 * n) a.push_back(i);
+    dc(a);
 
-    FOR(i, 1, N + 1)
-        cout << ans[i].fr << ' ' << ans[i].sc << '\n';
+    FOR(i, n) cout << ans[i].fr - n + 1 << ' ' << ans[i].sc - n + 1 << '\n';
 
 	return 0;
 }
