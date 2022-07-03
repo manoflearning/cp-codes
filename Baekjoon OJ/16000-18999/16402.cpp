@@ -33,7 +33,6 @@ const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 const int MAX = 1e4;
 
 vector<int> p(MAX + 1, -1);
-vector<int> winner(MAX + 1);
 
 int find(int x) {
 	if (p[x] < 0) return x;
@@ -70,8 +69,6 @@ int main() {
 
     sort(all(cc));
 
-    FOR(MAX + 1) winner[i] = i;
-
     FOR(m) {
         string s1, s2, s3, s4, s5;
         cin >> s1 >> s2 >> s3 >> s4 >> s5;
@@ -90,32 +87,28 @@ int main() {
         
         int a = lower_bound(all(cc), sa) - cc.begin();
         int b = lower_bound(all(cc), sb) - cc.begin();
-        if (find(a) ^ find (b)) {
-            a = winner[find(a)];
-            b = winner[find(b)];
-        }
+        if (win == 2) swap(a, b);
 
-        merge(a, b);
-        if (win == 1) winner[find(a)] = a;
-        if (win == 2) winner[find(a)] = b;
-
-        /*FOR(sz(cc)) {
-            cout << i << ' ' << winner[find(i)] << '\n';
+        if (find(a) ^ find(b)) merge(a, b);
+        else {
+            if (find(a) == a) continue;
+            else {
+                p[a] = p[b];
+                p[b] = a;
+            }
         }
-        cout << '\n';*/
     }
 
-    vt<string> ans;
+    vt<int> ans;
     FOR(sz(cc)) {
-        if (winner[find(i)] == i) {
-            ans.push_back(cc[i]);
-        }
+        if (find(i) == i) 
+            ans.push_back(i);
     }
 
     cout << sz(ans) << '\n';
     EACH(i, ans) {
         cout << "Kingdom of ";
-        cout << i << '\n';
+        cout << cc[i] << '\n';
     }
 
 	return 0;
