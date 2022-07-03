@@ -81,7 +81,7 @@ void input() {
     }
 }
 
-pair<double, ll> dc(int nl, int nr, int prvHeight) {
+pair<double, ll> dc(int nl, int nr, int prvHeight) { // [nl, nr + 1) 구간
     pair<double, ll> ret;
 
     int holeCnt = psum[nr] - psum[nl - 1];
