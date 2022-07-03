@@ -32,10 +32,11 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int n, m;
-int adj[1010][1010];
+ll adj[1010][1010];
 
 void init() {
     FOR(1010) FOR(j, 1010) adj[i][j] = INF;
+    FOR(1010) adj[i][i] = 0;
 }
 
 void input() {
@@ -43,6 +44,19 @@ void input() {
     FOR(m) {
         int u, v, w;
         cin >> u >> v >> w;
+        adj[u][v] = min<ll>(adj[u][v], -w);
+    }
+}
+
+void floyd() {
+    for (int k = 1; k <= n; k++) {
+        for (int u = 1; u <= n; u++) {
+            if (adj[u][k] == INF) continue;
+            for (int v = 1; v <= n; v++) {
+                if (adj[k][v] == INF) continue;
+                adj[u][v] = min(adj[u][v], adj[u][k] + adj[k][v]);
+            }
+        }
     }
 }
 
@@ -57,7 +71,21 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	
+    init();
+
+	input();
+
+    floyd();
+
+    ll ans = INF;
+    FOR(i, 1, n + 1) {
+        FOR(j, 1, n + 1) {
+            ans = min(ans, adj[i][j]);
+            //cout << i << ' ' << j << ' ' << adj[i][j] << '\n';
+        }
+    }
+
+    cout << -ans;
 
 	return 0;
 }
