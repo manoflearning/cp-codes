@@ -33,35 +33,6 @@ struct trie {
 
 trie* root = new trie;
 
-void getFail();
-bool isMatch(const string& s);
-
-int main() {
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
-
-	int N; cin >> N;
-
-	for (int i = 0; i < N; i++) {
-		string s; cin >> s;
-		root->insert(s);
-	}
-
-	getFail();
-
-	int M; cin >> M;
-	for (int i = 0; i < M; i++) {
-		string s; cin >> s;
-
-		if (isMatch(s)) cout << "YES\n";
-		else cout << "NO\n";
-	}
-
-	delete root;
-
-	return 0;
-}
-
 void getFail() {
 	queue<trie*> q;
 	q.push(root);
@@ -107,4 +78,30 @@ bool isMatch(const string& s) {
 		}
 	}
 	return ret;
+}
+
+int main() {
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+
+	int N; cin >> N;
+
+	for (int i = 0; i < N; i++) {
+		string s; cin >> s;
+		root->insert(s);
+	}
+
+	getFail();
+
+	int M; cin >> M;
+	for (int i = 0; i < M; i++) {
+		string s; cin >> s;
+
+		if (isMatch(s)) cout << "YES\n";
+		else cout << "NO\n";
+	}
+
+	delete root;
+
+	return 0;
 }
