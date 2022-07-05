@@ -30,7 +30,7 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAXD = 31;
+const int MAXD = 31; 
 
 struct Node {
     int child[2];
@@ -62,8 +62,14 @@ void insert(int bit, int x = 0, int key = MAXD) {
     insert(bit, now.child[next], key - 1);
 }
 
-ll query(ll x, int bit, int key) {
-    int next = ()
+ll query(ll x, int bit, int bit2, int key) {
+    auto& now = trie[x];
+    if (key == 0) return bit;
+    else {
+        int next = (x & (1 << (key - 1)) ? 1 : 0);
+        if (now.child[next]) return query(x, bit, bit2, key - 1);
+        else return query(x, bit, bit2 | (1 << (key - 1)), key - 1);
+    }
 }
 
 ll solve(int x, int xl, int xr, int prv, int key = MAXD) {
@@ -80,7 +86,7 @@ ll solve(int x, int xl, int xr, int prv, int key = MAXD) {
     
     ll res = 1e18;
     FOR(i, mid + 1, xr + 1) {
-        res = min(res, query(now.child[0], a[i] - prv - (1 << (key - 1)), key - 1));
+        res = min(res, query(now.child[0], a[i] - prv - (1 << (key - 1)), 0, key - 1));
     }
     ret += res;
     
