@@ -30,6 +30,9 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int n, ans[303030];
+vt<int> a, b;
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -41,7 +44,31 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	
+	string s1, s2;
+    cin >> s1 >> s2;
+
+    n = sz(s1);
+
+    EACH(i, s1) a.push_back(i - 'a');
+    EACH(i, s2) b.push_back(i - 'a');
+    sort(all(a));
+    sort(all(b));
+
+    int lb = 0, rb = n - 1;
+    int al = 0, ar = (n + 1) / 2 - 1, bl = n - 1 - (n / 2) + 1, br = n - 1;
+    while (1) {
+        if (a[al] < b[br]) ans[lb++] = a[al++];
+        else ans[rb--] = a[ar--];
+
+        if (lb > rb) break;
+
+        if (a[al] < b[br]) ans[lb++] = b[br--];
+        else ans[rb--] = b[bl++];
+        
+        if (lb > rb) break;
+    }
+
+    FOR(n) cout << (char)(ans[i] + 'a');
 
 	return 0;
 }
