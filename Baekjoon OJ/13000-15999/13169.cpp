@@ -73,7 +73,7 @@ int main() {
     
     EACH(i, R) {
         FOR(d, MAXD + 1) {
-            R2[d].push_back(i & ((1ll << (d + 1)) - 1));
+            R2[d].push_back(i % (1ll << (d + 1)));
         }
     }
 
@@ -82,14 +82,14 @@ int main() {
     ll ans = 0;
     EACH(x, L) {
         FOR(d, MAXD + 1) {
-            ll y = x & ((1ll << (d + 1)) - 1);
+            ll y = x % (1ll << (d + 1));
 
             ll val = (1ll << d), val2 (1ll << (d + 1));
             int l = lower_bound(all(R2[d]), val - y) - R2[d].begin();
             int r = lower_bound(all(R2[d]), val2 - y) - R2[d].begin();
 
             if ((r - l) & 1) ans ^= (1ll << d);
-            
+
             val = (1ll << d) + (1ll << (d + 1));
             l = lower_bound(all(R2[d]), val - y) - R2[d].begin();
             r = R2[d].end() - R2[d].begin();
