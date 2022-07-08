@@ -59,22 +59,12 @@ ll cal(ll st) {
     return x;
 }
 
-int bs1() {
+int bs() {
     int l = 0, r = t;
     while (l < r) {
         int mid = (l + r + 1) >> 1;
         if (cal(mid) <= t) l = mid;
         else r = mid - 1;
-    }
-    return l;
-}
-
-int bs2() {
-    int l = 0, r = t;
-    while (l < r) {
-        int mid = (l + r) >> 1;
-        if (cal(mid) <= t) l = mid + 1;
-        else r = mid;
     }
     return l;
 }
@@ -93,43 +83,9 @@ int main() {
 	int tc; cin >> tc;
     while (tc--) {
         input();
-
-        // case 1: 선린랜드까지 T 시간 이하로 갈 수 없음.
-        if (cal(0) > t) {
-            cout << "NO\n";
-            continue;
-        }
         
-        int l = bs1(), r = bs2();
-        //cout << l << ' ' << r << '\n';
-        //cout << cal(l) << ' ' << cal(r) << '\n';
-        int ans = 0;
-        FOR(i, l, r + 1) {
-            if (cal(i) == t) {
-                ans = 1; break;
-            }
-        }
-
-        if (ans) cout << "YES\n";
+        if (cal(bs()) == t) cout << "YES\n";
         else cout << "NO\n";
-
-        /*int l = max(e[0] - c[1], 0ll), r = max(e[0] - c[1] + d[1], d[1]);
-        FOR(i, 2, n + 1) {
-            l += e[i - 1], r += e[i - 1];
-
-            l -= c[i], r -= c[i];
-            
-            l %= a[i], r %= a[i];
-            l = (l + a[i]) % a[i], r = (r + a[i]) % a[i];
-
-            if (r > b[i]) r = b[i];
-        }
-
-        l += e[n], r += e[n];
-        if (l % a[n] <= (t - c[n]) % a[n] && (t - c[n]) % a[n] <= r % a[n]) {
-            cout << "YES\n";
-        }
-        else cout << "NO\n";*/
     }
 
 	return 0;
