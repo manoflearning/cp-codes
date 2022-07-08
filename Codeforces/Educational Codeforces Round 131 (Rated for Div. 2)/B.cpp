@@ -30,57 +30,21 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, k, cnt[10];
-vt<int> a;
+const int MAX = 202020;
 
-void init() {
+bool isPrime[MAX + 1];
+vector<int> prime(1, 2);
 
-}
+void getPrime() {
+	fill(isPrime + 2, isPrime + MAX + 1, 1);
 
-void input() {
-    string s;
-    cin >> s >> k;
-    EACH(i, s) a.push_back(i - '0');
-    n = sz(a);
-}
-
-int check() {
-    int mn = INF, mx = -1;
-    FOR(10) if (cnt[i]) {
-        mn = min(mn, cnt[i]);
-        mx = max(mx, cnt[i]);
-    }
-    return mx - mn <= k;
-}
-
-int check2(int len) {
-    vt<int> res;
-    int mx = 0;
-    FOR(10) if (cnt[i]) {
-        res.push_back(cnt[i]);
-        mx = max(mx, cnt[i]);
-    }
-    
-    int sum = 0;
-    EACH(i, res) {
-        sum += max(0, mx - i + k);
-    }
-
-    return sum <= len;
-}
-
-void print() {
-    vt<pii> res;
-    int mx = 0;
-    FOR(10) if (cnt[i]) {
-        res.push_back(cnt[i]);
-        mx = max(mx, cnt[i]);
-    }
-    
-    int sum = 0;
-    EACH(i, res) {
-        sum += max(0, mx - i + k);
-    }
+	for (ll i = 4; i <= MAX; i += 2)
+		isPrime[i] = 0;
+	for (ll i = 3; i <= MAX; i++) {
+		if (isPrime[i]) prime.push_back(i);
+		for (ll j = i * i; j <= MAX; j += i * 2)
+			isPrime[j] = 0;
+	}
 }
 
 int main() {
@@ -94,28 +58,24 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    int tc; cin >> tc;
+    //getPrime();
+
+	int tc; cin >> tc;
     while (tc--) {
-        init();
+        int n; cin >> n;
 
-        input();
-
-        EACH(i, a) cnt[i]++;
-
-        if (check()) {
-            EACH(i, a) cout << i;
-            continue;
-        }
-
-        FOR(i, n - 1, -1, -1) {
-            cnt[a[i]]--;
-            
-            if (check2(n - i)) {
-                FOR(j, 0, i + 1) cout << a[i];
-                print();
-                break;
+        cout << 2 << '\n';
+        vt<int> vi(n + 1);
+        FOR(i, 1, n + 1) {
+            if (vi[i]) continue;
+            ll x = i;
+            while (x <= n) {
+                cout << x << ' ';
+                vi[x] = 1;
+                x <<= 1;
             }
         }
+        cout << '\n';
     }
 
 	return 0;

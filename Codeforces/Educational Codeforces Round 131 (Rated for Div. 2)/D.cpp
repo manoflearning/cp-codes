@@ -30,57 +30,34 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, k, cnt[10];
-vt<int> a;
+struct lridx {
+    int l, r, idx;
+    bool operator<(const lridx& rhs) const {
+        if (r ^ rhs.r) return r < rhs.r;
+        return l < rhs.l;
+    }
+};
 
-void init() {
+int n;
 
+int lb(int x, int idx) {
+    int l = 1, r = n;
+    while (l < r) {
+        int mid = (l + r) >> 1;
+        if (idx / mid <= x) r = mid;
+        else l = mid + 1;
+    }
+    return l;
 }
 
-void input() {
-    string s;
-    cin >> s >> k;
-    EACH(i, s) a.push_back(i - '0');
-    n = sz(a);
-}
-
-int check() {
-    int mn = INF, mx = -1;
-    FOR(10) if (cnt[i]) {
-        mn = min(mn, cnt[i]);
-        mx = max(mx, cnt[i]);
+int rb(int x, int idx) {
+    int l = 1, r = n;
+    while (l < r) {
+        int mid = (l + r + 1) >> 1;
+        if (idx / mid < x) r = mid - 1;
+        else l = mid;
     }
-    return mx - mn <= k;
-}
-
-int check2(int len) {
-    vt<int> res;
-    int mx = 0;
-    FOR(10) if (cnt[i]) {
-        res.push_back(cnt[i]);
-        mx = max(mx, cnt[i]);
-    }
-    
-    int sum = 0;
-    EACH(i, res) {
-        sum += max(0, mx - i + k);
-    }
-
-    return sum <= len;
-}
-
-void print() {
-    vt<pii> res;
-    int mx = 0;
-    FOR(10) if (cnt[i]) {
-        res.push_back(cnt[i]);
-        mx = max(mx, cnt[i]);
-    }
-    
-    int sum = 0;
-    EACH(i, res) {
-        sum += max(0, mx - i + k);
-    }
+    return l;
 }
 
 int main() {
@@ -94,28 +71,43 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    int tc; cin >> tc;
+	int tc; cin >> tc;
     while (tc--) {
-        init();
+        cin >> n;
 
-        input();
+        vt<int> a(n + 1);
+        FOR(i, 1, n + 1) cin >> a[i]; 
 
-        EACH(i, a) cnt[i]++;
-
-        if (check()) {
-            EACH(i, a) cout << i;
-            continue;
+        //cout << '\n';
+        //vt<lridx> res(n);
+        vt<vt<pii>> b(n + 1);
+        FOR(i, 1, n + 1) {
+            b[lb(a[i], i)].push_back({ rb(a[i], i), i });
+            //res[i - 1].l = lb(a[i], i);
+            //res[i - 1].r = rb(a[i], i);
+            //res[i - 1].idx = i;
+            //cout << res[i - 1].l << ' ' << res[i - 1].r << ' ' << res[i - 1].idx << '\n';
         }
+        //cout << '\n';
 
-        FOR(i, n - 1, -1, -1) {
-            cnt[a[i]]--;
-            
-            if (check2(n - i)) {
-                FOR(j, 0, i + 1) cout << a[i];
-                print();
-                break;
-            }
+        //sort(all(res));
+
+        priority_queue<pii> pq;
+
+        vt<int> ans(n + 1);
+        FOR(i, 1, n + 1) {
+            EACH(j, b[i]) pq.push({ -j.fr, j.sc });
+
+            ans[pq.top().sc] = i;
+            pq.pop();
         }
+        /*EACH(i, res) {
+            ans[i.idx] = ++cnt;
+            assert(i.l <= cnt && cnt <= i.r);
+        }*/
+        
+        FOR(i, 1, n + 1) cout << ans[i] << ' ';
+        cout << '\n';
     }
 
 	return 0;

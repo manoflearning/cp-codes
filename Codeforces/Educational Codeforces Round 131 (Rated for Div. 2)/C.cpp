@@ -30,59 +30,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, k, cnt[10];
-vt<int> a;
-
-void init() {
-
-}
-
-void input() {
-    string s;
-    cin >> s >> k;
-    EACH(i, s) a.push_back(i - '0');
-    n = sz(a);
-}
-
-int check() {
-    int mn = INF, mx = -1;
-    FOR(10) if (cnt[i]) {
-        mn = min(mn, cnt[i]);
-        mx = max(mx, cnt[i]);
-    }
-    return mx - mn <= k;
-}
-
-int check2(int len) {
-    vt<int> res;
-    int mx = 0;
-    FOR(10) if (cnt[i]) {
-        res.push_back(cnt[i]);
-        mx = max(mx, cnt[i]);
-    }
-    
-    int sum = 0;
-    EACH(i, res) {
-        sum += max(0, mx - i + k);
-    }
-
-    return sum <= len;
-}
-
-void print() {
-    vt<pii> res;
-    int mx = 0;
-    FOR(10) if (cnt[i]) {
-        res.push_back(cnt[i]);
-        mx = max(mx, cnt[i]);
-    }
-    
-    int sum = 0;
-    EACH(i, res) {
-        sum += max(0, mx - i + k);
-    }
-}
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -96,26 +43,29 @@ int main() {
 
     int tc; cin >> tc;
     while (tc--) {
-        init();
-
-        input();
-
-        EACH(i, a) cnt[i]++;
-
-        if (check()) {
-            EACH(i, a) cout << i;
-            continue;
+        int n, m;
+        cin >> n >> m;
+        
+        vt<int> cnt(n + 1);
+        FOR(m) {
+            int x; cin >> x;
+            cnt[x]++;
         }
 
-        FOR(i, n - 1, -1, -1) {
-            cnt[a[i]]--;
+        int l = 1, r = 2 * m;
+        while (l < r) {
+            int mid = (l + r) >> 1;
             
-            if (check2(n - i)) {
-                FOR(j, 0, i + 1) cout << a[i];
-                print();
-                break;
+            ll sum = 0, sum2 = 0;
+            FOR(i, 1, n + 1) {
+                sum += max(0, cnt[i] - mid);
+                sum2 += max(0, (mid - cnt[i]) / 2);
             }
+
+            if (sum <= sum2) r = mid;
+            else l = mid + 1;
         }
+        cout << l << '\n';
     }
 
 	return 0;
