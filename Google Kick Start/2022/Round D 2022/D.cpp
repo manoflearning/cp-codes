@@ -61,7 +61,7 @@ int bfs(int st) {
         if (sz(vi) > k) return 1;
 
         EACH(i, adj[now]) {
-            if (vi.find(now) != vi.end()) continue;
+            if (vi.find(i) != vi.end()) continue;
             vi.insert(i);
             q.push(i);
         }

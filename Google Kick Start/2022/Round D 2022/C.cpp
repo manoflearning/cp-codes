@@ -30,15 +30,15 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, m;
-vt<int> a, b;
-int dist[2525][2525];
+int n, m, dp[2525][2525];
+vt<int> a, b, loc[2525];
 
 void init() {
     n = m = 0;
+    FOR(2525) FOR(j, 2525) dp[i][j] = -1;
     a.clear();
     b.clear();
-    FOR(2525) FOR(j, 2525) dist[i][j] = -1;
+    FOR(2525) loc[i].clear();
 }
 
 void input() {
@@ -51,61 +51,23 @@ void input() {
     EACH(i, b) cin >> i;
 }
 
-/*int f(int aidx, int bidx) {
+int f(int aidx, int bidx) {
     int& ret = dp[aidx][bidx];
     if (ret != -1) return ret;
     if (aidx == n - 1) return ret = 0;
-
+    
     ret = INF;
-
-    int naidx = aidx;
-    FOR(i, bidx, m) {
-        if (naidx + 1 < n && b[i] == a[naidx + 1]) {
-            naidx++;
-            ret = min(ret, f(naidx, i) + abs(i - bidx));
-            i--;
-        }
+    int res = lower_bound(all(loc[a[aidx + 1]]), bidx) - loc[a[aidx + 1]].begin();
+    
+    if (res < sz(loc[a[aidx + 1]])) {
+        int nbidx = loc[a[aidx + 1]][res];
+        ret = min(ret, f(aidx + 1, nbidx) + abs(bidx - nbidx));
     }
-
-    naidx = aidx;
-    FOR(i, bidx, 0, -1) {
-        if (naidx + 1 < n && b[i] == a[naidx + 1]) {
-            naidx++;
-            ret = min(ret, f(naidx, i) + abs(i - bidx));
-            i++;
-        }
-    }
-
-    return ret;
-}*/
-
-/*int dist(int st) {
-    int ret = 0, idx = st;
-    FOR(i, 1, n) {
-        int res = lower_bound(all(loc[a[i]]), idx) - loc[a[i]].begin();
-        if (res > 0 && abs(loc[a[i]][res] - idx) > abs(loc[a[i]][res - 1] - idx)) res--;
-        ret += abs(loc[a[i]][res] - idx);
-        idx = loc[a[i]][res];
+    if (0 < res) {
+        int nbidx = loc[a[aidx + 1]][res - 1];
+        ret = min(ret, f(aidx + 1, nbidx) + abs(bidx - nbidx));
     }
     return ret;
-}*/
-
-struct ab {
-    int aidx, bidx;
-};
-
-int bfs() {
-    queue<ab> q;
-    FOR(m) {
-        if (b[i] == a[0]) {
-            q.push({ 0, i });
-            dist[0][i] = 0;
-        }
-    }
-
-    while (sz(q)) {
-        
-    }
 }
 
 int main() {
@@ -122,12 +84,19 @@ int main() {
 	int tc; cin >> tc;
     FOR(tt, 1, tc + 1) {
         cout << "Case #" << tt << ": ";
-        
+
         init();
 
         input();
 
-        cout << bfs() << '\n';
+        FOR(m) loc[b[i]].push_back(i);
+
+        int ans = INF;
+        FOR(m) if (b[i] == a[0]) {
+            ans = min(ans, f(0, i));
+        }
+
+        cout << ans << '\n';
     }
 
 	return 0;
