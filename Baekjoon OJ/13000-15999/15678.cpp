@@ -30,28 +30,9 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int flag;
-struct Seg {
-    vt<ll> t;
-
-    void build(int n) {
-        for (flag = 1; flag < n; flag <<= 1);
-        t.resize(2 * flag);
-    }
-    void modify(int p, ll val) {
-        for (t[p += flag - 1] = val; p > 1; p >>= 1) t[p >> 1] = max(t[p], t[p ^ 1]);
-    }
-    ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-        if (nr < l || r < nl) return -1e18;
-        if (l <= nl && nr <= r) return t[n];
-
-        int mid = (nl + nr) >> 1;
-        return max(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-    }
-}seg;
-
 int n, d;
 ll a[101010], dp[101010];
+deque<pll> q;
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -66,15 +47,19 @@ int main() {
 
 	cin >> n >> d;
     FOR(n) cin >> a[i + 1];
-    
-    seg.build(n);
 
+    ll ans = -1e18;
     FOR(i, 1, n + 1) {
-        dp[i] = a[i] + max(0ll, seg.query(max(1, i - d), i - 1));
-        seg.modify(i, dp[i]);
+        while (sz(q) && q.front().sc < i - d) q.pop_front();
+
+        dp[i] = a[i] + max(0ll, (sz(q) ? q.front().fr : 0ll));
+        ans = max(ans, dp[i]);
+
+        while (sz(q) && q.back().fr < dp[i]) q.pop_back();
+        q.push_back({ dp[i], i });
     }
     
-    cout << seg.query(1, n);
+    cout << ans;
 
 	return 0;
 }
