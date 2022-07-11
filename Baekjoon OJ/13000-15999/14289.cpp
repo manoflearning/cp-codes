@@ -1,56 +1,90 @@
-#include <iostream>
-#include <vector>
-#define ll long long
-#define vvl vector<vector<ll>>
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
+#define ll long long
+#define ull unsigned long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define fr first 
+#define sc second
+#define vt vector
+#define all(c) (c).begin(), (c).end()
+#define sz(x) (int)(x).size()
 
+#define EXPAND( x ) x // Use this if MS Visual Studio doesn't expand __VA_ARGS__ correctly
+#define F_OR(i, a, b, s) for (int i = (a); (s) > 0 ? i < (b) : i > (b); i += (s))
+#define F_OR1(e) F_OR(i, 0, e, 1)
+#define F_OR2(i, e) F_OR(i, 0, e, 1)
+#define F_OR3(i, b, e) F_OR(i, b, e, 1)
+#define F_OR4(i, b, e, s) F_OR(i, b, e, s)
+#define GET5(a, b, c, d, e, ...) e
+#define F_ORC(...) EXPAND( GET5(__VA_ARGS__, F_OR4, F_OR3, F_OR2, F_OR1) )
+#define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
+#define EACH(x, a) for (auto& x : a)
+
+const double EPS = 1e-9;
+const int INF = 1e9 + 7;
 const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
+const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int N;
-vvl adj;
+struct Matrix {
+	vector<vector<ll>> a;
+	Matrix operator*(const Matrix& rhs) const {
+		Matrix ret;
+		ret.a.resize(sz(a), vector<ll>(sz(rhs.a[0])));
+		for (int i = 0; i < sz(ret.a); i++) {
+			for (int j = 0; j < sz(ret.a[0]); j++) {
+				ll sum = 0;
+				for (int k = 0; k < sz(a[0]); k++) {
+					sum = (sum + a[i][k] * rhs.a[k][j]) % MOD;
+				}
+				ret.a[i][j] = sum;
+			}
+		}
+		return ret;
+	}
+};
 
-vvl f(int x);
-vvl mul(vvl& a, vvl& b);
+int n, m, d;
+Matrix st;
+
+void input() {
+	cin >> n >> m;
+	st.a.resize(n, vector<ll>(n));
+	FOR(m) {
+		int u, v;
+		cin >> u >> v;
+		u--, v--;
+		st.a[u][v] = st.a[v][u] = 1;
+	}
+	cin >> d;
+}
+
+Matrix f(int cnt) {
+	if (cnt == 1) return st;
+	
+	Matrix res = f(cnt / 2);
+	if (cnt & 1) return res * res * st;
+	else return res * res;
+}
 
 int main() {
+	#ifndef ONLINE_JUDGE
+	// Enter the absolute path of the local file input.txt, output.txt
+	// Or just enter the "input.txt", "output.txt"
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	#endif
+
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int M;
-	cin >> N >> M;
+	input();
 
-	adj.resize(N + 1, vector<ll>(N + 1));
-
-	while (M--) {
-		int u, v;
-		cin >> u >> v;
-		adj[u][v] = adj[v][u] = 1;
-	}
-
-	int D; cin >> D;
-	vvl ans = f(D);
-
-	cout << ans[1][1] << '\n';
+	cout << f(d).a[0][0];
 
 	return 0;
-}
-
-vvl f(int x) {
-	if (x == 1) return adj;
-	vvl prv = f(x >> 1);
-	vvl ret = mul(prv, prv);
-	if (x & 1) ret = mul(ret, adj);
-	return ret;
-}
-
-vvl mul(vvl& a, vvl& b) {
-	vvl ret(N + 1, vector<ll>(N + 1));
-	for (int i = 1; i <= N; i++) {
-		for (int l = 1; l <= N; l++) {
-			for (int k = 1; k <= N; k++) {
-				ret[i][l] = (ret[i][l] + a[i][k] * b[k][l]) % MOD;
-			}
-		}
-	}
-	return ret;
 }
