@@ -30,37 +30,55 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, a[101010], b[101010];
-int dp[101010], psum[101010], ssum[101010];
+int n, k, sb[55];
+vt<int> adj[55], t[55];
+ll dp[55][55][55];
 
-int isP(int mid) {
-    memset(dp, 0, sizeof(dp));
-    FOR(i, 1, n + 1) {
-        psum[i] = (b[i] <= mid ? 1 : 0) + psum[i - 1];
-        ssum[i] = INF;
+void init() {
+    FOR(55) FOR(j, 55) FOR(k, 55) dp[i][j][k] = -1;
+}
+
+void input() {
+    cin >> n >> k;
+    FOR(n - 1) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+}
+
+void dfs(int v, int prv) {
+    sb[v] = 1;
+    EACH(i, adj[v]) {
+        if (i == prv) continue;
+        dfs(i, v);
+        t[v].push_back(i);
+        sb[v] += sb[i];
+    }
+}
+
+ll f(int n, int idx, int k) {
+    ll& ret = dp[n][idx][k];
+    if (ret != -1) return ret;
+    if (k <= 1) ret = 1;
+    if (sb[n] == k) return ret = 1;
+    if (sb[n] < k) return ret = 0;
+
+    ret = 0;
+
+    int chd = t[n][idx];
+
+    if (idx == sz(t[n]) - 1) ret = f(chd, 0, k - 1);
+    else {
+        FOR(l, 0, k) {
+            int r = (k - 1) - l;
+            ret = (ret + f(chd, 0, l) * f(n, idx + 1, r)) % MOD;
+        }
+        ret = (ret + f(n, idx + 1, k)) % MOD;
     }
 
-    dp[n + 1] = 1;
-    ssum[n + 1] = n + 1;
-    FOR(i, n, 0, -1) {
-        if (b[i] <= mid && dp[i + 1]) {
-            dp[i] = 1, ssum[i] = i;
-        }
-        else if (i + a[i] <= n + 1) {
-            int idx = ssum[i + a[i]];
-            if (psum[idx - 1] - psum[i] >= idx - i - a[i]) {
-                dp[i] = 1, ssum[i] = i;
-            }
-        }
-
-        ssum[i] = min(ssum[i], ssum[i + 1]);
-    }
-
-    /*cout << mid << '\n';
-    FOR(i, 1, n + 1) cout << dp[i] << ' ';
-    cout << '\n';*/
-
-    return dp[1];
+    return ret;
 }
 
 int main() {
@@ -74,18 +92,17 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	cin >> n;
-    FOR(n) cin >> a[i + 1];
-    FOR(n) cin >> b[i + 1];
+    init();
 
-    int l = 0, r = 100000;
-    while (l < r) {
-        int mid = (l + r) >> 1;
-        if (isP(mid)) r = mid;
-        else l = mid + 1;
-    }
+	input();
 
-    cout << l;
+    dfs(1, 0);
+
+    ll ans = 0;
+    FOR(i, 1, n + 1)
+        ans = (ans + f(i, 0, k)) % MOD;
+
+    cout << ans;
 
 	return 0;
 }
