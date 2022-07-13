@@ -30,7 +30,7 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, k, sb[55];
+int n, k, SB[55];
 vt<int> adj[55], t[55];
 ll dp[55][55][55];
 
@@ -49,33 +49,35 @@ void input() {
 }
 
 void dfs(int v, int prv) {
-    sb[v] = 1;
+    SB[v] = 1;
     EACH(i, adj[v]) {
         if (i == prv) continue;
         dfs(i, v);
         t[v].push_back(i);
-        sb[v] += sb[i];
+        SB[v] += SB[i];
     }
 }
 
-ll f(int n, int idx, int k) {
-    ll& ret = dp[n][idx][k];
+int sb(int v, int idx) {
+    int ret = SB[v];
+    FOR(i, 0, idx) ret -= SB[t[v][i]];
+    return ret;
+}
+
+ll f(int v, int idx, int sum) {
+    ll& ret = dp[v][idx][sum];
     if (ret != -1) return ret;
-    if (k <= 1) ret = 1;
-    if (sb[n] == k) return ret = 1;
-    if (sb[n] < k) return ret = 0;
+    if (sum <= 1) return ret = 1;
+    if (sb(v, idx) < sum) return ret = 0;
 
     ret = 0;
-
-    int chd = t[n][idx];
-
-    if (idx == sz(t[n]) - 1) ret = f(chd, 0, k - 1);
+    int chd = t[v][idx];
+    if (idx == sz(t[v]) - 1) ret = f(chd, 0, sum - 1);
     else {
-        FOR(l, 0, k) {
-            int r = (k - 1) - l;
-            ret = (ret + f(chd, 0, l) * f(n, idx + 1, r)) % MOD;
+        FOR(l, 0, sum) {
+            int r = (sum - 1) - l;
+            ret = (ret + f(chd, 0, l) * f(v, idx + 1, r + 1)) % MOD;
         }
-        ret = (ret + f(n, idx + 1, k)) % MOD;
     }
 
     return ret;
@@ -92,15 +94,20 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    init();
+	init();
 
-	input();
+    input();
 
     dfs(1, 0);
 
     ll ans = 0;
     FOR(i, 1, n + 1)
         ans = (ans + f(i, 0, k)) % MOD;
+
+    /*cout << f(1, 0, 3) << '\n';
+    cout << f(1, 1, 3) << '\n';
+    cout << f(1, 2, 3) << '\n';
+    cout << f(1, 3, 3) << '\n';*/
 
     cout << ans;
 
