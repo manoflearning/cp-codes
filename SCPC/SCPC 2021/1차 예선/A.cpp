@@ -30,29 +30,58 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+vector<int> p(101010, -1);
+
+int find(int x) {
+    if (p[x] < 0) return x;
+    return p[x] = find(p[x]);
+}
+
+void merge(int u, int v) {
+    int U = find(u), V = find(v);
+    if (find(U) == find(V)) return;
+    p[U] += p[V];
+    p[V] = U;
+}
+
+int n, a[101010];
+
+void init() {
+    p.clear();
+    p.resize(101010, -1);
+}
+
 int main() {
+	#ifndef ONLINE_JUDGE
+	// Enter the absolute path of the local file input.txt, output.txt
+	// Or just enter the "input.txt", "output.txt"
+	// freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	// freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	#endif
+
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-	
-	int n = 100000, m = 99999;
-    
-    cout << "input\n";
-    cout << n << ' ' << m << '\n';
-    FOR(i, 1, n + 1) {
-        if (i < n) cout << i + 1 << ' ';
-        else cout << 1 << '\n';
-    }
 
-    FOR(i, 1, 50001) {
-        cout << 2 * i - 1 << ' ' << 2 * i << ' ' << i << '\n';
+	int tc; cin >> tc;
+    for (int tt = 1; tt <= tc; tt++) {
+        cout << "Case #" << tt << '\n';
+        
+        init();
+        
+        cin >> n;
+        for (int i = 1; i <= n; i++) cin >> a[i];
+        
+        for (int i = 1; i <= n; i++) {
+            if (i + a[i] <= n) {
+                merge(i, i + a[i]);
+            }
+        }
+        
+        set<int> s;
+        for (int i = 1; i <= n; i++) s.insert(find(i));
+        
+        cout << s.size() << '\n';
     }
-
-    FOR(i, 1, 50000) {
-        cout << 2 * i << ' ' << 2 * i + 1 << ' ' << i << '\n';
-    }
-    
-    cout << "\noutput\n";
-    cout << 1;
 
 	return 0;
 }
