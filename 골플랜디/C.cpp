@@ -41,10 +41,42 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-    FOR(tt, 1, tc + 1) {
-        
+    cout << fixed;
+    cout.precision(9);
+
+	int n; cin >> n;
+    vt<double> a(n);
+    EACH(i, a) cin >> i;
+    int m; cin >> m;
+
+    double mn = INF;
+    priority_queue<double> pq;
+    EACH(i, a) {
+        mn = min(mn, i);
+        pq.push(i);
     }
+
+    double ans = INF;
+    while (m--) {
+        double x = pq.top();
+        pq.pop();
+        ans = min(ans, x - mn);
+
+        //cout << x << ' ' << x / 2 << '\n';
+        //cout << ans << '\n';
+
+        pq.push(x / 2);
+        mn = min(mn, x / 2);
+    }
+    ans = min(ans, pq.top() - mn);
+
+    /*while (sz(pq)) {
+        cout << pq.top() << '\n';
+        pq.pop();
+    }
+    cout << mn << '\n';*/
+
+    cout << ans;
 
 	return 0;
 }

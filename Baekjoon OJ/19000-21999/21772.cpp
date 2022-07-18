@@ -30,6 +30,29 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int n, m, t, a[101][101];
+pii st;
+int vi[101][101];
+
+int bt(int y, int x, int cntt, int cnts) {
+    if (a[y][x] == 1 && vi[y][x] == 1) cnts++;
+
+    if (cntt == t) return cnts;
+
+    int ret = cnts;
+    FOR(4) {
+        int ny = y + dy[i], nx = x + dx[i];
+        if (ny < 0 || nx < 0 || n <= ny || m <= nx) continue;
+        if (a[ny][nx] == 2) continue;
+
+        vi[ny][nx]++;
+        ret = max(ret, bt(ny, nx, cntt + 1, cnts));
+        vi[ny][nx]--;
+    }
+
+    return ret;
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -41,10 +64,18 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-    FOR(tt, 1, tc + 1) {
-        
+	cin >> n >> m >> t;
+    FOR(n) {
+        string s; cin >> s;
+        FOR(j, m) {
+            if (s[j] == 'G') st.fr = i, st.sc = j;
+            if (s[j] == 'S') a[i][j] = 1;
+            if (s[j] == '#') a[i][j] = 2;
+        }
     }
+
+    vi[st.fr][st.sc]++;
+    cout << bt(st.fr, st.sc, 0, 0);
 
 	return 0;
 }

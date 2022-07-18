@@ -30,6 +30,9 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int n, m;
+vt<pll> a;
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -41,10 +44,30 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-    FOR(tt, 1, tc + 1) {
-        
+    cin >> m;
+
+    while (1) {
+        ll x, y;
+        cin >> x >> y;
+        if (x == 0 && y == 0) break;
+        if (x > y) swap(x, y);
+        a.push_back({ x, y });
     }
+
+    sort(all(a));
+
+    int fl = 0, prv = 0, ans = 0;
+
+    while (prv < m) {
+        ll mx = prv;
+        for (; fl < sz(a) && a[fl].fr <= prv; fl++) mx = max(mx, a[fl].sc);
+
+        if (prv < mx) prv = mx, ans++;
+        else break;
+    }
+
+    if (prv >= m) cout << ans;
+    else cout << 0;
 
 	return 0;
 }

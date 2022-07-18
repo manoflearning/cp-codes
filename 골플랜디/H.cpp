@@ -26,9 +26,31 @@ using namespace std;
 
 const double EPS = 1e-9;
 const int INF = 1e9 + 7;
+const ll IN = -1e18;
 const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+int n, par[202020];
+vt<int> chd[202020];
+ll w[202020], dp[202020];
+
+void init() {
+    FOR(202020) dp[i] = IN;
+}
+
+ll f(int v) {
+    ll& ret = dp[v];
+    if (ret != IN) return ret;
+
+    ret = w[v];
+    EACH(i, chd[v]) {
+        ll res = f(i);
+        if (res > 0) ret += res;
+    }
+
+    return ret;
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -41,35 +63,24 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-    FOR(tt, 1, tc + 1) {
-        int n; cin >> n;
-        
-        vt<int> a(n);
-        EACH(i, a) cin >> i;
+    init();
 
-        priority_queue<int> pq;
-        FOR(n - 1) pq.push(a[i + 1] - a[i]);
-        //pq.push(a[n - 1] - a[0]);
-
-        
-        while (sz(pq) >= 2) {
-            int u = pq.top();
-            pq.pop();
-            int v = pq.top();
-            pq.pop();
-            
-            if (u == v) {
-                pq.push(u);
-                continue;
-            }
-
-            while (sz(pq) && pq.top() < u - v) pq.pop();
-            pq.push(u - v);
-        }
-
-        cout << pq.top() << '\n';
+	cin >> n;
+    FOR(i, 1, n + 1) {
+        cin >> w[i] >> par[i];
+        if (par[i] > 0) chd[par[i]].push_back(i);
     }
+
+    /*ll mx = IN;
+    int mxv = -1;
+    FOR(v, 1, n + 1) {
+        if (f(v) > mx) {
+            mx = f(v);
+            mxv = v;
+        }
+    }*/
+
+    
 
 	return 0;
 }

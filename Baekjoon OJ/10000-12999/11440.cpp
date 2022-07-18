@@ -30,6 +30,33 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+struct Matrix {
+	vector<vector<ll>> a;
+	Matrix operator*(const Matrix& rhs) const {
+		Matrix ret;
+		ret.a.resize(sz(a), vector<ll>(sz(rhs.a[0])));
+		for (int y = 0; y < sz(ret.a); y++) {
+			for (int x = 0; x < sz(ret.a[y]); x++) {
+				ll sum = 0;
+				for (int i = 0; i < sz(a[y]); i++) {
+					sum = (sum + a[y][i] * rhs.a[i][x]) % MOD;
+				}
+				ret.a[y][x] = sum;
+			}
+		}
+		return ret;
+	}
+};
+
+Matrix st;
+
+Matrix f(int cnt) {
+    if (cnt == 1) return st;
+    Matrix res = f(cnt / 2);
+    if (cnt & 1) return res * res * st;
+    else return res * res;
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -41,35 +68,15 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-    FOR(tt, 1, tc + 1) {
-        int n; cin >> n;
-        
-        vt<int> a(n);
-        EACH(i, a) cin >> i;
+	st.a.resize(2, vt<ll>(2));
 
-        priority_queue<int> pq;
-        FOR(n - 1) pq.push(a[i + 1] - a[i]);
-        //pq.push(a[n - 1] - a[0]);
+    st.a[0][0] = st.a[0][1] = st.a[1][0] = 1;
 
-        
-        while (sz(pq) >= 2) {
-            int u = pq.top();
-            pq.pop();
-            int v = pq.top();
-            pq.pop();
-            
-            if (u == v) {
-                pq.push(u);
-                continue;
-            }
+    int n; cin >> n;
 
-            while (sz(pq) && pq.top() < u - v) pq.pop();
-            pq.push(u - v);
-        }
+    Matrix ans = f(n);
 
-        cout << pq.top() << '\n';
-    }
+    cout << (ans.a[0][0] + ans.a[0][1]) % MOD;
 
 	return 0;
 }

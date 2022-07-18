@@ -30,6 +30,48 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int n, q;
+vt<int> a;
+
+int cal(int cnt) {
+    int x = q;
+    EACH(i, a) {
+        if (x == 0) continue;
+        else if (x < i) {
+            if (cnt) cnt--;
+            else x--;
+        }
+    }
+    return x > 0;
+}
+
+void cal2(int cnt) {
+    int x = q;
+    EACH(i, a) {
+        if (x == 0) cout << 0;
+        else if (x < i) {
+            if (cnt) { cnt--; cout << 0; }
+            else { x--; cout << 1; }
+        }
+        else cout << 1;
+    }
+    cout << '\n';
+}
+
+int cal3(int cnt) {
+    int ret = 0, x = q;
+    EACH(i, a) {
+        if (x == 0) continue;
+        else if (x < i) {
+            if (cnt) cnt--;
+            else x--, ret++;
+        }
+        else ret++;
+    }
+    return ret;
+}
+
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -43,7 +85,23 @@ int main() {
 
 	int tc; cin >> tc;
     FOR(tt, 1, tc + 1) {
+        cin >> n >> q;
+
+        a.resize(n);
+        EACH(i, a) cin >> i;
         
+        int l = 0, r = n;
+        while (l < r) {
+            int mid = (l + r) >> 1;
+            
+            if (cal(mid)) r = mid;
+            else l = mid + 1;
+        }
+
+        //cout << l << '\n';
+        int res1 = cal3(l - 1), res2 = cal3(l);
+        if (res1 >= res2) cal2(l - 1);
+        else cal2(l);
     }
 
 	return 0;
