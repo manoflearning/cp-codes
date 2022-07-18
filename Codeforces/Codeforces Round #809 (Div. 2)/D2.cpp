@@ -70,8 +70,15 @@ int main() {
 		a.resize(n);
 		EACH(i, a) cin >> i;
 
+		vt<ll> res;
+		FOR(i, 1, k + 2) {
+			res.push_back(a[0] / i);
+		}
+		sort(all(res));
+		res.erase(unique(all(res)), res.end());
+
 		ll ans = 1e18;
-		FOR(i, 0, 300 + 1) ans = min(ans, cal(i));
+		EACH(i, res) ans = min(ans, cal(i));
 		cout << ans << '\n';
     }
 
