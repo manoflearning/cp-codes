@@ -72,7 +72,7 @@ struct wyx {
 
 int dist[25][25];
 
-int bfs() {dfs
+int bfs() {
     FOR(25) FOR(j, 25) dist[i][j] = INF;
 
     queue<pii> q;
