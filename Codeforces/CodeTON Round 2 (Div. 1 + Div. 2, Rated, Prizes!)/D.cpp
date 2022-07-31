@@ -51,40 +51,29 @@ int main() {
             EACH(j, a[i]) cin >> j;
         }
 
-        vt<vt<ll>> psum(n, vt<ll>(m));
+        vt<ll> sum(n);
         FOR(i, n) {
-            psum[i][0] = a[i][0];
-            FOR(j, 1, m) {
-                psum[i][j] = a[i][j] + psum[i][j - 1];
-            }
+            FOR(j, m) sum[i] += j * a[i][j];
         }
 
-        int idx = -1;
-        FOR(j, m) {
-            int bit = 1;
-            FOR(i, n - 1) {
-                if (psum[i][j] != psum[i + 1][j]) bit = 0;
-            }
-
-            if (bit) {
-                idx = j + 1;
-                break;
-            }
-        }
-
-        int ans1 = -1;
         FOR(i, n) {
-            FOR(j, idx, m - 1) {
-                if (a[i][j] > a[i][j + 1]) ans1 = i;
+            if (i == 0) {
+                if (sum[i] != sum[i + 1] && sum[i] != sum[i + 2]) {
+                    cout << i + 1 << ' ' << sum[i] - sum[i + 1] << '\n';
+                }
+            }
+            else if (i == n - 1) {
+                if (sum[i] != sum[i - 1] && sum[i] != sum[i - 2]) {
+                    cout << i + 1 << ' ' << sum[i] - sum[i - 1] << '\n';
+                }
+            }
+            else {
+                if (sum[i] != sum[i - 1] && sum[i] != sum[i + 1]) {
+                    cout << i + 1 << ' ' << sum[i] - sum[i + 1] << '\n';
+                }
             }
         }
-
-        ll ans2 = 0;
-        FOR(j, idx + 2, m) {
-            ans2 += a[ans1][j] * (j - idx) / 2;
-        }
-        cout << idx << ' ' << '\n';
-        cout << ans1 << ' ' << ans2 << '\n';
+        
     }
 
 	return 0;
