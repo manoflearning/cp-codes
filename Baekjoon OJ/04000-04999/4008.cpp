@@ -52,8 +52,8 @@ ll cal(ll x) {
 
 void convexHullTrick() {
     int top = 1;
-    dp[1] = a * x[1] * x[1] + b * x[1] + c;
-    for (int i = 2; i <= n; i++) {
+    
+    for (int i = 1; i <= n; i++) {
         lf g(-2 * a * p[i - 1] + b, a * p[i - 1] * p[i - 1] - b * p[i - 1] + dp[i - 1]);
         while (top > 1) {
             g.s = cross(ch[top - 1], g);
@@ -62,11 +62,15 @@ void convexHullTrick() {
         }
         ch[top++] = g;
 
-        ll x = p[i];
-        int fpos = top - 1;
-        if (x < ch[top - 1].s) {
-            
+        int l = 1, r = top - 1;
+        while (l < r) {
+            int mid = (l + r + 1) >> 1;
+            if (p[i] < ch[mid].s) r = mid - 1;
+            else l = mid;
         }
+
+        int fpos = l;
+        dp[i] = ch[fpos].p * p[i] + ch[fpos].q + a * p[i] * p[i] + c;
     }
 
     // a * (p[i] - p[j]) * (p[i] - p[j]) + b * (p[i] - p[j]) + c + dp[j]
