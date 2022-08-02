@@ -59,20 +59,20 @@ int main() {
             arr[1] = 1, arr[d12 + 1] = 2;
             arr[d31 + 1] = 3;
 
-            int mxv = 4;
+            int mxv = n;
             FOR(i, 1, d12 + 2)
-                if (!arr[i]) arr[i] = mxv++;
+                if (!arr[i]) arr[i] = mxv--;
 
             FOR(i, 1, d12 + 1)
                 cout << arr[i] << ' ' << arr[i + 1] << '\n';
             
-            FOR(i, mxv, n + 1)
+            FOR(i, 4, mxv + 1)
                 cout << 1 << ' ' << i << '\n';
 
             continue;
         }
 
-        int mxv = 4;
+        int mxv = n;
         vt<pii> ans;
         if (d12 == 1) ans.push_back({ 1, 2 });
         else {
@@ -81,10 +81,10 @@ int main() {
                     ans.push_back({ 1, mxv });
                 }
                 else if (i == d12 - 1) {
-                    ans.push_back({ mxv++, 2 });
+                    ans.push_back({ mxv--, 2 });
                 }
                 else {
-                    ans.push_back({ mxv++, mxv });
+                    ans.push_back({ mxv--, mxv });
                 }
             }
         }
@@ -108,10 +108,7 @@ int main() {
 
         int po = -1;
         if (w1 == d12) po = 2;
-        else {
-            if (w1 == 0) po = 1;
-            else po = w1 + 3;
-        }
+        else po = ans[w1].fr;
 
         d31 -= w1;
         if (d31 == 1) ans.push_back({ po, 3 });
@@ -120,17 +117,17 @@ int main() {
             d31--;
             while (d31 > 1) {
                 d31--;
-                ans.push_back({ mxv++, mxv });
+                ans.push_back({ mxv--, mxv });
             }
-            ans.push_back({ mxv++, 3 });
+            ans.push_back({ mxv--, 3 });
         }
         
-        if (mxv > n + 1) {
+        if (mxv < 3) {
             cout << "NO\n";
             continue;
         }
 
-        FOR(i, mxv, n + 1) 
+        FOR(i, 4, mxv + 1) 
             ans.push_back({ 1, i });
 
         cout << "YES\n";
