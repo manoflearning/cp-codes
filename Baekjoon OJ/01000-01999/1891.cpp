@@ -30,6 +30,37 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int d;
+string st, en;
+ll sx, sy;
+ll xdiff, ydiff;
+
+void numToCo() {
+    FOR(i, d) {
+        auto it = st[d - i - 1];
+        if (it == '1') sx += (1ll << i);
+        if (it == '2') continue;
+        if (it == '3') sy += (1ll << i);
+        if (it == '4') sx += (1ll << i), sy += (1ll << i);
+    }
+}
+
+void coToNum() {
+    en.resize(d);
+
+    FOR(i, d) {
+        //int bx = (1ll << i) & sx, by = (1ll << i) & sy;
+        int bx = 0, by = 0;
+        if ((1ll << i) & sx) bx = 1;
+        if ((1ll << i) & sy) by = 1;
+
+        if (bx && !by) en[d - i - 1] = '1';
+        if (!bx && !by) en[d - i - 1] = '2';
+        if (!bx && by) en[d - i - 1] = '3';
+        if (bx && by) en[d - i - 1] = '4';
+    }
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -41,10 +72,21 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-    FOR(tt, 1, tc + 1) {
-        
+	cin >> d >> st;
+    cin >> xdiff >> ydiff;
+    
+    numToCo();
+
+    sx += xdiff, sy -= ydiff;
+
+    if (sx < 0 || (1ll << d) <= sx || sy < 0 || (1ll << d) <= sy) {
+        cout << -1;
+        return 0;
     }
+
+    coToNum();
+
+    cout << en;
 
 	return 0;
 }
