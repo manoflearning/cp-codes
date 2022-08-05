@@ -1,2 +1,2 @@
 # CP-Codes
-My codes of the algorithm problems.
+My codes for solving algorithm problems.
