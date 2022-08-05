@@ -30,55 +30,33 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int flag;  // array size
-struct Seg {  // 1-indexed
-	vector<ll> t;
-
-	void build(int n) {
-        t.clear();
-		for (flag = 1; flag < n; flag <<= 1);
-		t.resize(2 * flag);
-
-		//for (int i = flag; i < flag + n; i++) cin >> t[i];
-		//for (int i = flag - 1; i >= 1; i--) t[i] = max(t[i << 1], t[i << 1 | 1]);
-	}
-	void modify(int p, ll value) {  // set value at position p
-		for (t[p += flag - 1] = value; p > 1; p >>= 1) t[p >> 1] = max(t[p], t[p ^ 1]);
-	}
-	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {  // sum on interval [l, r]
-		if (r < nl || nr < l) return 0;
-		if (l <= nl && nr <= r) return t[n];
-
-		int mid = (nl + nr) / 2;
-		return max(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-	}
-}seg1l, seg1r, seg2l, seg2r;
-
 int n;
 ll a[3][202020];
 ll dp[3][202020];
+ll p1l[202020], p1r[202020], p2l[202020], p2r[202020];
 
 void init() {
     FOR(i, 1, n + 1) {
         a[1][i] = a[2][i] = dp[1][i] = dp[2][i] = 0;
+        p1l[i] = p1r[i] = p2l[i] = p2r[i] = 0;
     }
     n = 0;
 }
 
 int main() {
-	#ifndef ONLINE_JUDGE
-	// Enter the absolute path of the local file input.txt, output.txt
-	// Or just enter the "input.txt", "output.txt"
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
-	#endif
+    #ifndef ONLINE_JUDGE
+    // Enter the absolute path of the local file input.txt, output.txt
+    // Or just enter the "input.txt", "output.txt"
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+    #endif
 
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
+    int tc; cin >> tc;
     FOR(tt, 1, tc + 1) {
-        int n; cin >> n;
+        cin >> n;
         FOR(i, 1, 3) FOR(j, 1, n + 1) {
             cin >> a[i][j];
             a[i][j]++;
@@ -99,30 +77,23 @@ int main() {
             }
         }
 
-        seg1l.build(n);
-        seg1r.build(n);
-        seg2l.build(n);
-        seg2r.build(n);
-        
-        FOR(i, 1, n + 1) {
-            seg1l.modify(i, a[1][i] + (n - i));
-            seg1r.modify(i, a[1][i] + (i - 1));
-            seg2l.modify(i, a[2][i] + (n - i));
-            seg2r.modify(i, a[2][i] + (i - 1));
+        FOR(i, n, 0, -1) {
+            p1l[i] = max(a[1][i] + (n - i), p1l[i + 1]);
+            p1r[i] = max(a[1][i] + (i - 1), p1r[i + 1]);
+            p2l[i] = max(a[2][i] + (n - i), p2l[i + 1]);
+            p2r[i] = max(a[2][i] + (i - 1), p2r[i + 1]);
         }
-
+        
         ll ans = (n & 1 ? dp[2][n] : dp[1][n]);
         FOR(i, 1, n + 1) {
             if (i & 1) {
-                ll res = seg1l.query(i, n) + (n - i + 1);
-                res = max(res, seg2r.query(i, n) - i + 1);
-                //cout << i << ' ' << seg1l.query(i, n) << ' ' << seg2r.query(i, n) - i + 1 << '\n';
+                ll res = p1l[i] + (n - i + 1);
+                res = max(res, p2r[i] - i + 1);
                 ans = min(ans, max(dp[1][i] + 2 * (n - i + 1) - 1, res));
             }
             else {
-                ll res = seg2l.query(i, n) + (n - i + 1);
-                res = max(res, seg1r.query(i, n) - i + 1);
-                //cout << i << ' ' << seg2l.query(i, n) << ' ' << seg1r.query(i, n) - i + 1 << '\n';
+                ll res = p2l[i] + (n - i + 1);
+                res = max(res, p1r[i] - i + 1);
                 ans = min(ans, max(dp[2][i] + 2 * (n - i + 1) - 1, res));
             }
         }

@@ -55,7 +55,7 @@ int main() {
 
         ll left = n % 3;
         if (left) ans++;
-
+        
         cout << ans << '\n';
     }
 

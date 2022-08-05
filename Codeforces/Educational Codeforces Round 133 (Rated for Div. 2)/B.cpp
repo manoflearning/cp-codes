@@ -49,13 +49,11 @@ int main() {
         FOR(i, 1, n + 1) a[i] = i;
 
         cout << n << '\n';
-        int now = n;
-        FOR(j, n) {
-            FOR(i, 1, n + 1) cout << a[i] << ' ';
+        FOR(i, n, 0, -1) {
+            FOR(j, 1, n + 1) cout << a[j] << ' ';
             cout << '\n';
 
-            swap(a[now - 1], a[now]);
-            now--;
+            if (i > 1) swap(a[i - 1], a[i]);
         }
     }
 

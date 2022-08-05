@@ -30,55 +30,15 @@ const int MOD = 998244353;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ll n, k;
-ll arr[202020][2], ans[202020];
-int vi[202020][2];
+int n, k, l;
+ll ans[202020], a[202020], b[202020];
 
-void solve() {
-    vt<int> idx;
-
-    for (ll i = 1; i * k <= n; i++) {
-        ans[i * k] = 1;
-
-        arr[i * k][k & 1] = 1;
-        idx.push_back(i * k);
-        vi[i * k][k & 1] = 1;
+void push() {
+    for (int i = 1; i <= n; i++) {
+        a[i] = b[i];
+        ans[i] = (ans[i] + b[i]) % MOD;
+        b[i] = 0;
     }
-
-    for (ll div = k + 1; div <= n; div++) {
-        int b = (div & 1);
-
-        vt<int> idx2;
-        EACH(i, idx) {
-            for (int j = i + div; j <= n; j += div) {
-                ans[j] = (ans[j] + arr[i][!b]) % MOD;
-
-                arr[j][b] = arr[i][!b] % MOD;
-                if (!vi[j][b]) {
-                    idx2.push_back(j);
-                    vi[j][b] = 1;
-                }
-                
-                if (vi[j][!b]) {
-                    arr[j][!b] = (arr[j][!b] + arr[i][!b]) % MOD;
-                    break;
-                }
-            }
-        }
-
-        EACH(i, idx) {
-            arr[i][!b] = vi[i][!b] = 0;
-        }
-
-        idx = idx2;
-
-        sort(all(idx));
-        //idx.erase(unique(all(idx)), idx.end());
-    }
-
-    for (int i = 1; i <= n; i++)
-        cout << ans[i] % MOD << ' ';
-    cout << '\n';
 }
 
 int main() {
@@ -93,8 +53,18 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
 	cin >> n >> k;
+    for (int i = k; i <= n; i += k) b[i] = 1;
+    l = k; push();
 
-    solve();
+    for (int i = k + 1; ; i++) {
+        if (l + i > n) break;
+        for (int j = l + i; j <= n; j++)
+            b[j] = (b[j - i] + a[j - i]) % MOD;
+        l += i; push();
+    }
+
+    for (int i = 1; i <= n; i++)
+        cout << ans[i] << ' ';
 
 	return 0;
 }
