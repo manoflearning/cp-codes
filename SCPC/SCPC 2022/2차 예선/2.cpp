@@ -30,6 +30,39 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int flag;  // array size
+struct Seg {  // 1-indexed
+	vector<ll> t;
+
+	void build(int n) {
+		for (flag = 1; flag < n; flag <<= 1);
+		t.resize(2 * flag);
+
+		for (int i = flag; i < flag + n; i++) t[i] = 1;
+		for (int i = flag - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
+	}
+	void modify(int p, ll value) {  // set value at position p
+		for (t[p += flag - 1] = value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
+	}
+	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {  // sum on interval [l, r]
+		if (r < nl || nr < l) return 0;
+		if (l <= nl && nr <= r) return t[n];
+
+		int mid = (nl + nr) / 2;
+		return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
+	}
+}seg;
+
+int n;
+stack<int> stk[303030];
+
+void init() {
+    seg.t.clear();
+    FOR(i, 1, n + 1) {
+        while (sz(stk[i])) stk[i].pop();
+    }
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -44,6 +77,28 @@ int main() {
 	int tc; cin >> tc;
     FOR(tt, 1, tc + 1) {
         cout << "Case #" << tt << endl;
+
+        cin >> n;
+        seg.build(n);
+        vt<int> a(n + 1);
+        FOR(i, 1, n + 1) {
+            cin >> a[i];
+            stk[a[i]].push(i);
+        }
+
+        ll ans = 0;
+        FOR(i, 1, n + 1) {
+            int x = a[i];
+            if (sz(stk[x]) <= 1) continue;
+            ans += seg.query(i + 1, stk[x].top());
+            seg.modify(i, 0);
+            seg.modify(stk[x].top(), 0);
+            stk[x].pop();
+        }
+
+        cout << ans << endl;
+
+        init();
     }
 
 	return 0;

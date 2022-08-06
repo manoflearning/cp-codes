@@ -26,9 +26,17 @@ using namespace std;
 
 const double EPS = 1e-9;
 const int INF = 1e9 + 7;
-const int MOD = 1e9 + 7;
+const int MOD = 998244353;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+struct Frac {
+    ll x, y; // x / y
+    
+};
+
+int n;
+ll p[50505], sum;
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -44,6 +52,14 @@ int main() {
 	int tc; cin >> tc;
     FOR(tt, 1, tc + 1) {
         cout << "Case #" << tt << endl;
+
+        cin >> n;
+        FOR(n) {
+            cin >> p[i + 1];
+            sum += p[i + 1];
+        }
+
+
     }
 
 	return 0;

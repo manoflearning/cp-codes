@@ -30,6 +30,9 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+int n, a[303][303], rb;
+pii co[256 * 256 + 1];
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
@@ -44,6 +47,13 @@ int main() {
 	int tc; cin >> tc;
     FOR(tt, 1, tc + 1) {
         cout << "Case #" << tt << endl;
+
+        cin >> n;
+        FOR(n) FOR(j, n) {
+            cin >> a[i][j];
+        }
+
+        
     }
 
 	return 0;
