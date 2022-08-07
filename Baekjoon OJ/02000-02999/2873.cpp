@@ -27,8 +27,8 @@ using namespace std;
 const double EPS = 1e-9;
 const int INF = 1e9 + 7;
 const int MOD = 1e9 + 7;
-const int dy[] = { 0, 1, 0, -1 };
-const int dx[] = { 1, 0, -1, 0 };
+const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
+const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int n, m;
 ll a[1010][1010];
@@ -37,11 +37,11 @@ int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
 	// Or just enter the "input.txt", "output.txt"
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	//freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	//freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
 	#endif
 
-	cin.tie(NULL); cout.tie(NULL);
+	cin.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
 	cin >> n >> m;
@@ -49,31 +49,35 @@ int main() {
 
     if (n & 1) {
         FOR(i, n) {
-            if (i & 1) FOR(j, m - 1) cout << 'L';
-            else FOR(j, m - 1) cout << 'R';
-            if (i != n - 1) cout << 'D';
+            if (i & 1) FOR(m - 1) cout << 'L';
+            else FOR(m - 1) cout << 'R';
+
+            if (i < n - 1) cout << 'D';
         }
+        return 0;
     }
     else if (m & 1) {
         FOR(i, m) {
-            if (i & 1) FOR(j, n - 1) cout << 'U';
-            else FOR(j, n - 1) cout << 'D';
-            if (i != m - 1) cout << 'R';
+            if (i & 1) FOR(n - 1) cout << 'U';
+            else FOR(n - 1) cout << 'D';
+
+            if (i < m - 1) cout << 'R';
         }
+        return 0;
     }
-    else {
-        int mn = INF, y = -1, x = -1;
-        FOR(i, n) FOR(j, m) {
-            if ((i + j) & 1) {
-                if (mn > a[i][j]) {
-                    mn = a[i][j];
-                    y = i, x = j;
-                }
+
+    // now n and m are even
+    int mn = INF, mny = -1, mnx = -1;
+    FOR(i, n) FOR(j, m) {
+        if ((i + j) & 1) {
+            if (mn > a[i][j]) {
+                mn = a[i][j];
+                mny = i, mnx = j;
             }
         }
-
-        
     }
+
+    
 
 	return 0;
 }
