@@ -37,11 +37,11 @@ int main() {
 	#ifndef ONLINE_JUDGE
 	// Enter the absolute path of the local file input.txt, output.txt
 	// Or just enter the "input.txt", "output.txt"
-	//freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-	//freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
 	#endif
 
-	cin.tie(NULL);
+	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
 	cin >> n >> m;
@@ -49,8 +49,8 @@ int main() {
 
     if (n & 1) {
         FOR(i, n) {
-            if (i & 1) FOR(m - 1) cout << 'L';
-            else FOR(m - 1) cout << 'R';
+            if (i & 1) FOR(j, m - 1) cout << 'L';
+            else FOR(j, m - 1) cout << 'R';
 
             if (i < n - 1) cout << 'D';
         }
@@ -58,8 +58,8 @@ int main() {
     }
     else if (m & 1) {
         FOR(i, m) {
-            if (i & 1) FOR(n - 1) cout << 'U';
-            else FOR(n - 1) cout << 'D';
+            if (i & 1) FOR(j, n - 1) cout << 'U';
+            else FOR(j, n - 1) cout << 'D';
 
             if (i < m - 1) cout << 'R';
         }
@@ -67,6 +67,7 @@ int main() {
     }
 
     // now n and m are even
+
     int mn = INF, mny = -1, mnx = -1;
     FOR(i, n) FOR(j, m) {
         if ((i + j) & 1) {
@@ -76,8 +77,53 @@ int main() {
             }
         }
     }
-
     
+    if (mny & 1) {
+        FOR(i, mny - 1) {
+            if (i & 1) FOR(j, m - 1) cout << 'L';
+            else FOR(j, m - 1) cout << 'R';
+
+            cout << 'D';
+        }
+
+        FOR(i, m) {
+            if (i == mnx) {
+                if (mnx != m - 1) cout << 'R';
+            }
+            else if (i == m - 1) cout << 'D';
+            else if (((i & 1) && i < mnx) || (!(i & 1) && i > mnx)) cout << "UR";
+            else cout << "DR";
+        }
+
+        FOR(i, mny + 1, n) {
+            cout << 'D';
+            if ((i - mny) & 1) FOR(j, m - 1) cout << 'L';
+            else FOR(j, m - 1) cout << 'R';
+        }
+    }
+    else {
+        FOR(i, mny) {
+            if (i & 1) FOR(j, m - 1) cout << 'L';
+            else FOR(j, m - 1) cout << 'R';
+
+            cout << 'D';
+        }
+
+        FOR(i, m) {
+            if (i == mnx) {
+                if (mnx != m - 1) cout << 'R';
+            }
+            else if (i == m - 1) cout << 'D';
+            else if (((i & 1) && i < mnx) || (!(i & 1) && i > mnx)) cout << "UR";
+            else cout << "DR";
+        }
+
+        FOR(i, mny + 2, n) {
+            cout << 'D';
+            if ((i - mny - 1) & 1) FOR(j, m - 1) cout << 'L';
+            else FOR(j, m - 1) cout << 'R';
+        }
+    }
 
 	return 0;
 }
