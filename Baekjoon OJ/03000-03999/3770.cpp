@@ -26,22 +26,30 @@ using namespace std;
 
 const double EPS = 1e-9;
 const int INF = 1e9 + 7;
-const ll MOD = 1e18 + 7;
+const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const ll MX = 1e18;
+int flag;  // array size
+struct Seg {  // 1-indexed
+	vector<ll> t;
 
-ll p[3], idx;
-vt<ll> a;
+	void build(int n) {
+		t.clear();
+		for (flag = 1; flag < n; flag <<= 1);
+		t.resize(2 * flag);
+	}
+	void modify(int p, ll value) {  // set value at position p
+		for (t[p += flag - 1] += value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
+	}
+	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {  // sum on interval [l, r]
+		if (r < nl || nr < l) return 0;
+		if (l <= nl && nr <= r) return t[n];
 
-void bt(ll val, int lb) {
-	a.push_back(val);
-
-	if ((MX + p[lb] - 1) / p[lb] >= val) bt(val * p[lb], lb);
-	
-	if (lb + 1 < 3) bt(val, lb + 1);
-}
+		int mid = (nl + nr) / 2;
+		return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
+	}
+}seg;
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -54,14 +62,28 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	cin >> p[0] >> p[1] >> p[2] >> idx;
+	int tc; cin >> tc;
+	FOR(tt, 1, tc + 1) {
+		cout << "Test case " << tt << ": ";
 
-	bt(1, 0);
+		int n, m, k;
+		cin >> n >> m >> k;
 
-	sort(all(a));
-	a.erase(unique(all(a)), a.end());
+		vt<pii> a(k);
+		EACH(i, a) cin >> i.fr >> i.sc;
 
-	cout << a[idx];
+		sort(all(a));
+
+		seg.build(m);
+
+		ll ans = 0;
+		EACH(i, a) {
+			ans += seg.query(i.sc + 1, m);
+			seg.modify(i.sc, 1);
+		}
+
+		cout << ans << '\n';
+	}
 
 	return 0;
 }

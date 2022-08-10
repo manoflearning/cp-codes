@@ -146,13 +146,6 @@ int main() {
 
 	bfsv(vsy, vsx);
 
-	/*FOR(y, n) {
-		FOR(x, m) {
-			cout << mnv[y][x] << ' ';
-		}
-		cout << '\n';
-	}*/
-
 	if (bfsy(sy, sx)) cout << "YES";
 	else cout << "NO";
 

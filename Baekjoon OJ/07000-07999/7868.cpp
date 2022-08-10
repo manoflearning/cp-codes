@@ -26,43 +26,21 @@ using namespace std;
 
 const double EPS = 1e-9;
 const int INF = 1e9 + 7;
-const int MOD = 1e9 + 7;
+const ll MOD = 1e18 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-struct xy {
-	ll sx, sy, ex, ey;
-};
+const ll MX = 1e18;
 
-struct cmp1 {
-	bool operator()(const xy& u, const xy& v) const {
-		if (u.sx ^ v.sx) return u.sx < v.sx;
-		return u.ey < v.ey;
-	}	
-};
+ll p[3], idx;
+vt<ll> a;
 
-struct cmp2 {
-	bool operator()(const xy& u, const xy& v) const {
-		if (u.sy ^ v.sy) return u.sy < v.sy;
-		return u.ey < v.ey;
-	}	
-};
+void bt(ll val, int lb) {
+	if (lb == 2) a.push_back(val);
 
-int n, k, l;
-vt<xy> a;
-set<xy, vt<xy>, cmp1> s1;
-set<xy, vt<xy>, cmp2> s2;
-
-void init() {
-
-}
-
-void input() {
-	cin >> n >> k >> l;
-	a.resize(k);
-	EACH(i, a) {
-		cin >> i.sx >> i.sy >> i.ex >> i.ey;
-	}
+	if ((MX + p[lb] - 1) / p[lb] >= val) bt(val * p[lb], lb);
+	
+	if (lb + 1 < 3) bt(val, lb + 1);
 }
 
 int main() {
@@ -76,16 +54,13 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-	FOR(tt, 1, tc + 1) {
-		init();
+	cin >> p[0] >> p[1] >> p[2] >> idx;
 
-		input();
+	bt(1, 0);
 
-		
+	sort(all(a));
 
-		
-	}
+	cout << a[idx];
 
 	return 0;
 }
