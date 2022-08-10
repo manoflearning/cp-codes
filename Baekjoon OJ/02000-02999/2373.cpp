@@ -7,7 +7,7 @@ using namespace std;
 #define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-#define fr first 
+#define fr first
 #define sc second
 #define vt vector
 #define all(c) (c).begin(), (c).end()
@@ -30,35 +30,8 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-vt<int> fibo(1, 1);
-ll ans[1010101];
-
-void getFibo() {
-    ll a = 1, b = 1;
-    while (a + b < 1010101) {
-        ll tmp = a + b;
-        fibo.push_back(tmp);
-        a = b, b = tmp;
-    }
-}
-
-void getAns() {
-    EACH(i, fibo) ans[i] = -1;
-
-    int prv = 3;
-    FOR(i, 4, 1010101) {
-        if (ans[i] == -1) {
-            prv = i;
-            continue;
-        }
-
-        int idx = upper_bound(all(fibo), i - prv) - fibo.begin() - 1;
-        if (fibo[idx] == i - prv) ans[i] = fibo[idx];
-        else ans[i] = (i - prv) - fibo[idx];
-    }
-
-    FOR(i, 2, 101) cout << i << ' ' << ans[i] << '\n';
-}
+int n;
+vt<ll> fibo(1, 1);
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -71,12 +44,30 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	getFibo();
-
-    getAns();
+	ll x = 1, y = 1;
+    while (1) {
+        fibo.push_back(x + y);
+        if (x + y > 1000000) break;
+        ll tmp = x + y;
+        x = y, y = tmp;
+    }
 
     int n; cin >> n;
-    cout << ans[n];
+    auto it = upper_bound(all(fibo), n) - 1;
+    if (*it == n) {
+        cout << -1;
+        return 0;
+    }
+
+    n -= *it;
+    while (1) {
+        it = upper_bound(all(fibo), n) - 1;
+        if (*it == n) {
+            cout << n;
+            return 0;
+        }
+        n -= *it;
+    }
 
 	return 0;
 }
