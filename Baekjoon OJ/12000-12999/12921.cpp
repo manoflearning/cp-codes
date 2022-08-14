@@ -39,10 +39,33 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-	FOR(tt, 1, tc + 1) {
-		
-	}
+	int n; cin >> n;
+
+    ll x0, a, b;
+    cin >> x0 >> a >> b;
+
+    int m; cin >> m;
+    vt<pii> q(m);
+    FOR(m) {
+        cin >> q[i].fr;
+        q[i].sc = i;
+    }
+
+    sort(all(q));
+
+    ll ans = 0;
+
+    ll idx = 0, val = x0;
+    FOR(m) {
+        while (idx < q[i].fr) {
+            val = (val * a + b) % MOD;
+            idx++;
+        }
+
+        ans += val;
+    }
+
+    cout << ans;
 
 	return 0;
 }
