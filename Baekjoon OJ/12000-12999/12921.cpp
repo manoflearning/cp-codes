@@ -45,23 +45,19 @@ int main() {
     cin >> x0 >> a >> b;
 
     int m; cin >> m;
-    vt<pii> q(m);
-    FOR(m) {
-        cin >> q[i].fr;
-        q[i].sc = i;
-    }
+    vt<int> q(m);
+    EACH(i, q) cin >> i;
 
     sort(all(q));
 
-    ll ans = 0;
-
-    ll idx = 0, val = x0;
-    FOR(m) {
-        while (idx < q[i].fr) {
+    int idx = 0;
+    ll ans = 0, val = x0;
+    EACH(i, q) {
+        while (idx < i) {
             val = (val * a + b) % MOD;
             idx++;
         }
-
+        
         ans += val;
     }
 
