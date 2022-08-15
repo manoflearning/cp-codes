@@ -51,7 +51,6 @@ void input() {
 void init() {
     for (int i = 0; i < qcnt; i++) {
         r[i] = m;
-        ans2[i] = INF;
     }
 }
 
@@ -83,7 +82,7 @@ void pbs() {
             int u = q[qidx].fr, v = q[qidx].sc;
             if (find(u) ^ find(v)) l[qidx] = mid + 1;
             else {
-                ans2[qidx] = min(ans2[qidx], -p[find(u)]);
+                ans2[qidx] = -p[find(u)];
                 r[qidx] = mid;
             }
         }
