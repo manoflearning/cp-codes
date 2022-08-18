@@ -30,9 +30,60 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAX = 101010;
+int n, k;
+ll wmx, w[101010];
+vt<int> adj[101010];
 
-int cnt[MAX];
+void init() {
+    wmx = 0;
+    FOR(101010) {
+        w[i] = 0;
+        adj[i].clear();
+    }
+}
+
+void input() {
+    cin >> n >> k;
+    FOR(i, 1, n + 1) {
+        cin >> w[i];
+        wmx = max(wmx, w[i]);
+    }
+    FOR(n - 1) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+}
+
+int ccnt;
+
+ll f(int v, int prv, ll rb) {
+    ll sum = w[v];
+    priority_queue<ll> pq;
+
+    EACH(i, adj[v]) {
+        if (i == prv) continue;
+        ll res = f(i, v, rb);
+        sum += res;
+        pq.push(res);
+    }
+
+    while (sz(pq) && sum > rb) {
+        sum -= pq.top();
+        pq.pop();
+        ccnt++;
+    }
+
+    return sum;
+}
+
+bool isPos(ll rb) {
+    ccnt = 0;
+    f(1, 0, rb);
+    if (ccnt <= k) return 1;
+    else return 0;
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -42,40 +93,22 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-    
-    int n; cin >> n;
 
-    int is0 = 0;
+	int tc; cin >> tc;
+	FOR(tt, 1, tc + 1) {
+        init();
 
-    FOR(n) {
-        int x; char c;
-        if (i == 0) cin >> x;
-        else cin >> c >> x;
-        
-        if (x < 0) x *= -1;
-        if (x == 0) {
-            is0 = 1;
-            continue;
+		input();
+
+        ll l = wmx, r = 1e14;
+        while (l < r) {
+            ll mid = (l + r) >> 1;
+            if (isPos(mid)) r = mid;
+            else l = mid + 1;
         }
 
-        int add = (i == 0 || c == '*' ? 1 : -1);;
-
-        FOR(p, 2, sqrt(MAX)) {
-            if (x < p) break;
-            while (x % p == 0) {
-                x /= p, cnt[p] += add;
-            }
-        }
-        if (x > 1) cnt[x] += add;
-    }
-    
-    int ans = 1;
-    FOR(i, MAX) {
-        if (cnt[i] < 0) { ans = 0; break; }
-    }
-
-    if (is0 || ans) cout << "mint chocolate";
-    else cout << "toothpaste";
+        cout << l << '\n';
+	}
 
 	return 0;
 }

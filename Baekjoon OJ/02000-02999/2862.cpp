@@ -30,10 +30,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAX = 101010;
-
-int cnt[MAX];
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
@@ -42,40 +38,28 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-    
-    int n; cin >> n;
 
-    int is0 = 0;
+	ll n; cin >> n;
 
-    FOR(n) {
-        int x; char c;
-        if (i == 0) cin >> x;
-        else cin >> c >> x;
-        
-        if (x < 0) x *= -1;
-        if (x == 0) {
-            is0 = 1;
-            continue;
-        }
+    vt<ll> fibo(3);
+    fibo[0] = 0, fibo[1] = fibo[2] = 1;
 
-        int add = (i == 0 || c == '*' ? 1 : -1);;
-
-        FOR(p, 2, sqrt(MAX)) {
-            if (x < p) break;
-            while (x % p == 0) {
-                x /= p, cnt[p] += add;
-            }
-        }
-        if (x > 1) cnt[x] += add;
-    }
-    
-    int ans = 1;
-    FOR(i, MAX) {
-        if (cnt[i] < 0) { ans = 0; break; }
+    ll x = 1, y = 1;
+    while (x + y <= n) {
+        fibo.push_back(x + y);
+        ll tmp = x + y;
+        x = y;
+        y = tmp;
     }
 
-    if (is0 || ans) cout << "mint chocolate";
-    else cout << "toothpaste";
+    while (1) {
+        int idx = upper_bound(all(fibo), n) - fibo.begin() - 1;
+        if (fibo[idx] == n) {
+            cout << n;
+            return 0;
+        }
+        n -= fibo[idx];
+    }
 
 	return 0;
 }

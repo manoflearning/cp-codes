@@ -30,10 +30,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAX = 101010;
-
-int cnt[MAX];
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
@@ -42,40 +38,17 @@ int main() {
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-    
-    int n; cin >> n;
 
-    int is0 = 0;
+    ll dp[22] = { 0, };
+    dp[1] = 0, dp[2] = 1;
+    FOR(i, 3, 21)
+        dp[i] = (i - 1) * (dp[i - 1] + dp[i - 2]);
 
-    FOR(n) {
-        int x; char c;
-        if (i == 0) cin >> x;
-        else cin >> c >> x;
-        
-        if (x < 0) x *= -1;
-        if (x == 0) {
-            is0 = 1;
-            continue;
-        }
-
-        int add = (i == 0 || c == '*' ? 1 : -1);;
-
-        FOR(p, 2, sqrt(MAX)) {
-            if (x < p) break;
-            while (x % p == 0) {
-                x /= p, cnt[p] += add;
-            }
-        }
-        if (x > 1) cnt[x] += add;
-    }
-    
-    int ans = 1;
-    FOR(i, MAX) {
-        if (cnt[i] < 0) { ans = 0; break; }
-    }
-
-    if (is0 || ans) cout << "mint chocolate";
-    else cout << "toothpaste";
+	int tc; cin >> tc;
+	FOR(tt, 1, tc + 1) {
+		int n; cin >> n;
+        cout << dp[n] << '\n';
+	}
 
 	return 0;
 }
