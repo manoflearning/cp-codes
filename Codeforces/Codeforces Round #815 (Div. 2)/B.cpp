@@ -30,9 +30,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n;
-ll a[101010];
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
@@ -44,23 +41,13 @@ int main() {
 
 	int tc; cin >> tc;
 	FOR(tt, 1, tc + 1) {
-		cin >> n;
-        FOR(n) cin >> a[i + 1];
+		int n; cin >> n;
+        vt<int> a(n);
+        EACH(i, a) cin >> i;
 
-        priority_queue<ll> pq;
-        priority_queue<ll, vt<ll>, greater<ll>> pq2;
+        sort(all(a));
 
-        FOR(i, 1, n + 1) {
-            pq.push(a[i]);
-            pq2.push(a[i]);
-        }
-
-        ll ans = 0;
-        ans += pq.top() - pq2.top();
-        pq.pop(); pq2.pop();
-        ans += pq.top() - pq2.top();
-
-        cout << ans << '\n';
+        cout << a[sz(a) - 1] + a[sz(a) - 2] - a[0] - a[1] << '\n';
 	}
 
 	return 0;

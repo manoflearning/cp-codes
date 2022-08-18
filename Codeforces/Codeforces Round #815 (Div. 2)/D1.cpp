@@ -45,7 +45,9 @@ int f(int idx) {
     ret = 1;
 
     for (int i = idx + 1; i < min(n, idx + 256); i++) {
-        if ((a[idx] ^ i) < (a[i] ^ idx)) ret = max(ret, f(i) + 1);
+        if ((a[idx] ^ i) < (a[i] ^ idx)) {
+            ret = max(ret, f(i) + 1);
+        }
     }
 
     return ret;
