@@ -1,5 +1,3 @@
-#pragma GCC optimize ("O3")
-#pragma GCC target ("avx2")
 #define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #include <cassert>
@@ -9,7 +7,7 @@ using namespace std;
 #define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-#define fr first 
+#define fr first
 #define sc second
 #define vt vector
 #define all(c) (c).begin(), (c).end()
@@ -32,115 +30,85 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAX = 6060;
-
-struct xy {
+struct naemo {
     int sx, sy, ex, ey;
 };
 
-int n, h;
-ll dist[MAX];
-int psum[MAX][MAX];
-vt<xy> a;
+int n;
+vt<naemo> a;
+vt<ll> ccx, ccy;
 
 void init() {
-    FOR(h) {
-        dist[i] = 0;
-        FOR(j, h) {
-            psum[i][j] = 0;
-        }
-    }
-    n = h = 0;
     a.clear();
+    ccx.clear();
+    ccy.clear();
 }
 
 void input() {
     cin >> n;
     a.resize(n);
-    EACH(i, a) cin >> i.sx >> i.sy >> i.ex >> i.ey;
-}
-
-void cc() {
-    vt<pii> b;
     EACH(i, a) {
-        b.push_back({ i.sx, 0 });
-        b.push_back({ i.sy, 0 });
-        b.push_back({ i.ex, 0 });
-        b.push_back({ i.ey, 0 });
-        b.push_back({ i.ex, 1 });
-        b.push_back({ i.ey, 1 });
-    }
-
-    sort(all(b));
-    b.erase(unique(all(b)), b.end());
-
-    h = sz(b);
-
-    EACH(i, a) {
-        int tmp = lower_bound(all(b), (pii){ i.sx, 0 }) - b.begin();
-        dist[tmp] = i.sx, i.sx = tmp;
-        tmp = lower_bound(all(b), (pii){ i.sy, 0 }) - b.begin();
-        dist[tmp] = i.sy, i.sy = tmp;
-        tmp = lower_bound(all(b), (pii){ i.ex, 0 }) - b.begin();
-        dist[tmp] = i.ex, i.ex = tmp;
-        tmp = lower_bound(all(b), (pii){ i.ey, 0 }) - b.begin();
-        dist[tmp] = i.ey, i.ey = tmp;
+        cin >> i.sx >> i.sy;
+        cin >> i.ex >> i.ey;
     }
 }
 
-ll f() {
+void ccom() {
     EACH(i, a) {
-        psum[i.sy][i.sx]++;
-        psum[i.sy][i.ex + 1]--;
-        psum[i.ey + 1][i.sx]--;
-        psum[i.ey + 1][i.ex + 1]++;
+        ccx.push_back(i.sx);
+        ccx.push_back(i.ex);
+        ccy.push_back(i.sy);
+        ccy.push_back(i.ey);
     }
 
-    FOR(i, 1, h) {
-        psum[i][0] += psum[i - 1][0];
-        psum[0][i] += psum[0][i - 1];
+    sort(all(ccx));
+    sort(all(ccy));
+    ccx.erase(unique(all(ccx)), ccx.end());
+    ccy.erase(unique(all(ccy)), ccy.end());
+
+    EACH(i, a) {
+        i.sx = lower_bound(all(ccx), i.sx) - ccx.begin();
+        i.ex = lower_bound(all(ccx), i.ex) - ccx.begin();
+        i.sy = lower_bound(all(ccy), i.sy) - ccy.begin();
+        i.ey = lower_bound(all(ccy), i.ey) - ccy.begin();
     }
-
-    ll ret = 0;
-
-	FOR(i, 1, h) {
-		FOR(j, 1, h) {
-            psum[i][j] += psum[i][j - 1];
-            psum[i][j] += psum[i - 1][j];
-            psum[i][j] -= psum[i - 1][j - 1];
-
-            if (psum[i - 1][j - 1]) {
-                if (!psum[i][j - 1] || !psum[i - 1][j] || !psum[i][j]) continue;
-                ret += (dist[i] - dist[i - 1]) * (dist[j] - dist[j - 1]); 
-            }
-		}
-	}
-
-    return ret;
 }
 
 int main() {
 	#ifndef ONLINE_JUDGE
-	// Enter the absolute path of the local file input.txt, output.txt
-	// Or just enter the "input.txt", "output.txt"
-    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
 	#endif
 
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
-	
-	int tc; cin >> tc;
 
-    FOR(tc) {
+	int tc; cin >> tc;
+	FOR(tt, 1, tc + 1) {
+		init();
+
         input();
 
-        cc();
+        ccom();
 
-        cout << f() << '\n';
+        ll ans = 0;
+        FOR(i, sz(ccx)) {
+            vt<int> psum(sz(ccy));
+            EACH(j, a) {
+                if (j.sx <= i && i < j.ex) {
+                    psum[j.sy]++;
+                    psum[j.ey]--;
+                }
+            }
 
-        init();
-    }
+            FOR(j, sz(ccy)) {
+                if (j > 0) psum[j] += psum[j - 1];
+                if (psum[j]) ans += (ccy[j + 1] - ccy[j]) * (ccx[i + 1] - ccx[i]);
+            }
+        }
+
+        cout << ans << '\n';
+	}
 
 	return 0;
 }
