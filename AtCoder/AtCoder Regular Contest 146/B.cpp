@@ -60,10 +60,6 @@ ll f(int idx) {
             a[i.sc].w += add;
         }
 
-        /*cout << x << '\n';
-        EACH(i, a)
-            cout << i.v << ' ' << i.w << '\n';*/
-
         return x + f(idx - 1);
     }
     else return f(idx - 1);
@@ -83,17 +79,6 @@ int main() {
     EACH(i, a) cin >> i.v;
     
     cout << f(32);
-
-    //sort(a.rbegin(), a.rend());
-
-    /*ll l = 0, r = (1ll << 32);
-    while (l < r) {
-        ll mid = (l + r + 1) >> 1;
-        if (isPos(mid)) l = mid;
-        else r = mid - 1;
-    }
-
-    cout << l;*/
 
 	return 0;
 }

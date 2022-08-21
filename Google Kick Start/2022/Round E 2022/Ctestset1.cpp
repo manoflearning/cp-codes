@@ -30,16 +30,6 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-struct xy {
-    ll x, y;
-    bool operator<(const xy& rhs) const {
-        return y < rhs.y;
-    }
-};
-
-int n;
-vt<xy> a;
-
 int main() {
 	#ifndef ONLINE_JUDGE
 	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
@@ -49,26 +39,39 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	cin >> n;
-    a.resize(n);
-    EACH(i, a) cin >> i.x >> i.y;
+	int tc; cin >> tc;
+	FOR(tt, 1, tc + 1) {
+		cout << "Case #" << tt << ": ";
 
-    sort(all(a));
+        int n;
+        string s, p;
+        cin >> n >> s;
 
-    ll ans = 0;
+        for (int i = sz(s) - 1; i >= 0; i--)
+            p.push_back(s[i]);
 
-    int l = 0, r = n - 1;
-    while (l < r) {
-        ans = max(ans, a[l].y + a[r].y);
+        for (int st = 1; st <= sz(s); st++) {
+            bool res = 1;
+            for (int i = 0; i + st < sz(s); i++) {
+                if (s[i + st] != p[i]) { res = 0; break; }
+            }
 
-        if (a[l].x < a[r].x) a[r].x -= a[l++].x;
-        else if (a[l].x > a[r].x) a[l].x -= a[r--].x;
-        else l++, r--;
-    }
+            if (!res) continue;
 
-    if (a[l].x >= 2) ans = max(ans, a[l].y * 2);
+            for (int i = 0; i < st; i++) {
+                if (s[i] != s[st - i - 1]) { res = 0; break; }
+            }
 
-    cout << ans;
+            if (!res) continue;
+            
+            for (int i = 0; i < st; i++) {
+                cout << s[i];
+            }
+            cout << '\n';
+            
+            break;
+        }
+	}
 
 	return 0;
 }

@@ -30,21 +30,12 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n, vi[22];
-
-int bt(int idx) {
-    if (idx == n + 1) return 1;
-
-    int ret = 0;
-    FOR(i, 1, n + 1) {
-        if (vi[i]) continue;
-        if (i == idx) continue;
-        vi[i] = 1;
-        ret += bt(idx + 1);
-        vi[i] = 0;
+struct vidx {
+    int v, idx;
+    bool operator<(const vidx& rhs) const {
+        return v < rhs.v;
     }
-    return ret;
-}
+};
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -56,10 +47,31 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
 	int tc; cin >> tc;
-    FOR(tt, 1, tc + 1) {
-        cin >> n;
-        cout << bt(1) << '\n';
-    }
+	FOR(tt, 1, tc + 1) {
+		cout << "Case #" << tt << ": ";
+
+        int n; cin >> n;
+        vt<vidx> a(n);
+        FOR(n) {
+            cin >> a[i].v;
+            a[i].idx = i;
+        }
+
+        vt<vidx> b = a;
+
+        sort(all(b));
+
+        EACH(i, a) {
+            vidx du = { 2 * i.v, i.idx };
+            int idx = upper_bound(all(b), du) - b.begin() - 1;
+
+            if (idx >= 0 && b[idx].idx == i.idx) idx--;
+
+            if (idx < 0) cout << -1 << ' ';
+            else cout << b[idx].v << ' ';
+        }
+        cout << '\n';
+	}
 
 	return 0;
 }
