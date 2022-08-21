@@ -31,34 +31,12 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 struct wv {
-    ll w, v;
+    int w, v;
 };
 
-ll n, q, ibit;
+int n, q;
+int lb[101010], rb[101010], ans[101010];
 vt<wv> adj[101010];
-ll lb[101010], con[101010];
-
-void init() {
-    FOR(101010) lb[i] = -1;
-    ibit = (1 << 31) - 1;
-}
-
-void input() {
-    cin >> n >> q;
-
-    while (q--) {
-        ll u, v, w;
-        cin >> u >> v >> w;
-
-        if (u == v) {
-            con[u] = lb[u] = w;
-            continue;
-        }
-
-        if (u > v) swap(u, v);
-        adj[v].push_back({ w, u });
-    }
-}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -69,49 +47,38 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    init();
+    FOR(101010) rb[i] = (1 << 30) - 1;
 
-    input();
-    
-    FOR(i, n, 0, -1) {
-        if (lb[i] == -1 && adj[i].empty()) continue;
+	cin >> n >> q;
+    while (q--) {
+        int u, v, w;
+        cin >> u >> v >> w;
 
-        ll res = ibit;
-        EACH(j, adj[i]) res &= j.w;
-
-        if (lb[i] != -1) {
-            if (adj[i].empty()) res = lb[i];
-            else res |= lb[i];
+        if (u == v) {
+            lb[u] = rb[u] = ans[u] = w;
+            continue;
         }
 
-        con[i] = res;
+        if (u > v) swap(u, v);
+        rb[u] &= w, rb[v] &= w;
+        adj[u].push_back({ w, v });
+    }
+
+    FOR(i, 1, n + 1) {
+        int& res = ans[i];
+        res |= lb[i];
 
         EACH(j, adj[i]) {
-            if (lb[j.v] == -1) lb[j.v] = 0;
+            res |= j.w - (j.w & rb[j.v]);
+        }
+
+        EACH(j, adj[i]) {
             lb[j.v] |= j.w - (j.w & res);
         }
     }
 
-    FOR(i, 1, n + 1) {
-        if (adj[i].empty()) continue;
-
-        ll left = 0;
-        for (int b = 30; b >= 0; b--) {
-            int res = 1;
-            EACH(j, adj[i]) {
-                if ((j.w & (1 << b)) == (1 << b) 
-                && (con[j.v] & (1 << b)) != (1 << b)) res = 0;
-            }
-
-            if (res) left |= (1 << b);
-        }
-        
-        con[i] -= (con[i] & left);
-        if (lb[i] != -1) con[i] |= lb[i];
-    }
-
-    FOR(i, 1, n + 1)
-        cout << con[i] << ' ';
+    FOR(i, 1, n + 1) 
+        cout << ans[i] << ' ';
 
 	return 0;
 }
