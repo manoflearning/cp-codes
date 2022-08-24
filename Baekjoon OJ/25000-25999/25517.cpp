@@ -44,10 +44,11 @@ int main() {
     sort(a.begin(), a.end());
     a.erase(unique(a.begin(), a.end()), a.end());
 
+    ll ans2 = 1;
     for (auto& i : a) 
-        ans = ans * modInv(i, MOD - 2) % MOD;
+        ans2 = ans2 * i % MOD;
 
-    cout << ans;
+    cout << ans * modInv(ans2, MOD - 2) % MOD;
 
     return 0;
 }
