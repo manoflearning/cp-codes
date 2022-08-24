@@ -30,8 +30,37 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n;
-ll a[303030];
+struct wv {
+    ll w; int v;
+};
+
+vt<wv> adj[50505];
+int vi[50505];
+
+ll dfs(int v, int cnt, int en) {
+    if (v == en) return 0;
+    
+    ll ret = INF;
+    if (cnt == 2) {
+        EACH(i, adj[v]) {
+            if (vi[i.v]) continue;
+            if (i.v != en) continue;
+
+            vi[i.v] = 1;
+            ret = min(ret, i.w + dfs(i.v, cnt + 1, en));
+            vi[i.v] = 0;
+        }
+    }
+    else {
+        EACH(i, adj[v]) {
+            if (vi[i.v]) continue;
+            vi[i.v] = 1;
+            ret = min(ret, i.w + dfs(i.v, cnt + 1, en));
+            vi[i.v] = 0;
+        }
+    }
+    return ret;
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -42,16 +71,33 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	cin >> n;
-    FOR(n) cin >> a[i + 1];
+	int n, m, q;
+    cin >> n >> m >> q;
 
-    priority_queue<pll, vt<pll>, greater<pll>> pq;
-    FOR(i, 1, n + 1) {
-        if (!a[i]) continue;
-        pq.push({ a[i], i });
+    FOR(m) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].push_back({ w, v });
+        adj[v].push_back({ w, u });
     }
 
-    
+    while (q--) {
+        int st, en;
+        cin >> st >> en;
+
+        ll ans = INF;
+
+        // 1 bus
+        EACH(i, adj[st]) {
+            if (i.v == en) ans = min(ans, i.w);
+        }
+
+        // 2 bus
+        
+
+        if (ans == INF) cout << -1 << '\n';
+        else cout << ans << '\n';
+    }
 
 	return 0;
 }
