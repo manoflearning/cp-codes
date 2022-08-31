@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #include <cassert>
 using namespace std;
@@ -29,6 +30,57 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
+const int MAXS = 4040;
+
+int n;
+string s;
+
+int r = -1, c = -1;
+int p[MAXS];
+
+int dp[MAXS];
+
+void manacher() {
+    n = sz(s);
+    s.resize(n << 1 | 1);
+
+    FOR(i, n - 1, -1, -1) {
+        s[i << 1 | 1] = s[i];
+        s[i << 1] = '#';
+    }
+    n <<= 1;
+    s[n++] = '#';
+
+    for (int i = 0; i < n; i++) {
+        if (i < r) p[i] = min(r - i, p[2 * c - i]);
+        else p[i] = 0;
+
+        while (1) {
+            if (i - p[i] - 1 < 0) break;
+            if (i + p[i] + 1 >= n) break;
+            if (s[i + p[i] + 1] != s[i - p[i] - 1]) break;
+            p[i]++;
+        }
+
+        if (r < i + p[i]) {
+            r = i + p[i], c = i;
+        }
+    }
+}
+
+int f(int idx) {
+    int& ret = dp[idx];
+    if (ret != -1) return ret;
+    if (idx == n) return ret = 0;
+
+    ret = INF;
+    for (int i = idx; i < n; i++) {
+        if (idx < i - p[i]) continue;
+        ret = min(ret, 1 + f(2 * i - idx + 1));
+    }
+    return ret;
+}
+
 int main() {
 	#ifndef ONLINE_JUDGE
 	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
@@ -38,10 +90,13 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	int tc; cin >> tc;
-	FOR(tt, 1, tc + 1) {
-		
-	}
+    memset(dp, -1, sizeof(dp));
+
+	cin >> s;
+
+    manacher();
+
+    cout << min(f(0), f(1));
 
 	return 0;
 }
