@@ -29,9 +29,22 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-int n;
-string s;
-ll a[303030];
+const int MAX = 1e6;
+
+bool isPrime[MAX + 1];
+vector<int> prime;
+
+void getPrime() {
+	fill(isPrime + 2, isPrime + MAX + 1, 1);
+
+	for (ll i = 4; i <= MAX; i += 2)
+		isPrime[i] = 0;
+	for (ll i = 3; i <= MAX; i++) {
+		if (isPrime[i] && i >= 2000) prime.push_back(i);
+		for (ll j = i * i; j <= MAX; j += i * 2)
+			isPrime[j] = 0;
+	}
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -42,50 +55,19 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	cin >> n >> s;
-    FOR(n) cin >> a[i];
+    getPrime();
 
-    ll st = -1;
-    FOR(i, 1, n) {
-        if (s[i] != s[i - 1]) {
-            st = i;
-            break;
+	int k, n;
+    cin >> k >> n;
+
+    for (int i = 0; i < k; i++) {
+        ll ans = prime[i];
+        for (int j = 0; j < n; j++) {
+            cout << ans << ' ';
+            ans += prime[i];
         }
+        cout << '\n';
     }
-
-    if (st == -1) {
-        cout << 0;
-        return 0;
-    }
-
-    ll mx = 0;
-    vt<ll> arr(1, 0);
-    FOR(i, st, n) {
-        if (s[i] != s[i - 1]) {
-            if (mx) arr.push_back(mx);
-            mx = 0;
-        }
-        mx = max(mx, a[i]);
-    }
-
-    arr.push_back(0);
-
-    n = sz(arr);
-    if (n == 2) {
-        cout << 0;
-        return 0;
-    }
-
-    priority_queue<ll> pq;
-    FOR(i, 1, n - 1) pq.push(arr[i]);
-
-    ll cnt = (n - 1) / 2, ans = 0;
-    while (cnt--) {
-        ans += pq.top();
-        pq.pop();
-    }
-
-    cout << ans;
 
 	return 0;
 }
