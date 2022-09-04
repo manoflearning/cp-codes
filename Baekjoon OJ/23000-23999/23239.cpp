@@ -59,50 +59,32 @@ int main() {
 
     ans += 3 * f(l);
 
-    if (r > c) swap(r, c);
-    
-    //cout << f(100, 1) - 1 << '\n';
-    //cout << f(99, 1) + f(99, 1) - min(f(99, 3), f(99, 3)) << '\n';
-
+    if (l > r) ans += f(l - r);
+    if (l > c) ans += f(l - c);
     if (l > r + c) {
-        ans += f(l - r);
-        ans += f(l - c);
-
         vector<ll> res1 = f2(l - r, c + 1);
         vector<ll> res2 = f2(l - c, r + 1);
         
         for (int i = 0; i < sz(res1); i++) {
-            int x1 = res1[i]/* + c*/, y1 = i + 1/* + r*/;
+            int x1 = res1[i], y1 = i + 1;
             
             int s = 0, e = sz(res2) - 1;
             while (s < e) {
                 int mid = (s + e + 1) >> 1;
                 
-                int x2 = mid + 1/* + c*/, y2 = res2[mid]/* + r*/;
+                int x2 = mid + 1, y2 = res2[mid];
                 if (x2 <= x1 && y1 <= y2) s = mid;
                 else e = mid - 1;
             }
 
             ans -= s + 1;
             
-            //for (int j = 0; j < sz(res2); j++) {
-                //int x2 = j + 1/* + c*/, y2 = res2[j]/* + r*/;
-                //cout << x2 << ' ' << y2 << '\n';
-                //if (x2 <= x1 && y1 <= y2) ans--;
-                //else cout << s << ' ' << j << '\n';
-            //}
-            //cout << '\n';
+            /*for (int j = 0; j < sz(res2); j++) {
+                int x2 = j + 1, y2 = res2[j];
+                if (x2 <= x1 && y1 <= y2) ans--;
+            }*/
         }
     }
-    else if (l > r && l > c) {
-        ans += f(l - r);
-        ans += f(l - c);
-    }
-    else if (l > r) {
-        ans += f(l - r);
-    }
-
-    //cout << 4 * f(100, 1) + 4 * 100 - 2 << '\n';
     
     cout << ans;
 
