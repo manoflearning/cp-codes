@@ -41,37 +41,26 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
     cin >> n;
-
-    set<ll> s;
-    FOR(i, n, 0, -1)
-        s.insert(-i);
-
-    int bit = 1;
-    vt<int> ans;
-
-    ll x = 0;
-    FOR(n) {
-        ll y = 0;
-        EACH(i, s) {
-            if (!vi[(x - i) % n]) {
-                y = i; break;
+    
+    if (n == 1) {
+        cout << 1;
+    }
+    else if (n & 1) {
+        cout << -1;
+    }
+    else {
+        int lb = 1, rb = n;
+        FOR(i, n) {
+            if (i & 1) {
+                cout << lb << ' ';
+                lb += 2;
+            }
+            else {
+                cout << rb << ' ';
+                rb -= 2;
             }
         }
-        vi[(x - y) % n] = 1;
-        x = (x - y) % n;
-
-        if (y != 0) {
-            s.erase(y);
-            ans.push_back(-y);
-        }
-        else { bit = 0; break; }
     }
-
-    if (bit) {
-        EACH(i, ans) 
-            cout << i << ' ';
-    }
-    else cout << -1;
 
 	return 0;
 }
