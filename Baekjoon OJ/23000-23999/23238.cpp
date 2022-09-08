@@ -84,8 +84,27 @@ void del(int idx) {
 }
 
 int query(int s, int e) {
-    int l = 
-	// TODO: extract the current answer of the data structure
+    int ret = 0, mx = 0;
+
+    int l = s / sq * sq + 1, r = e / sq * sq;
+    if (l < s) l += sq;
+
+	for (int i = s; i < l; i++) {
+        if (mx < cnt[a[i]]) {
+            mx = cnt[a[i]];
+            ret = a[i];
+        }
+    }
+    for (int i = r + 1; i <= e; i++) {
+        if (mx < bu[a[i]]) {
+            mx = bu[a[i]];
+            ret = a[i];
+        }
+    }
+
+    for (int i = l / sq; i < r / sq; i++) {
+        if 
+    }
 }
 
 void f() {

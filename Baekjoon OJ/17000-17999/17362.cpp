@@ -1,23 +1,15 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-	int n;
-	scanf("%d", &n);
+	int n; cin >> n;
+	n--; n %= 8;
 
-	if (n % 8 == 1) printf("1");
-	else if (n % 8 == 2 || n % 8 == 0) printf("2");
-	else if (n % 8 == 3 || n % 8 == 7) printf("3");
-	else if (n % 8 == 4 || n % 8 == 6) printf("4");
-	else printf("5");
+	if (n == 0) cout << 1;
+	else if (n == 1 || n == 7) cout << 2;
+	else if (n == 2 || n == 6) cout << 3;
+	else if (n == 3 || n == 5) cout << 4;
+	else if (n == 4) cout << 5;
 
 	return 0;
 }
-/*
-문제 해법		: 
-접근 방식		:
-결정적 깨달음		:
-오답 원인		: 1. 
-				  2.
-*/
-//////////////////////////////////////////////////////////////////////
