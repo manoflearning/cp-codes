@@ -49,6 +49,21 @@ int main() {
         EACH(i, a) cin >> i;
         EACH(i, b) cin >> i;
         
+        vt<int> nxt(n + 1);
+        for (int i = 0; i < n; i++) {
+            nxt[a[i]] = a[(i + 1) % n];
+        }
+
+        int ans = 1;
+        for (int i = 0; i < n; i++) {
+            if (nxt[b[i]] != b[(i + 1) % n]) ans = 0;
+        }
+
+        if (!ans) {
+            cout << "NO\n";
+            continue;
+        }
+
         if (n == 2) {
             if (a == b) {
                 if (k & 1) cout << "NO\n";
@@ -73,18 +88,7 @@ int main() {
             continue;
         }
 
-        vt<int> nxt(n + 1);
-        for (int i = 0; i < n; i++) {
-            nxt[a[i]] = a[(i + 1) % n];
-        }
-
-        int ans = 1;
-        for (int i = 0; i < n; i++) {
-            if (nxt[b[i]] != b[(i + 1) % n]) ans = 0;
-        }
-
-        if (ans) cout << "YES\n";
-        else cout << "NO\n";
+        cout << "YES\n";
 	}
 
 	return 0;
