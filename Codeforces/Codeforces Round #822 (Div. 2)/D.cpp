@@ -43,57 +43,6 @@ void input() {
     for (int i = 1; i <= n; i++) cin >> a[i];
 }
 
-void com() {
-    vt<ll> b(1, 0);
-
-    int isP = (a[1] > 0);
-    ll sum = 0;
-    for (int i = 1; i < k; i++) {
-        if (isP) {
-            if (a[i] > 0) sum += a[i];
-            else {
-                b.push_back(sum);
-                sum = 0, isP = 0, i--;
-            }
-        }
-        else {
-            if (a[i] < 0) sum += a[i];
-            else {
-                b.push_back(sum);
-                sum = 0, isP = 1, i--;
-            }
-        }
-    }
-    if (sum) b.push_back(sum);
-
-    b.push_back(a[k]);
-    int nk = sz(b) - 1;
-
-    sum = 0;
-    if (k + 1 <= n) isP = (a[k + 1] > 0);
-    for (int i = k + 1; i <= n; i++) {
-        if (isP) {
-            if (a[i] > 0) sum += a[i];
-            else {
-                b.push_back(sum);
-                sum = 0, isP = 0, i--;
-            }
-        }
-        else {
-            if (a[i] < 0) sum += a[i];
-            else {
-                b.push_back(sum);
-                sum = 0, isP = 1, i--;
-            }
-        }
-    }
-    if (sum) b.push_back(sum);
-
-    a = b;
-    k = nk;
-    n = sz(a) - 1;
-}
-
 bool f(int l, int r) {
     bool ret = 0;
 
@@ -142,14 +91,8 @@ int main() {
 	FOR(tt, 1, tc + 1) {
 		init();
 
-        input();    
+        input();
         
-        com();
-
-        //cout << n << ' ' << k << '\n';
-        //for (int i = 1; i <= n; i++) cout << a[i] << ' ';
-        //cout << '\n';
-
         psum.resize(n + 1);
         for (int i = 1; i <= n; i++)
             psum[i] = a[i] + psum[i - 1];
