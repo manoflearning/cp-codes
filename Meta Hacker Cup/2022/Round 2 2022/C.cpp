@@ -98,7 +98,7 @@ int main() {
         
         p = (p * c) % MOD;
         q = (q * (same + c)) % MOD;
-
+        
         cout << (p * powxy(q, MOD - 2) % MOD + MOD) % MOD << '\n';
 	}
 
