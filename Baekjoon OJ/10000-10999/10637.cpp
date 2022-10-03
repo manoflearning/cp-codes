@@ -71,6 +71,7 @@ void dfs(int v) {
 }
 
 void dfs1(int v) {
+    visited[v] = 1;
     siz[v] = 1;
     for (auto& i : t[v]) {
         dep[i] = dep[v] + 1, par[i] = v;
@@ -81,6 +82,7 @@ void dfs1(int v) {
 }
 
 void dfs2(int v) {
+    visited[v] = 1;
     in[v] = ++pv;
     for (auto& i : t[v]) {
         top[i] = (i == t[v][0] ? top[v] : i);
@@ -167,16 +169,6 @@ void modify(int u, int v, ll w) {
 int query(int u, int v) {
     if (dep[u] < dep[v]) swap(u, v);
     return seg.query(in[u], in[u]);
-   /*ll ret = INF;
-    while (top[u] ^ top[v]) {
-        if (dep[top[u]] < dep[top[v]]) swap(u, v);
-        int st = top[u];
-        ret = min(ret, seg.query(in[st], in[u]));
-        u = par[st];
-    }
-    if (dep[u] > dep[v]) swap(u, v);
-    ret = min(ret, seg.query(in[u] + 1, in[v]));
-    return ret;*/
 }
 
 int main() {
