@@ -1,8 +1,9 @@
+// BOJ 1688 AC Code
+// https://www.acmicpc.net/problem/1688
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
 #define pii pair<int, int>
-#define sz(x) (int)(x).size()
 
 struct point {
     ll x, y;
