@@ -46,20 +46,7 @@ int main() {
         cout << "NO";
         return 0;
     }
-
-    if (a == 0) {
-        if (l == 0) {
-            cout << "YES\n";
-            for (int j = 1; j <= n; j++) {
-                cout << 0 << ' ';
-            }
-        }
-        else {
-            cout << "NO";
-        }
-        return 0;
-    }
-
+    
     for (int i = 1; i <= n; i++) {
         if (a % i) continue;
         ll h = a / i;
