@@ -22,7 +22,7 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     int q; cin >> q;
-    while (q--) {
+    for (int i = 0; i < q; i++) {
         ll op, x;
         cin >> op >> x;
 
@@ -39,10 +39,11 @@ int main() {
             it = s.lower_bound({ x, -1 });
             if (it != s.begin()) {
                 it--;
-                if (it->sc != x - 1) continue;
-                l = it->fr;
-                ans -= cal(it->fr, it->sc);
-                s.erase(it);
+                if (it->sc == x - 1) {
+                    l = it->fr;
+                    ans -= cal(it->fr, it->sc);
+                    s.erase(it);
+                }
             }
 
             ans += cal(l, r);
@@ -59,12 +60,16 @@ int main() {
                 s.erase(it);
             }
 
-            ans += cal(l, x - 1);
-            s.insert({ l, x - 1 });
-            ans += cal(x + 1, r);
-            s.insert({ x + 1, r });
+            if (l < x) {
+                ans += cal(l, x - 1);
+                s.insert({ l, x - 1 });
+            }
+            if (x < r) {
+                ans += cal(x + 1, r);
+                s.insert({ x + 1, r });
+            }
         }
-
+        
         cout << ans << '\n';
     }
 
