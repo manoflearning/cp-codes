@@ -71,15 +71,8 @@ void cc() {
     sort(all(c));
     c.erase(unique(all(c)), c.end());
 
-    /*for (int i = 1; i + 1 < sz(c); i++) {
-        if (c[i + 1] > c[i] + 1) c.push_back(c[i] + 1);
-    }
-
-    sort(all(c));*/
-
     EACH(i, a) {
         i.sc = lower_bound(all(c), i.sc) - c.begin();
-        //while (i.sc == 0 || i.sc >= sz(c)) ;
     }
 }
 
