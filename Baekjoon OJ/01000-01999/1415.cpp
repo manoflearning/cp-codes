@@ -77,6 +77,7 @@ int main() {
     dp[0] = 1;
     EACH(x, a) {
         if (x.fr == 0) continue;
+        
         for (int i = 500000; i >= 0; i--) {
             if (!dp[i]) continue;
             
