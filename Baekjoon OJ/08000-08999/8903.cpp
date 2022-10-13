@@ -5,10 +5,6 @@ using namespace std;
 int n, m;
 vector<vector<int>> a;
 
-void init() {
-
-}
-
 int main() {
     #ifndef ONLINE_JUDGE
 	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
@@ -20,8 +16,6 @@ int main() {
 
     int tc; cin >> tc;
     while (tc--) {
-        init();
-
         cin >> n >> m;
     
         a.resize(n, vector<int>(5));

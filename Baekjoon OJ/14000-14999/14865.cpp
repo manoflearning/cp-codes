@@ -60,9 +60,6 @@ vector<pii> a;
 vector<int> c;
 
 void cc() {
-    sort(a.begin(), a.end());
-    a.erase(unique(a.begin(), a.end()), a.end());
-
     c.push_back(-INF);
     for (auto& i : a) {
         c.push_back(i.fr);
@@ -114,6 +111,7 @@ int main() {
     int ans1 = 0, ans2 = 0;
 
     sort(a.begin(), a.end());
+    a.erase(unique(a.begin(), a.end()), a.end());
 
     for (auto& i : a) {
         if (mxseg.query(1, i.fr - 1) < i.fr) ans1++;
