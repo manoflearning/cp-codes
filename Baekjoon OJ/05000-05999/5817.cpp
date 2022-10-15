@@ -43,7 +43,7 @@ struct mnSeg {  // 1-indexed
 	}
 }mnidx;
 
-int n, m, a[202020], loc[202020];
+int n, m, a[202020];
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -60,7 +60,6 @@ int main() {
     for (int i = 1; i <= n; i++) {
         int x; cin >> x;
         a[i] = x;
-        loc[x] = i;
         mxidx.modify(x, i);
         mnidx.modify(x, i);
     }
@@ -74,7 +73,6 @@ int main() {
             mxidx.modify(a[u], v);
             mnidx.modify(a[v], u);
             mnidx.modify(a[u], v);
-            swap(loc[a[u]], loc[a[v]]);
             swap(a[u], a[v]);
         }
         else {

@@ -69,7 +69,8 @@ int main() {
         if (it.op == 'U') {
             int u = edge[it.v].fr, v = edge[it.v].sc;
             adj[u].push_back(v);
-            bfs(u);
+            dist[v] = min(dist[v], dist[u] + 1);
+            bfs(v);
         }
         else ans.push_back(dist[it.v]);
     }

@@ -1,6 +1,3 @@
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
-
 #include <bits/stdc++.h>
 using namespace std;
 #define fr first
@@ -50,7 +47,7 @@ int main() {
             y = yy, x = xx;
             break;
         }
-
+        
         while (1) {
             auto it = mp[x].lower_bound(y);
             int ny = it->fr - 1;

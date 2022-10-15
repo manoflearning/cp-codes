@@ -75,11 +75,10 @@ int lca2(int u, int v) {
 }
 
 int goup(int v, int len) {
-    int ret = v;
     for (int i = MAXD; i >= 0; i--) {
-        if (len & (1 << i)) ret = par[ret][i];
+        if (len & (1 << i)) v = par[v][i];
     }
-    return ret;
+    return v;
 }
 
 int main() {
