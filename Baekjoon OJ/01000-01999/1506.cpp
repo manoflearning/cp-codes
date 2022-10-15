@@ -45,7 +45,7 @@ void kosaraju() {
     for (int v = 1; v <= n; v++) {
         if (!in[v]) dfs(v);
     }
-
+    
     for (int v = 2 * n; v >= 1; v--) {
         if (!p[v]) continue;
         if (vi[p[v]]) continue;
