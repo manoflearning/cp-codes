@@ -9,7 +9,11 @@ ll a[101010];
 vector<ll> arr[32];
 
 void init() {
-
+    for (int i = 0; i < 32; i++) {
+        memset(psum[i], 0, sizeof(psum[i]));
+        memset(a, 0, sizeof(a));
+        arr[i].clear();
+    }
 }
 
 void input() {
@@ -34,6 +38,11 @@ void buildPsum() {
 }
 
 int main() {
+    #ifndef ONLINE_JUDGE
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	#endif
+
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
@@ -44,14 +53,44 @@ int main() {
         input();
 
         buildPsum();
+        
+        ll mx = 0;
+        for (int v = 1; v <= n; v++)
+            mx = max(mx, a[v]);
 
-        ll ans = 0;
+        ll ans = mx;
+
         for (int v = 1; v <= n; v++) {
+            if (a[v] != mx) continue;
+
+            int l = 1, r = n;
+            ll res = mx;
+
             for (int i = 31; i >= 0; i--) {
-                int idx = lower_bound(all(arr[i]), v) - arr[i].begin();
-                if (idx == )
+                if (mx < (1 << i)) continue;
+                if (a[v] & (1 << i)) continue;
+                
+                auto it = lower_bound(all(arr[i]), v);
+
+                if (it != arr[i].end()) {
+                    int idx = *it;
+                    if (idx <= r && (psum[i + 1][idx] - psum[i + 1][v - 1]) & 1) {
+                        r = idx; res |= (1 << i);
+                    }
+                }
+                if (it != arr[i].begin()) {
+                    it--;
+                    int idx = *it;
+                    if (l <= idx && (psum[i + 1][v] - psum[i + 1][idx - 1]) & 1) {
+                        l = idx; res |= (1 << i);
+                    }
+                }
             }
+            cout << l << ' ' << r << '\n';
+            ans = max(ans, res);
         }
+
+        cout << ans << '\n';
     }
 
     return 0;
