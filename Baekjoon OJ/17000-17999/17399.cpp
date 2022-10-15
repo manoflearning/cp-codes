@@ -127,7 +127,7 @@ int main() {
 
                 int len = lca(u, v), m = goup(u, len / 2);
                 int xm = lca(x, m), ym = lca(y, m), zm = lca(z, m);
-
+                
                 if (xm == len / 2 && ym == len / 2 && zm == len / 2) cout << m << '\n';
                 else cout << -1 << '\n';
             }
