@@ -22,7 +22,7 @@ struct mxSeg {  // 1-indexed
 		int mid = (nl + nr) / 2;
 		return max(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
 	}
-}mxseg, mxidx;
+}mxidx;
 
 struct mnSeg {  // 1-indexed
 	vector<ll> t;
@@ -41,7 +41,7 @@ struct mnSeg {  // 1-indexed
 		int mid = (nl + nr) / 2;
 		return min(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
 	}
-}mnseg, mnidx;
+}mnidx;
 
 int n, m, a[202020], loc[202020];
 
@@ -55,16 +55,12 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     cin >> n >> m;
-    mxseg.build(n);
-    mnseg.build(n);
     mxidx.build(n);
     mnidx.build(n);
     for (int i = 1; i <= n; i++) {
         int x; cin >> x;
         a[i] = x;
         loc[x] = i;
-        mxseg.modify(i, x);
-        mnseg.modify(i, x);
         mxidx.modify(x, i);
         mnidx.modify(x, i);
     }
@@ -74,10 +70,6 @@ int main() {
         cin >> op >> u >> v;
 
         if (op == 1) {
-            mxseg.modify(u, a[v]);
-            mxseg.modify(v, a[u]);
-            mnseg.modify(u, a[v]);
-            mnseg.modify(v, a[u]);
             mxidx.modify(a[v], u);
             mxidx.modify(a[u], v);
             mnidx.modify(a[v], u);
@@ -87,7 +79,7 @@ int main() {
         }
         else {
             int l = mnidx.query(u, v), r = mxidx.query(u, v);
-            if (mxseg.query(l, r) - mnseg.query(l, r) == v - u) cout << "YES\n";
+            if (r - l == v - u) cout << "YES\n";
             else cout << "NO\n";
         }
     }
