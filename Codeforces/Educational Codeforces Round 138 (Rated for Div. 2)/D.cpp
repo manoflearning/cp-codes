@@ -75,7 +75,7 @@ int main() {
 
     ll lc = 1;
     for (ll i = 2; i <= n; i++) {
-        if (isPrime[i]) 
+        if (isPrime[i] && lc <= m) 
             lc = lcm(lc, i);
 
         ll cnt = m / lc;
