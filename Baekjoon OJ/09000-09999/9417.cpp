@@ -35,6 +35,7 @@ int main() {
 
                 prv = i + 1;
                 a.push_back(stoi(num));
+                assert(stoi(num) > 0);
             }
         }
 
@@ -42,7 +43,8 @@ int main() {
         for (int j = prv; j < s.size(); j++) {
             num.push_back(s[j]);
         }
-        if (num.size()) a.push_back(stoi(num));
+        a.push_back(stoi(num));
+        assert(stoi(num) > 0);
 
         int ans = 0;
         for (int i = 0; i < a.size(); i++) {
