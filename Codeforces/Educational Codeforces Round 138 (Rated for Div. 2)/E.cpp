@@ -108,7 +108,7 @@ int main() {
 
         int bit = 0, mn = INF, idx = -1;
         FOR(n) {
-            if (f(i, 0) < m * n) {
+            if (f(i, 0) < INF) {
                 bit = 1;
                 if (mn > f(i, 0)) {
                     mn = f(i, 0);
