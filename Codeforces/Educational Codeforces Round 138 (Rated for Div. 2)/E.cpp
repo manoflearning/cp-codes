@@ -30,14 +30,15 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int n, m;
-vt<string> a, ans;
-vt<vt<int>> dp;
+vt<string> a;
+vt<vt<int>> dist;
+vt<vt<pii>> prv;
 
 void init() {
     n = m = 0;
     a.clear();
-    ans.clear();
-    dp.clear();
+    dist.clear();
+    prv.clear();
 }
 
 void input() {
@@ -45,49 +46,56 @@ void input() {
 
     a.resize(n);
     EACH(i, a) cin >> i;
-
-    dp.resize(n + 10, vt<int>(m + 10, -1));
 }
 
 bool near(int y, int x) {
     FOR(4) {
         int ny = y + dy[i], nx = x + dx[i];
         if (ny < 0 || n <= ny || nx < 0 || m <= nx) continue;
-        
+
         if (a[ny][nx] == '#') return 1;
     }
     return 0;
 }
 
-int f(int y, int x) {
-    int& ret = dp[y][x];
-    if (ret != -1) return ret;
+void bfs01() {
+    dist.resize(n, vt<int>(m, INF));
+    prv.resize(n, vt<pii>(m, { -1, -1 }));
 
-    if (near(y, x)) return ret = INF;
+    deque<pair<pii, int>> dq;
+    FOR(n) {
+        if (near(i, 0)) continue;
+        
+        if (a[i][0] == '#') {
+            dq.push_front({ { i, 0 }, 0 });
+            dist[i][0] = 0;
+        }
+        else {
+            dq.push_back({ { i, 0 }, 1 });
+            dist[i][0] = 1;
+        }
+    }
 
-    ret = (a[y][x] == '#' ? 0 : 1);
+    while (sz(dq)) {
+        int y = dq.front().fr.fr, x = dq.front().fr.sc;
+        int w = dq.front().sc;
+        dq.pop_front();
 
-    if (x == m - 1) return ret;
+        if (w > dist[y][x]) continue;
 
-    int res = INF;
-    if (y > 0) res = min(res, f(y - 1, x + 1));
-    if (y + 1 < n) res = min(res, f(y + 1, x + 1));
+        FOR(i, 4, 8) {
+            int ny = y + dy[i], nx = x + dx[i];
+            if (ny < 0 || n <= ny || nx < 0 || m <= nx) continue;
+            if (near(ny, nx)) continue;
 
-    ret += res;
-    if (ret > INF) ret = INF;
-    return ret;
-}
-
-void track(int y, int x) {
-    ans[y][x] = '#';
-    assert(f(y, x) < INF);
-    if (x == m - 1) return;
-
-    if (y == n - 1) track(y - 1, x + 1);
-    else if (y == 0) track(y + 1, x + 1);
-    else {
-        if (f(y - 1, x + 1) <= f(y + 1, x + 1)) track(y - 1, x + 1);
-        else track(y + 1, x + 1);
+            int nw = w + (a[ny][nx] == '#' ? 0 : 1);
+            if (dist[ny][nx] > nw) {
+                dist[ny][nx] = nw;
+                if (a[ny][nx] == '#') dq.push_front({ { ny, nx }, nw });
+                else dq.push_back({ { ny, nx }, nw });
+                prv[ny][nx] = { y, x };
+            }
+        }
     }
 }
 
@@ -106,28 +114,32 @@ int main() {
 
         input();
 
-        int bit = 0, mn = INF, idx = -1;
+        bfs01();
+
+        int idx = -1, mn = INF;
         FOR(n) {
-            if (f(i, 0) < INF) {
-                bit = 1;
-                if (mn > f(i, 0)) {
-                    mn = f(i, 0);
-                    idx = i;
-                }
+            if (mn > dist[i][m - 1]) {
+                mn = dist[i][m - 1];
+                idx = i;
             }
         }
-        
-        if (!bit) {
+
+        if (mn == INF) {
             cout << "NO\n";
             continue;
         }
 
         cout << "YES\n";
-        
-        ans = a;
-        track(idx, 0);
 
-        EACH(i, ans)
+        int y = idx, x = m - 1;
+        while (y != -1) {
+            a[y][x] = '#';
+            int tmpy = y, tmpx = x;
+            y = prv[tmpy][tmpx].fr;
+            x = prv[tmpy][tmpx].sc;
+        }
+
+        EACH(i, a)
             cout << i << '\n';
 	}
 
