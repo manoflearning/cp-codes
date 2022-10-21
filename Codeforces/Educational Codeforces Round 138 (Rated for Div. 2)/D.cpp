@@ -38,7 +38,7 @@ ll lcm(ll a, ll b) {
 	return a * b / gcd(a, b);
 }
 
-const int MAX = 1e6;
+const int MAX = 3e5;
 
 bool isPrime[MAX + 1];
 vector<int> prime(1, 2);
@@ -72,10 +72,10 @@ int main() {
 
     vt<ll> non(n + 1);
     non[1] = m % MOD;
-
+    
     ll lc = 1;
     for (ll i = 2; i <= n; i++) {
-        if (isPrime[i] && lc <= m) 
+        if (isPrime[i] && lc <= m)
             lc = lcm(lc, i);
 
         ll cnt = m / lc;
