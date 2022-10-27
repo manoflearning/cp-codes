@@ -66,17 +66,12 @@ int main() {
     }
 
     sort(b.begin(), b.end(), [&](const psi& u, const psi& v) {
-        if (u.fr != v.fr) return u.fr > v.fr;
-        return u.sc < v.sc;
+        return u.fr > v.fr;
     });
 
-    string ans;
     for (auto& i : b) {
-        string s = to_string(i.sc);
-        for (auto& j : s) ans.push_back(j);
+        cout << i.sc;
     }
-
-    cout << ans;
 
 	return 0;
 }
