@@ -58,9 +58,11 @@ int main() {
     }
 
     for (auto& i : a) {
-        string s = to_string(i);
-        while (sz(s) < 11) s.push_back(s.front());
-        b.push_back({ s, i });
+        string s = to_string(i), ss;
+        for (int i = 0; sz(ss) < 11; i = (i + 1) % sz(s)) {
+            ss.push_back(s[i]);
+        }
+        b.push_back({ ss, i });
     }
 
     sort(b.begin(), b.end(), [&](const psi& u, const psi& v) {

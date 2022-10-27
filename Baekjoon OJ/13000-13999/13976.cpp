@@ -29,7 +29,37 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ll n, dp[101];
+struct Matrix {
+	vector<vector<ll>> a;
+	Matrix operator*(const Matrix& rhs) const {
+		Matrix ret;
+		ret.a.resize(sz(a), vector<ll>(sz(rhs.a[0])));
+		for (int y = 0; y < sz(ret.a); y++) {
+			for (int x = 0; x < sz(ret.a[y]); x++) {
+				ll sum = 0;
+				for (int i = 0; i < sz(a[y]); i++) {
+					sum = (sum + a[y][i] * rhs.a[i][x]) % MOD;
+				}
+				ret.a[y][x] = sum;
+			}
+		}
+		return ret;
+	}
+};
+
+ll n, dp[10101];
+
+Matrix m;
+
+Matrix cal(ll cnt) {
+    if (cnt == 1) return m;
+    
+    Matrix res = cal(cnt / 2);
+    Matrix ret = res * res;
+    if (cnt & 1) ret = ret * m;
+
+    return ret;
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -40,16 +70,29 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-	//cin >> n;
-    dp[0] = 1;
-    for (int i = 2; i <= 10000; i++) {
-        dp[i] = (dp[i] + 3 * dp[i - 2]) % MOD;
-        for (int j = i - 4; j >= 0; j -= 2) {
-            dp[i] = (dp[i] + 2 * dp[j]) % MOD;
-        }
+    cin >> n;
 
-        cout << i << ' ' << dp[i] << '\n';
+    if (n & 1) {
+        cout << 0;
+        return 0;
     }
+    if (n == 2) {
+        cout << 3;
+        return 0;
+    }
+
+    n >>= 1;
+
+    m.a.resize(2, vector<ll>(2));
+    m.a[0][0] = 4;
+    m.a[0][1] = -1;
+    m.a[1][0] = 1;
+    m.a[1][1] = 0;
+
+    Matrix ma = cal(n - 1);
+    
+    ll ans = ((ma.a[0][0] * 3 + ma.a[0][1] * 1) % MOD + MOD) % MOD;
+    cout << ans % MOD;
 
 	return 0;
 }
