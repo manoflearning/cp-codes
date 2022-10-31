@@ -12,9 +12,6 @@ struct mxSeg {  // 1-indexed
 	void build(int n) {
 		for (flag = 1; flag < n; flag <<= 1);
 		t.resize(2 * flag);
-
-		//for (int i = flag; i < flag + n; i++) cin >> t[i];
-		//for (int i = flag - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
 	}
 	void modify(int p, ll value) {  // set value at position p
 		for (t[p += flag - 1] = value; p > 1; p >>= 1) t[p >> 1] = max(t[p], t[p ^ 1]);
@@ -30,21 +27,19 @@ struct mxSeg {  // 1-indexed
 
 struct mnSeg {  // 1-indexed
 	vector<ll> t;
-    int x;
+    int u;
 
 	void build(int n, int m) {
 		for (flag = 1; flag < n; flag <<= 1);
 		t.resize(2 * flag, n + 1);
 
-        x = m + 1;
-		//for (int i = flag; i < flag + n; i++) cin >> t[i];
-		//for (int i = flag - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
+        u = m + 1;
 	}
 	void modify(int p, ll value) {  // set value at position p
 		for (t[p += flag - 1] = value; p > 1; p >>= 1) t[p >> 1] = min(t[p], t[p ^ 1]);
 	}
 	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {  // sum on interval [l, r]
-		if (r < nl || nr < l) return x;
+		if (r < nl || nr < l) return u;
 		if (l <= nl && nr <= r) return t[n];
 
 		int mid = (nl + nr) / 2;
