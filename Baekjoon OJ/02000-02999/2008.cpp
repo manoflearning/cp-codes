@@ -36,8 +36,7 @@ ll f(int idx, int now, int bit) {
             break;
         }
     }
-
-    if (!ladder) ret = min(ret, f(idx, sz(a), 0));
+    if (!ladder) ret = f(idx, sz(a), 0);
 
     if (bit) return ret;
 
