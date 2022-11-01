@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define sz(x) (int)(x).size()
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -17,13 +18,23 @@ int main() {
         for (int i = 2; i <= n; i++) {
             cout << 2 << ' ' << 1 << ' ' << i << '\n';
         }
+        return 0;
     }
-    else {
-        cout << n - 2 << '\n';
-        for (int i = 2; i <= n - 1; i++) {
-            cout << 2 << ' ' << 1 << ' ' << i << '\n';
-        }
+    
+    vector<vector<int>> ans;
+    for (int i = n / 2; i >= 1; i >>= 1) {
+        for (int k = 1; k <= n; k += i) {
+            vector<int> res;
+            for (int j = k; j <= n; j++) {
+                if (sz(res) && sz(res) % i == 0) j += i;
+                
+                if (j > n) break;
+
+                res.push_back(j);
+            }
+            ans.push_back(res);
+        }   
     }
-	
+
 	return 0;
 }
