@@ -15,8 +15,7 @@ int imp = 0, vi[10101];
 int team[10101], acnt, bcnt;
 
 vector<int> a;
-int sum = 0;
-vector<vector<int>> dp;
+int sum = 0, dp[10101];
 
 void init() {
     for (int i = 0; i < 10101; i++) {
@@ -27,7 +26,7 @@ void init() {
 
     a.clear();
     sum = 0;
-    dp.clear();
+    memset(dp, 0, sizeof(dp));
 }
 
 void dfs(int v, int t) {
@@ -47,18 +46,6 @@ void dfs(int v, int t) {
         }
         else dfs(i.v, nt);
     }
-}
-
-int f(int v, int now) {
-    int& ret = dp[v][now];
-    if (ret != -1) return ret;
-    if (v == sz(a)) return ret = abs(sum - now);
-
-    ret = INF;
-    ret = min(ret, f(v + 1, now + a[v]));
-    ret = min(ret, f(v + 1, now - a[v]));
-    
-    return ret;
 }
 
 int main() {
@@ -87,14 +74,30 @@ int main() {
                 sum += abs(acnt - bcnt);
             }
         }
+        
 
         if (imp) {
             cout << -1 << '\n';
             continue;
         }
+        
+        dp[0] = 1;
+        for (int i = 0; i < sz(a); i++) {
+            for (int j = sum; j >= 0; j--) {
+                if (dp[j]) {
+                    dp[j + a[i]] = 1;
+                }
+            }
+        }
+        
+        int ans = 1e9 + 7;
+        for (int i = 0; i <= sum; i++) {
+            if (dp[i]) {
+                ans = min(ans, abs(i - (sum - i)));
+            }
+        }
 
-        dp.resize(sz(a) + 1, vector<int>(sum * 2 + 5, -1));
-        cout << f(0, sum) << '\n';
+        cout << ans << '\n';
     }
 
     return 0;
