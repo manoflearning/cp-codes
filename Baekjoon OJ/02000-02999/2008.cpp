@@ -15,7 +15,6 @@ ll f(int idx, int now, int bit) {
     ll& ret = dp[idx][now][bit];
     if (ret != -1) return ret;
     if (now == sz(a)) {
-        //cout << idx << ' ' << now << ' ' << bit << '\n';
         return ret = add * abs(idx - en);
     }
 
