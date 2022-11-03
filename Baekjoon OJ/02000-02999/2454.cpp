@@ -41,21 +41,35 @@ void dfs(int v, int prv) {
     sort(arr.begin(), arr.end());
 
     int bit = 0;
+
+    if (2 <= sz(arr) && arr[0].x2 + arr[1].x2 <= k - 2) {
+        dp[v] += arr[0].x1 + arr[1].x1 - 1;
+        arr.erase(arr.begin() + 1);
+        arr.erase(arr.begin() + 0);
+        bit = 1;
+    }
+
+    /*int mx = -INF, p = -1, q = -1;
     for (int i = 0; i < sz(arr); i++) {
         Node du = { 0, k - arr[i].x2 - 2 };
         int j = lower_bound(all(arr), du) - arr.begin();
 
         if (i != j && j < sz(arr) && arr[i].x2 + arr[j].x2 == k - 2) {
-            dp[v] += arr[i].x1 + arr[j].x1 - 1;
-            
-            if (i < j) swap(i, j);
-            arr.erase(arr.begin() + i);
-            arr.erase(arr.begin() + j);
+            if (mx < min(arr[i].x2, arr[j].x2)) {
+                mx = min(arr[i].x2, arr[j].x2);
+                p = i, q = j;
+            }
 
             bit = 1;
-            break;
         }
     }
+
+    if (bit) {
+        dp[v] += arr[p].x1 + arr[q].x1 - 1;
+        if (p < q) swap(p, q);
+        arr.erase(arr.begin() + p);
+        arr.erase(arr.begin() + q);
+    }*/
     
     for (auto& i : arr) {
         dp[v] += i.x1;
@@ -90,9 +104,16 @@ int main() {
         adj[v].push_back(u);
     }
 
-    dfs(1, 0);
+    int r = -1;
+    for (int i = 1; i <= n; i++) {
+        if (sz(adj[i]) == 1) {
+            r = i;
+            dfs(r, 0);
+            break;
+        }
+    }
 
-    cout << dp[1];
+    cout << dp[r];
 
     return 0;
 }
