@@ -41,7 +41,7 @@ int main() {
     e.resize(p);
     for (auto& i : e) {
         cin >> i.u >> i.v >> i.w;
-        i.w = 2 * (i.w + w[i.u] + w[i.v]);
+        i.w = 2 * i.w + w[i.u] + w[i.v];
     }
 
     sort(e.begin(), e.end());
@@ -54,13 +54,13 @@ int main() {
         merge(i.u, i.v);
         deg[i.u]++, deg[i.v]++;
     }
-    
+
+    ll mn = 1e18;
     for (int v = 1; v <= n; v++) {
-        if (deg[v] == 1) ans -= w[v];
-        //else ans += 2 * w[v];
+        mn = min(mn, w[v]);
     }
-    
-    cout << ans;
+
+    cout << ans + mn;
 
 	return 0;
 }
