@@ -85,7 +85,6 @@ int main() {
     for (auto& i : stick) {
         adj[i.t][0].push_back({ i.len + l, i.d });
         adj[i.d][1].push_back({ i.len + l, i.t });
-        //cout << i.t << ' ' << i.d << '\n';
     }
 
     for (int i = 0; i < 101010; i++) {
@@ -102,7 +101,6 @@ int main() {
         }
         for (int j = 0; j < sz(adj[i][1]); j++) {
             ans = max(ans, f(i, 1, j));
-            //if (i == 2) cout << f(i, 1, j) << '\n';
         }
     }
 
