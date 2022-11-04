@@ -42,8 +42,8 @@ int main() {
             for (auto& c : s) 
                 res += pw[c - '0'];
             arr.push_back(res);
-            if (vi[res]) break;
             if (dp[res]) { mn = dp[res]; break; }
+            if (vi[res]) break;
             vi[res] = 1;
         }
 
