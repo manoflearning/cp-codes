@@ -1,6 +1,3 @@
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
-
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
@@ -36,6 +33,8 @@ int main() {
 
         vector<int> arr(1, i);
         vi[i] = 1;
+
+        int mn = 1e9;
         while (1) {
             string s = to_string(arr.back());
             
@@ -44,21 +43,22 @@ int main() {
                 res += pw[c - '0'];
             arr.push_back(res);
             if (vi[res]) break;
+            if (dp[res]) { mn = dp[res]; break; }
             vi[res] = 1;
         }
 
         for (auto& j : arr) vi[j] = 0;
         
-        int st = -1;
+        int st = sz(arr);
         for (int i = 0; i < sz(arr); i++) {
             if (arr[i] == arr.back()) {
                 st = i; break;
             }
         }
-
-        int mn = 1e9;
-        for (int i = st; i < sz(arr); i++)
+        
+        for (int i = st; i < sz(arr); i++) {
             mn = min(mn, arr[i]);
+        }
 
         for (int i = st; i < sz(arr); i++) {
             dp[arr[i]] = mn;
