@@ -35,6 +35,7 @@ My codes for solving algorithm problems.
 - Merge Sort Tree
 - Network Flow, Max-Flow Min-Cut Theorem, Bipartite Matching, MCMF
 - Centroid Decomposition
+- Parallel Binary Search
 - KMP Algorithm, Aho-Corasick, Suffix Array
 - Linear Sieve, Extended GCD, Fermat's Little Theorem, Euler's Phi Function
 - Convex Hull Trick, Knuth Optimization
