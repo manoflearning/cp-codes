@@ -11,25 +11,32 @@ My codes for solving algorithm problems.
 
 ## My Algorithm & Data Structure Status
 
-### Skillful
+### Can solve problems to some extent (without cheat sheet)
 
 - DFS, BFS, Dijkstra's Algorithm
-- MST, Topological Sort, Union Find, Sparse Table, LCA in O(logN)
-- Segment Tree, Sqrt Decomposition + Mo's Algorithm, Heavy-Light Decomposition
-- Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
-- CCW Algorithm, Convex Hull, Ray Casting
-- Sieve of Eratosthenes, GCD + LCM
+- MST, Union Find, Sparse Table
 - Coordinate Compression
+- Segment Tree
+- Inclusion–exclusion Principle
+- Offline Query
 
-### Learned but need practice
+### Can solve problems to some extent (with cheat sheet)
 
 - Bellman-Ford Algorithm, Floyd-Warshall Algorithm
-- Euler Circuit, 2-SAT, SCC, BCC
+- Topological Sort, LCA in O(logN), SCC
+- Sqrt Decomposition + Mo's Algorithm, Heavy-Light Decomposition
+- Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
+- CCW Algorithm, Convex Hull, Ray Casting
+- Sieve of Eratosthenes, GCD + LCM, Catalan Number
+
+### Learned but need a lot of practice
+
+- Euler Circuit, 2-SAT, BCC
 - Merge Sort Tree
 - Network Flow, Max-Flow Min-Cut Theorem, Bipartite Matching, MCMF
 - Centroid Decomposition
 - KMP Algorithm, Aho-Corasick, Suffix Array
-- Linear Sieve, Extended GCD, Fermat's Little Theorem, Catalan Number, Euler's Phi Function
+- Linear Sieve, Extended GCD, Fermat's Little Theorem, Euler's Phi Function
 - Convex Hull Trick, Knuth Optimization
 
 ### Have to learn in the future
@@ -39,3 +46,4 @@ My codes for solving algorithm problems.
 - Sprague-Grundy Theorem
 - Divide and Conquer Optimization
 - Gauss-Jordan Elimination
+- Lucas's Theorem
