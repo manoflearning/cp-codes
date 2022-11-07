@@ -14,7 +14,7 @@ My codes for solving algorithm problems.
 ### Can solve problems to some extent (without cheat sheet)
 
 - DFS, BFS, Dijkstra's Algorithm
-- MST, Union Find, Sparse Table
+- MST, Union Find, Sparse Table, Prefix Sum
 - Coordinate Compression
 - Segment Tree
 - Inclusion–exclusion Principle
