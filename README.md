@@ -13,6 +13,27 @@ My codes for solving algorithm problems.
 
 ### Skillful
 
-### Learned, but not proficient
+- DFS, BFS, Dijkstra's Algorithm
+- MST, Topological Sort, Union Find, Sparse Table, LCA in O(logN)
+- Segment Tree, Sqrt Decomposition + Mo's Algorithm, Heavy-Light Decomposition
+- Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
+- CCW Algorithm, Convex Hull, Ray Casting
+- Sieve of Eratosthenes, GCD + LCM
+- Coordinate Compression
+
+### Learned but need practice
+
+- Bellman-Ford Algorithm, Floyd-Warshall Algorithm
+- Euler Circuit, 2-SAT, SCC, BCC
+- Network Flow, Bipartite Matching, MCMF
+- Centroid Decomposition
+- KMP Algorithm, Aho-Corasick, Suffix Array
+- Linear Sieve, Extended GCD, Fermat's Little Theorem, Catalan Number, Euler's Phi Function
+- Convex Hull Trick, Knuth Optimization
 
 ### Have to learn in the future
+
+- Bitset, Fast IO, SIMD
+- FFT
+- Sprague-Grundy Theorem
+- Divide and Conquer Optimization
