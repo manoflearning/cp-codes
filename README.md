@@ -26,7 +26,7 @@ My codes for solving algorithm problems.
 - Bellman-Ford Algorithm, Floyd-Warshall Algorithm
 - Euler Circuit, 2-SAT, SCC, BCC
 - Merge Sort Tree
-- Network Flow, Bipartite Matching, MCMF
+- Network Flow, Max-Flow Min-Cut Theorem, Bipartite Matching, MCMF
 - Centroid Decomposition
 - KMP Algorithm, Aho-Corasick, Suffix Array
 - Linear Sieve, Extended GCD, Fermat's Little Theorem, Catalan Number, Euler's Phi Function
