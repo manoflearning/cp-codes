@@ -62,4 +62,5 @@ My codes for solving algorithm problems.
 - Random (https://justicehui.github.io/hard-algorithm/2020/03/23/random/)
 - 볼록 다각형의 접선을 이용해 최대/최소를 구하는 유형 (https://github.com/justiceHui/Unknown-To-Wellknown/blob/master/README.md#%EB%B3%BC%EB%A1%9D-%EB%8B%A4%EA%B0%81%ED%98%95%EC%9D%98-%EC%A0%91%EC%84%A0%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%B4-%EC%B5%9C%EB%8C%80%EC%B5%9C%EC%86%8C%EB%A5%BC-%EA%B5%AC%ED%95%98%EB%8A%94-%EC%9C%A0%ED%98%95)
     - https://github.com/justiceHui/icpc-teamnote/blob/master/code/Geometry/HPI.cpp <br/> getpoint는 기울기 dy/dx 주어졌을 때 O(log N)에 접점 찾는 함수 <br/> convextangent는 점 주어졌을 때 O(log N)에 접점 찾는 함수
+- Fenwick Tree
 - Burnside Lemma, Möbius Inversion Formula, Kitamasa Method, Berlekamp-Massey
