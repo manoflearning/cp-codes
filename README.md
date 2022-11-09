@@ -37,13 +37,12 @@ My codes for solving algorithm problems.
 - Centroid Decomposition
 - Parallel Binary Search
 - KMP Algorithm, Aho-Corasick, Suffix Array
-- Linear Sieve, Extended GCD, Fermat's Little Theorem, Euler's Phi Function
+- Linear Sieve, Extended GCD, Fermat's Little Theorem, Euler's Phi Function, FFT
 - Convex Hull Trick, Knuth Opt, Monotone Queue Opt
 
 ### Have to learn in the future
 
 - Bitset, Fast IO
-- FFT
 - Sprague-Grundy Theorem
 - Divide and Conquer Opt
 - Gauss-Jordan Elimination
