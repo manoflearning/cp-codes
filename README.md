@@ -23,7 +23,7 @@ My codes for solving algorithm problems.
 ### Can solve problems to some extent (with cheat sheet)
 
 - Bellman-Ford Algorithm, Floyd-Warshall Algorithm
-- Topological Sort, LCA in O(logN), SCC, BCC
+- Topological Sort, LCA in O(logN) (Sparse Table), SCC, BCC
 - Sqrt Decomposition + Mo's Algorithm, Heavy-Light Decomposition
 - Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
 - CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
