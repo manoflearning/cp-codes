@@ -11,7 +11,8 @@ int n, par[101010], r;
 ll m, w[101010], l[101010];
 vector<int> chd[101010], dep[101010];
 
-int in[101010], out[101010], cnt;
+int in[101010], out[101010], cnt; 
+ll mx[101010];
 set<int> s;
 int wbyin[101010];
 
@@ -34,6 +35,7 @@ void dfs(int v, int prv, int d) {
     in[v] = ++cnt;
     wbyin[in[v]] = w[v];
     s.insert(in[v]);
+    mx[v] = max(l[v], mx[prv]);
 
     dep[d].push_back(v);
     for (auto& i : chd[v]) {
@@ -66,6 +68,8 @@ int main() {
             for (int i : chd[v]) {
                 res.fr += dp[i].fr, res.sc += dp[i].sc;
             }
+
+            if (l[v] <= mx[par[v]]) continue;
 
             if (res.fr > m) {
                 vector<int> arr;
