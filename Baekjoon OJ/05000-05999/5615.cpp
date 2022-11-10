@@ -26,7 +26,7 @@ namespace miller_rabin{
 		}
 	}
 	bool isprime(lint x){
-		for(auto &i : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}){
+		for(auto &i : {2, 3, 5, 7, 11, 13, 17, 19/*, 23, 29, 31, 37*/}){
 			if(x == i) return 1;
 			if(x > 40 && miller_rabin(x, i)) return 0;
 		}

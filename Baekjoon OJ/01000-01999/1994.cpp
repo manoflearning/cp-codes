@@ -1,12 +1,20 @@
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 using namespace std;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) (int)(x).size() 
 #define fr first
 #define sc second
+#define pii pair<int, int>
+#define ll long long
 
 int n;
 vector<int> a;
+
+inline ll Hash(int x, int y) {
+    return 1000000001ll * x + y;
+}
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -25,6 +33,7 @@ int main() {
 
     int ans = 0;
 
+    //
     int cnt = 0;
     for (int i = 0; i < sz(a); i++) {
         if (i > 0 && a[i] != a[i - 1]) cnt = 0;
@@ -35,35 +44,21 @@ int main() {
 
     a.erase(unique(all(a)), a.end());
 
-    vector<pair<int, int>> diff;
-    set<pair<int, int>> vi;
-    
-    for (int i = 0; i < sz(a); i++) {
-        for (int j = i + 1; j < sz(a); j++) {
-            auto it = vi.find({ a[j] - a[i], j % (a[j] - a[i]) });
+    //
+    unordered_map<ll, int> dp;
 
-            if (it == vi.end()) {
-                diff.push_back({ a[j] - a[i], j });
-                vi.insert({ a[j] - a[i], j % (a[j] - a[i]) });
-            }
+    for (int j = 0; j < sz(a); j++) {
+        for (int i = j - 1; i >= 0; i--) {
+            ll now = Hash(j, a[j] - a[i]);
+            ll prv = Hash(i, a[j] - a[i]);
+
+            auto it = dp.find(prv);
+            auto& it2 = dp[now];
+            if (it == dp.end()) it2 = 2;
+            else it2 = it->sc + 1;
+
+            ans = max(ans, it2);
         }
-    }
-
-    for (auto& i : diff) {
-        int len = i.fr, now = i.sc;
-
-        int res = 2;
-        while (1) {
-            int x = a[now] + len;
-
-            int idx = lower_bound(all(a), x) - a.begin();
-            if (idx == sz(a) || a[idx] != x) break;
-
-            res++;
-            now = idx; 
-        }
-        
-        ans = max(ans, res);
     }
 
     cout << ans;
