@@ -63,3 +63,28 @@ My codes for solving algorithm problems.
     - https://github.com/justiceHui/icpc-teamnote/blob/master/code/Geometry/HPI.cpp <br/> getpoint는 기울기 dy/dx 주어졌을 때 O(log N)에 접점 찾는 함수 <br/> convextangent는 점 주어졌을 때 O(log N)에 접점 찾는 함수
 - Fenwick Tree
 - Burnside Lemma, Möbius Inversion Formula, Kitamasa Method, Berlekamp-Massey
+
+### 으악악
+- Dijkstra's, Bellman-Ford, Floyd-Warshall
+- MST, Union Find, Sparse Table, Prefix Sum, MITM, Topological Sort, LCA in O(logN) (Sparse Table), SCC, BCC, Euler Circuit, 2-SAT
+- Segment Tree, Segment Tree with Lazy Propagation, Merge Sort Tree
+- Rabin-Karp Algorithm, KMP Algorithm, Aho-Corasick, Suffix Array, Trie, Manacher's Algorithm, Z Algorithm
+- CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
+- Network Flow, Max-Flow Min-Cut Theorem, Bipartite Matching, MCMF 
+- Coordinate Compression
+- Mo's Algorithm, Heavy-Light Decomposition, Centroid Decomposition, Parallel Binary Search
+- Sieve of Eratosthenes, Linear Sieve, GCD + LCM, Extended GCD, Catalan Number, Inclusion–exclusion Principle, Fermat's Little Theorem, Euler's Phi Function, FFT, Gauss-Jordan Elimination
+- Bitmask DP, Convex Hull Trick, Knuth Opt, Monotone Queue Opt, DnC Opt
+- Sprague-Grundy Theorem
+
+- Bitset, Fast IO 
+- Lucas's Theorem, Miller-Rabin Primality Test, Pollard's Rho Algorithm, Discrete Logarithm, Chinese Remainder Theorem
+- Connection Profile DP, SOS DP
+- Sparse Table O(1) RMQ
+- Region Trick
+- Rotating Sweep Line Technique (Bulldozer Trick) 
+- Aliens Trick 
+- Persistent Segment Tree, Splay Tree, Fenwick Tree
+- Random
+- 볼록 다각형의 접선을 이용해 최대/최소를 구하는 유형 
+- Burnside Lemma, Möbius Inversion Formula, Kitamasa Method, Berlekamp-Massey
