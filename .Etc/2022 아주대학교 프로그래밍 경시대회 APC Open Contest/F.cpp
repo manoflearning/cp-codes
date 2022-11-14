@@ -28,10 +28,10 @@ using namespace std;
 const double EPS = 1e-9;
 const ll INF = 1e18;
 const int MOD = 1e9 + 7;
-const int MAX = 1000 * 1001 + 1000 + 100;
+const int MAX = 999 * 1000 + 999 + 100;
 
 inline int Hash(int y, int x) {
-    return y * 1001 + x;
+    return (y - 1) * 1000 + (x - 1);
 }
 
 int n, sy, sx, ey, ex;
@@ -143,10 +143,11 @@ void buildGraph() {
 
 vector<ll> dist(MAX, INF);
 
-ll dijkstra(int st) {
+ll dijkstra() {
 	priority_queue<wv> pq;
-	pq.push({ 0, st });
-	dist[st] = 0;
+	pq.push({ 0, Hash(sy, sx) });
+	dist[Hash(sy, sx)] = 0;
+    
 	while (!pq.empty()) {
 		int v = pq.top().v;
 		ll w = pq.top().w;
@@ -179,7 +180,7 @@ int main() {
     assert(a[sy][sx] == 'P');
     assert(a[ey][ex] == 'K');
 
-    cout << dijkstra(Hash(sy, sx));
+    cout << dijkstra();
 
 	return 0;
 }
