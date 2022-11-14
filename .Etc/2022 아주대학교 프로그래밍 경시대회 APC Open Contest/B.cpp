@@ -53,9 +53,9 @@ int main() {
 
     vt<ll> ans(n + 1);
     for (int i = 1; i < n; i++) {
-        while (sz(prv) && prv.back().fr >= a[i]) prv.pop_back();
+        while (prv.back().fr >= a[i]) prv.pop_back();
 
-        if (prv.empty() || prv.back().fr != a[i] - 1) {
+        if (prv.back().fr != a[i] - 1) {
             cout << -1;
             return 0;
         }

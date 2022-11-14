@@ -31,7 +31,6 @@ const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int n, m;
 vt<pair<string, string>> a[26 * 26 + 26];
-bool a1[26];
 
 inline int Hash(char x, char y) {
     return (x - 'a') * 26 + (y - 'a');
@@ -55,8 +54,8 @@ int main() {
 
         sort(all(sub));
         
-        if (sz(s) == 1) a1[s[0] - 'a'] = 1;
-        else a[Hash(s[0], s.back())].push_back({ sub, s });
+        if (sz(s) >= 2) 
+            a[Hash(s[0], s.back())].push_back({ sub, s });
     }
 
     for (int i = 0; i < 26 * 26 + 26; i++) {
@@ -79,13 +78,12 @@ int main() {
             ans.push_back(s);
         }
         else {
-            string es;
-            pair<string, string> du = { sub, es };
+            pair<string, string> du;
+            du.fr = sub;
             int num = Hash(s[0], s.back());
             
             int idx = lower_bound(all(a[num]), du) - a[num].begin();
             ans.push_back(a[num][idx].sc);
-            //cout << num << ' ' << idx << ' ' << a[num][idx].sc << '\n';
         }
     }
 

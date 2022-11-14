@@ -30,12 +30,12 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 struct Node {
-        int c, num;
-        bool operator<(const Node& rhs) const {
-            if (c ^ rhs.c) return c < rhs.c;
-            return num > rhs.num;
-        }
-    };
+    int c, num;
+    bool operator<(const Node& rhs) const {
+        if (c ^ rhs.c) return c < rhs.c;
+        return num > rhs.num;
+    }
+};
 
 void print(Node v) {
     if (v.c == 0) cout << 'B';
