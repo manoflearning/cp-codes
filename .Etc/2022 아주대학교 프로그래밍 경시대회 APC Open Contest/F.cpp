@@ -52,12 +52,8 @@ void input() {
         a[i].resize(n + 1);
         for (int j = 1; j <= n; j++) {
             cin >> a[i][j];
-            if (a[i][j] == 'P') {
-                sy = i, sx = j;
-            }
-            if (a[i][j] == 'K') {
-                ey = i, ex = j;
-            }
+            if (a[i][j] == 'P') sy = i, sx = j;
+            if (a[i][j] == 'K') ey = i, ex = j;
         }
     }
 }
@@ -140,7 +136,6 @@ void buildGraph() {
             else if (a[i][j] == 'R') re(i, j);
             else if (a[i][j] == 'B') be(i, j);
             else if (a[i][j] == 'N') ne(i, j);
-            //else if (a[i][j] == 'K') ke(i, j);
             else if (a[i][j] == 'P') pe(i, j);
         }
     }
@@ -185,14 +180,6 @@ int main() {
     assert(a[ey][ex] == 'K');
 
     cout << dijkstra(Hash(sy, sx));
-
-    /*for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n; j++) {
-            if (a[i][j] == '0') cout << 0 << ' ';
-            else cout << dist[Hash(i, j)] << ' ';
-        }
-        cout << '\n';
-    }*/
 
 	return 0;
 }
