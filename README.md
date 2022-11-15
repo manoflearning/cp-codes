@@ -38,13 +38,12 @@ My codes for solving algorithm problems.
 - Parallel Binary Search
 - KMP Algorithm, Aho-Corasick, Suffix Array
 - Linear Sieve, Extended GCD, Fermat's Little Theorem, Euler's Phi Function, FFT
-- Convex Hull Trick, Knuth Opt, Monotone Queue Opt
+- Convex Hull Trick, Knuth Opt, Monotone Queue Opt, Divide and Conquer Opt
 
 ### Have to learn in the future
 
 - Bitset, Fast IO
 - Sprague-Grundy Theorem
-- Divide and Conquer Opt
 - Gauss-Jordan Elimination
 - Lucas's Theorem
 - Miller-Rabin Primality Test
