@@ -16,14 +16,13 @@ int n, m, t;
 int s, g, h;
 vector<int> a;
 vector<wv> adj[MAX];
-ll dist1[MAX][4], dist2[MAX];
+ll dist[MAX][4];
 
 void init() {
     a.clear();
     for (int i = 0; i < MAX; i++) {
         adj[i].clear();
-        dist1[i][0] = dist1[i][1] = dist1[i][2] = dist1[i][3] = INF;
-        dist2[i] = INF;
+        dist[i][0] = dist[i][1] = dist[i][2] = dist[i][3] = INF;
     }
 }
 
@@ -40,48 +39,29 @@ void input() {
     for (auto& i : a) cin >> i;
 }
 
-void dijkstra1() {
+void dijkstra() {
 	priority_queue<wv> pq;
     int sb = 0;
     if (s == g) sb |= 1;
     if (s == h) sb |= 2;
 	pq.push({ 0, sb, s });
-	dist1[s][sb] = 0;
+	dist[s][sb] = 0;
 
 	while (!pq.empty()) {
 		int v = pq.top().v, b = pq.top().bit;
 		ll w = pq.top().w;
 		pq.pop();
         
-		if (w > dist1[v][b]) continue;
+		if (w > dist[v][b]) continue;
+
 		for (auto& i : adj[v]) {
             int nb = b;
             if (i.v == g) nb |= 1;
             if (i.v == h) nb |= 2;
 
-			if (dist1[i.v][nb] > w + i.w) {
-				dist1[i.v][nb] = w + i.w;
+			if (dist[i.v][nb] > w + i.w) {
+				dist[i.v][nb] = w + i.w;
 				pq.push({ w + i.w, nb, i.v });
-			}
-		}
-	}
-}
-
-void dijkstra2() {
-	priority_queue<wv> pq;
-	pq.push({ 0, 0, s });
-	dist2[s] = 0;
-
-	while (!pq.empty()) {
-		int v = pq.top().v;
-		ll w = pq.top().w;
-		pq.pop();
-        //cout << v << ' ' << w << '\n';
-		if (w > dist2[v]) continue;
-		for (auto& i : adj[v]) {
-			if (dist2[i.v] > w + i.w) {
-				dist2[i.v] = w + i.w;
-				pq.push({ w + i.w, 0, i.v });
 			}
 		}
 	}
@@ -102,14 +82,15 @@ int main() {
 
         input();
 
-        dijkstra1();
-
-        dijkstra2();
+        dijkstra();
 
         vector<int> ans;
         for (auto& i : a) {
-            if (dist1[i][3] != INF && dist1[i][3] == dist2[i]) 
-                ans.push_back(i);
+            if (dist[i][3] == INF) continue;
+			if (dist[i][0] < dist[i][3]) continue;
+			if (dist[i][1] < dist[i][3]) continue;
+			if (dist[i][2] < dist[i][3]) continue;
+            ans.push_back(i);
         }
         
         sort(ans.begin(), ans.end());
