@@ -38,7 +38,7 @@ My codes for solving algorithm problems.
 - Parallel Binary Search
 - KMP Algorithm, Aho-Corasick, Suffix Array
 - Linear Sieve, Extended GCD, Fermat's Little Theorem, Euler's Phi Function, FFT
-- Convex Hull Trick, Knuth Opt, Monotone Queue Opt, Divide and Conquer Opt
+- Convex Hull Trick, Knuth Opt, Monotone Queue Opt, DnC Opt
 
 ### Have to learn in the future
 
