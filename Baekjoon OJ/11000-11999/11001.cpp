@@ -5,7 +5,6 @@ using namespace std;
 int n, d;
 ll t[101010], v[101010], dp[101010];
 
-
 void f(int l, int r, int nl, int nr) {
     int mid = (l + r) >> 1, idx = -1;
     ll& res = dp[mid];
