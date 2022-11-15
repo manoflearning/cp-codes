@@ -111,7 +111,7 @@ int main() {
             if (dist1[i][3] != INF && dist1[i][3] == dist2[i]) 
                 ans.push_back(i);
         }
-
+        
         sort(ans.begin(), ans.end());
 
         for (auto& i : ans)
