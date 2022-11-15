@@ -43,20 +43,6 @@ int main() {
     }
 
     cout << ans;
-    /*for (int i = 1; i <= n; i++) {
-        ll res = 0, mxIdx = -1;
-        for (int j = i; j <= min(i + d, n); j++) {
-            if ((j - i) * t[j] + v[i] > res) {
-                res = (j - i) * t[j] + v[i];
-                mxIdx = j;
-            }
-        }
-
-        ans = max(ans, res);
-        cout << i << ' ' << mxIdx << '\n';
-    }
-
-    cout << ans;*/
 
 	return 0;
 }
