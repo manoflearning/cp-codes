@@ -39,10 +39,8 @@ int main() {
 
         int ans = 0;
 
-        for (int i = 1; i * (i + 1) / 2 <= 100000; i++) {
+        for (int i = 1; i * (i + 1) / 2 <= a + b; i++) {
             int sum = i * (i + 1) / 2;
-
-            if (sum > a + b) break;
             ans = (ans + psum[i][a] - (sum - b - 1 >= 0 ? psum[i][sum - b - 1] : 0)) % MOD;
         }
 
