@@ -24,9 +24,6 @@ int main() {
 
         for (int j = 0; j <= 50000; j++) {
             if (dp[!bit][j]) {
-                int aleft = a - j;
-                int bleft = b - ((i - 1) * i / 2 - j);
-
                 dp[bit][j + i] = (dp[bit][j + i] + dp[!bit][j]) % MOD;
                 dp[bit][j] = (dp[bit][j] + dp[!bit][j]) % MOD;
             }
