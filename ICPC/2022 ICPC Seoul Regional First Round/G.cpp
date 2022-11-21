@@ -2,7 +2,6 @@
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 using namespace std;
-#define ll long long
 
 int a, b, c;
 int dp[101][101][101][30];
@@ -47,10 +46,32 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    init();
+    //init();
 
     cin >> a >> b >> c;
     
+    dp[1][0][0][1] = dp[0][1][0][1] = dp[0][0][1][1] = 1;
+    
+    int ans = 0;
+
+    for (int cnt = 2; cnt < 30; cnt++) {
+        for (int i = 0; i <= a; i++) {
+            for (int j = 0; j <= b; j++) {
+                for (int k = 0; k <= c; k++) {
+                    if (!dp[i][j][k][cnt - 1]) continue;
+
+                    
+
+                    if (i == a && j == b && k == c) {
+                        
+                        continue;
+                    }
+
+                }
+            }
+        }
+    }
+
     int F = f(a, b, c, 1), S = (a + b + c) - F;
     if (F > S) cout << 'F';
     if (F < S) cout << 'S';
