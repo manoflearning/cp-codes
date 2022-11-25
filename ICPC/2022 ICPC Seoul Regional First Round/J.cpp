@@ -1,3 +1,5 @@
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
@@ -77,26 +79,26 @@ int main() {
         if (xx[i].size() < sq) break;
 
         auto& x1 = xx[i];
-        ll cnt = 0;
+        
         for (int j = i + 1; j < c.size(); j++) {
+            ll cnt = 0;
             auto& x2 = xx[j];
 
             for (auto& y : x2) {
                 if (y == *lower_bound(x1.begin(), x1.end(), y)) cnt++;
             }
+            ans += cnt * (cnt - 1) / 2;
         }
-
-        ans += cnt * (cnt - 1) / 2;
     }
 
-    map<pii, ll> mp;
+    unordered_map<ll, ll> mp;
     for (int i = 0; i < c.size(); i++) {
         if (xx[i].size() >= sq) continue;
 
         auto& x1 = xx[i];
         for (int j = 0; j < x1.size(); j++) {
             for (int k = j + 1; k < x1.size(); k++) {
-                mp[{ x1[j], x1[k] }]++;
+                mp[x1[j] * 100001ll + x1[k]]++;
             }
         }
     }
