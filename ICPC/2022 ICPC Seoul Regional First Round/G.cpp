@@ -4,15 +4,13 @@
 using namespace std;
 
 int a, b, c;
-int dp[101][101][101][30];
+int dp[101][101][101][33];
 
 void init() {
     for (int i = 0; i < 101; i++) {
         for (int j = 0; j < 101; j++) {
             for (int k = 0; k < 101; k++) {
-                for (int p = 0; p < 30; p++) {
-                    dp[i][j][k][p] = -1;
-                }
+                memset(dp[i][j][k], -1, sizeof(dp[i][j][k]));
             }
         }
     }
@@ -20,8 +18,9 @@ void init() {
 
 int f(int x, int y, int z, int cnt) {
     int& ret = dp[x][y][z][cnt];
+    if (ret != -1) return ret;
     if (x == 0 && y == 0 && z == 0) return ret = 0;
-
+    
     if (cnt & 1) {
         ret = 0;
         if (x > 0) ret = max(ret, min(x, cnt) + f(max(0, x - cnt), y, z, cnt + 1));
@@ -46,31 +45,9 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    //init();
+    init();
 
     cin >> a >> b >> c;
-    
-    dp[1][0][0][1] = dp[0][1][0][1] = dp[0][0][1][1] = 1;
-    
-    int ans = 0;
-
-    for (int cnt = 2; cnt < 30; cnt++) {
-        for (int i = 0; i <= a; i++) {
-            for (int j = 0; j <= b; j++) {
-                for (int k = 0; k <= c; k++) {
-                    if (!dp[i][j][k][cnt - 1]) continue;
-
-                    
-
-                    if (i == a && j == b && k == c) {
-                        
-                        continue;
-                    }
-
-                }
-            }
-        }
-    }
 
     int F = f(a, b, c, 1), S = (a + b + c) - F;
     if (F > S) cout << 'F';
