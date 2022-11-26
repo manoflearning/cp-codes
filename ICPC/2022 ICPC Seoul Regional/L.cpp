@@ -12,19 +12,20 @@ int find(int x) {
     return uf[x] = find(uf[x]);
 }
 void merge(int u, int v) {
-    int u = find(u), v = find(v);
+    u = find(u), v = find(v);
     if (u == v) return;
     uf[u] += uf[v];
     uf[v] = u;
 }
 
 int n, in[101010], out[101010], dep[101010], dp[101010];
-vector<int> adj[101010];
+vector<int> adj[101010], rdep[101010];
 vector<pii> cy[101010];
 
 void dfs(int v, int prv, int d) {
     in[v] = 1;
     dep[v] = d;
+    rdep[d].push_back(v);
     dp[v] = prv;
     for (auto& i : adj[v]) {
         if (in[i]) {
@@ -73,7 +74,24 @@ int main() {
 
     for (int i = 3; i < 101010; i++) {
         if (sz(cy[i]) <= 1) continue;
+        cout << i << '\n';
+        int u = cy[i][0].fr, v = cy[i][0].sc;
+        while (dep[v] >= dep[u]) {
+            cout << v << ' ';
+            v = dp[v];
+        }
+        cout << '\n';
+        u = cy[i][1].fr, v = cy[i][1].sc;
+        while (dep[v] >= dep[u]) {
+            cout << v << ' ';
+            v = dp[v];
+        }
+        cout << '\n';
+        return 0;
     }
+
+    cout << 3 << '\n';
+    cout << 
 
 	return 0;
 }
