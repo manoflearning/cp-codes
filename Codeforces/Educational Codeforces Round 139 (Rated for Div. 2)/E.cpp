@@ -63,7 +63,7 @@ int main() {
 	}
 	
 	// 추가 1개
-	vt<pll> arr, arr2;
+	vt<pll> arr;
 	ll prv1 = -1, prv2 = -1;
 	for (ll x = 1; x <= n; x++) {
 		if (a[x] == 3) {
