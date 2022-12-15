@@ -50,14 +50,13 @@ int main() {
 
         if (sum & 1) {
             int ans = INF;
-            EACH(i, a) {                
+            EACH(i, a) {
                 ll x = i;
                 int cnt = 0;
                 while (x > 0 && (x & 1) == (i & 1)) {
                     x >>= 1;
                     cnt++;
                 }
-                
                 if ((x & 1) != (i & 1))
                     ans = min(ans, cnt);
             }
