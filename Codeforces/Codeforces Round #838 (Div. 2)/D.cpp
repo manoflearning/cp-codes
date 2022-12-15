@@ -1,75 +1,36 @@
 #include <bits/stdc++.h>
-#include <cassert>
 using namespace std;
-#define ll long long
-#define ull unsigned long long
-#define ld long double
-#define pii pair<int, int>
-#define pll pair<ll, ll>
-#define fr first
-#define sc second
-#define vt vector
-#define all(c) (c).begin(), (c).end()
-#define sz(x) (int)(x).size()
 
-#define EXPAND( x ) x // Use this if MS Visual Studio doesn't expand __VA_ARGS__ correctly
-#define F_OR(i, a, b, s) for (int i = (a); (s) > 0 ? i < (b) : i > (b); i += (s))
-#define F_OR1(e) F_OR(i, 0, e, 1)
-#define F_OR2(i, e) F_OR(i, 0, e, 1)
-#define F_OR3(i, b, e) F_OR(i, b, e, 1)
-#define F_OR4(i, b, e, s) F_OR(i, b, e, s)
-#define GET5(a, b, c, d, e, ...) e
-#define F_ORC(...) EXPAND( GET5(__VA_ARGS__, F_OR4, F_OR3, F_OR2, F_OR1) )
-#define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
-#define EACH(x, a) for (auto& x : a)
-
-const double EPS = 1e-9;
-const int INF = 1e9 + 7;
-const int MOD = 1e9 + 7;
-const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
-
-void bt(vt<int>& arr) {
-    int mx = 0;
-    vt<int> nxt;
-    for (int i = 1; i < sz(arr); i++) {
-        cout << "? " << arr[0] << ' ' << arr[i] << endl;
-
-        int x; cin >> x;
-        if (mx <= x) {
-            if (mx < x) {
-                mx = x;
-                nxt.clear();
-            }
-            nxt.push_back(arr[i]);
-        }
-    }
-
-    if (sz(nxt) == 1) {
-        cout << "! " << arr[0] << ' ' << nxt[0] << endl;
-
-        int x; cin >> x;
-        if (x == -1) exit(0);
-    }
-    else {
-        bt(nxt);
-    }
+int query(int u, int v) {
+    cout << "? " << u << ' ' << v << endl;
+    int ret; cin >> ret;
+    return ret;
 }
 
 int main() {
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
-
-	int tc; cin >> tc;
-	FOR(tt, 1, tc + 1) {
+    int tc; cin >> tc;
+    while (tc--) {
         int n; cin >> n;
-        
-        vt<int> arr;
-        for (int i = 1; i <= n; i++)
-            arr.push_back(i);
 
-        bt(arr);
-	}
+        int u = 1, v = 2;
+        int g = query(u, v);
+        for (int i = 3; i <= n; i++) {
+            int res1 = query(u, i);
+            int res2 = query(v, i);
 
-	return 0;
+            if (res1 >= max(res2, g)) {
+                g = res1;
+                v = i;
+            }
+            else if (res2 >= max(res1, g)) {
+                g = res2;
+                u = i;
+            }
+        }
+
+        cout << "! " << u << ' ' << v << endl;
+        int res; cin >> res;
+    }
+
+    return 0;
 }
