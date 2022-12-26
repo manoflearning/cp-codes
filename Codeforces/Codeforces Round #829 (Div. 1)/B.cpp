@@ -47,6 +47,6 @@ int main() {
 
 	if (cnt[x]) cout << "Yes";
 	else cout << "No";
-
+	
 	return 0;
 }
