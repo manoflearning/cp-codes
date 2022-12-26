@@ -74,7 +74,7 @@ int main() {
             cout << -1 << '\n';
             continue;
         }
-
+        
         for (int i = 1; i <= n; i++) {
             int s = i, e = i;
 
