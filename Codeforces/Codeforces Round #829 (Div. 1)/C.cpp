@@ -42,22 +42,24 @@ int main() {
 	for (int tt = 1; tt <= tc; tt++) {
 		cin >> n;
 		for (int i = 1; i <= n; i++) cin >> a[i];
-
-		ll p = -1, q = n * (n - 1) / 2 % MOD;
-
-		ll cnt = 0;
+		
+		int cnt = 0;
 		for (int i = 1; i <= n; i++) {
-			if (a[i] == 0) cnt++; 
+			if (a[i] == 0) cnt++;
 		}
 
-		ll res = 0;
+		ll x = 0;
 		for (int i = 1; i <= cnt; i++) {
-			if (a[i] == 1) res++;
+			if (a[i] == 1) x++;
 		}
 
-		p = res * res % MOD;
+		ll ans = 0;
+		while (x > 0) {
+			ans = (ans + n * (n - 1) / 2 % MOD * powxy(x * x % MOD, MOD - 2)) % MOD;
+			x--;
+		}
 
-		cout << p * powxy(q, MOD - 2) % MOD << '\n';
+		cout << ans << '\n';
 	}
 
 	return 0;
