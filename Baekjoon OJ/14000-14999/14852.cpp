@@ -18,7 +18,7 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ll dp[1010101];
+ll dp[1010101], psum[1010101];
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -31,9 +31,16 @@ int main() {
 
 	dp[0] = 1;
     dp[1] = 2;
-    for (int i = 2; i < 1010101; i++) {
-        dp[i] = 3 * dp[i - 2] + 2 * dp[i - 1];
+	dp[2] = 7;
+	psum[0] = 1;
+	psum[1] = 3;
+	psum[2] = 10;
+    for (int i = 3; i < 1010101; i++) {
+        dp[i] = 2 * psum[i - 3] + 3 * dp[i - 2] + 2 * dp[i - 1];
         dp[i] %= MOD;
+		
+		psum[i] += psum[i - 1];
+		psum[i] %= MOD;
     }
 
     int n; cin >> n;
