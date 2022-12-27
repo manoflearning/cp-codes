@@ -22,10 +22,14 @@ int n, dep[101010], en;
 vector<int> t[101010];
 
 void dfs(int v) {
+    if (t[v][0] != -1) {
+        dep[t[v][0]] = dep[v] + 1;
+        dfs(t[v][0]);
+    }
     en = v;
-    for (auto& i : t[v]) {
-        dep[i] = dep[v] + 1;
-        dfs(i);
+    if (t[v][1] != -1) {
+        dep[t[v][1]] = dep[v] + 1;
+        dfs(t[v][1]);
     }
 }
 
@@ -42,8 +46,8 @@ int main() {
     for (int i = 0; i < n; i++) {
         int a, b, c;
         cin >> a >> b >> c;
-        if (b != -1) t[a].push_back(b);
-        if (c != -1) t[a].push_back(c);
+        t[a].push_back(b);
+        t[a].push_back(c);
     }
 
     dfs(1);
