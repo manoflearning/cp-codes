@@ -38,8 +38,8 @@ int main() {
     for (int i = 3; i < 1010101; i++) {
         dp[i] = 2 * psum[i - 3] + 3 * dp[i - 2] + 2 * dp[i - 1];
         dp[i] %= MOD;
-		
-		psum[i] += psum[i - 1];
+
+		psum[i] = dp[i] + psum[i - 1];
 		psum[i] %= MOD;
     }
 
