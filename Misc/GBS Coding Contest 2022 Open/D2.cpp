@@ -18,7 +18,19 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-string ans[31];
+ll x;
+
+void f(ll x) {
+    if (x == 0) return;
+
+    ll lb = sqrt(x);
+
+    for (int i = 0; i < lb; i++) cout << 'A';
+    for (int i = 1; i < 25; i++) cout << (char)('A' + i);
+    for (int i = 0; i < lb; i++) cout << 'Z';
+
+    f(x - lb * lb);
+}
 
 int main() {
 	#ifndef ONLINE_JUDGE
@@ -29,31 +41,14 @@ int main() {
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    ans[0] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (int i = 1; i <= 30; i++) {
-        int l = (1 << (i / 2)), r = (1 << (i / 2));
-        if (i & 1) l *= 2;
-        for (int j = 0; j < l; j++) ans[i].push_back('A');
-        for (int j = 1; j < 25; j++) ans[i].push_back(j + 'A');
-        for (int j = 0; j < r; j++) ans[i].push_back('Z');
-    }
-
-    ll x; cin >> x;
+    cin >> x;
 
     if (x == 0) {
         cout << "MANOFLEARNING";
         return 0;
     }
 
-    for (int i = 0; i <= 30; i++) {
-        cout << i << ' ' << sz(ans[i]) << '\n';
-    }
-
-    for (int i = 0; i <= 30; i++) {
-        if ((1 << i) & x) {
-            cout << ans[i];
-        }
-    }
+    f(x);
 
 	return 0;
 }
