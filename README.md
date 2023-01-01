@@ -62,3 +62,4 @@ My codes for solving algorithm problems.
     - https://github.com/justiceHui/icpc-teamnote/blob/master/code/Geometry/HPI.cpp <br/> getpoint는 기울기 dy/dx 주어졌을 때 O(log N)에 접점 찾는 함수 <br/> convextangent는 점 주어졌을 때 O(log N)에 접점 찾는 함수
 - Fenwick Tree
 - Burnside Lemma, Möbius Inversion Formula, Kitamasa Method, Berlekamp-Massey
+- Li Chao Tree
