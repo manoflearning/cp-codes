@@ -26,7 +26,7 @@ const int MAXD = 16;
 
 int n, x, y, cnt = 0;
 vector<int> adj[2020];
-int par[2020][MAXD + 1], node[2020], dep[2020], in[2020], out[2020];
+int par[2020][MAXD + 1], node[2020], dep[2020], in[2020], out[2020], vi[2020];
 string s;
 
 void dfs(int now, int prv) {
@@ -83,11 +83,11 @@ int main() {
             now = nxt;
             
             node[i] = now;
-            in[now] = i;
+			in[now] = i;
         }
         else {
             node[i] = now;
-            out[now] = i;
+			out[now] = i;
             
             now = par[now][0];
         }
@@ -99,7 +99,7 @@ int main() {
     buildSparseTable();
 
     int v = lca(x, y);
-    cout << in[v] + 1 << ' ' << out[v] + 1;
+	cout << in[v] + 1 << ' ' << out[v] + 1;
 
 	return 0;
 }
