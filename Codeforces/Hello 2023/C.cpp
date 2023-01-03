@@ -39,7 +39,6 @@ int main() {
 		cin >> n >> m;
         for (int i = 1; i <= n; i++) cin >> a[i];
 
-        
         vector<ll> psum(m + 1);
         for (int i = 1; i <= m; i++) {
             psum[i] = a[i] + psum[i - 1];
