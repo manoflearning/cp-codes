@@ -23,9 +23,7 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int n;
-vector<int> done;
-
-int query1(int idx) {
+int query(int idx) {
 	string s;
 	for (int i = 0; i < n; i++) {
 		s.push_back(i == idx ? '0' : '1');
@@ -34,6 +32,13 @@ int query1(int idx) {
 
 	int ret; cin >> ret;
 	return ret;
+}
+
+void answer(vector<int> arr) {
+	string s;
+	for (int i = 0; i < n; i++) s.push_back('0');
+	for (auto& i : arr) s[i] = '1';
+	cout << "! " << s << endl;
 }
 
 int main() {
@@ -49,30 +54,25 @@ int main() {
 
 	vector<pii> arr;
 	for (int i = 0; i < n; i++) {
-		int res = query1(i);
+		int res = query(i);
 		arr.push_back({ res, i });
 	}
 
 	sort(arr.rbegin(), arr.rend());
 
-	ll sum = 0, sum2 = 0;
+	ll sum = 0;
+	vector<int> done;
 	for (int i = 0; i < n; i++) {
 		done.push_back(arr[i].sc);
+		sum += arr[i].fr;
 
-		sum2 += arr[i].fr;
-
-		if (sum2 == (n - sz(done)) * sz(done) + sz(done) * (sz(done) - 1) / 2) {
-			string s;
-			for (int i = 0; i < n; i++) s.push_back('0');
-			for (auto& i : done) s[i] = '1';
-			cout << "! " << s << endl;
+		if (sum == (n - sz(done)) * sz(done) + sz(done) * (sz(done) - 1) / 2) {
+			answer(done);
 			return 0;
 		}
 	}
 
-	string s;
-	for (int i = 0; i < n; i++) s.push_back('1');
-	cout << "! " << s << endl;
+	answer(done);
 
 	return 0;
 }
