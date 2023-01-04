@@ -45,9 +45,10 @@ int main() {
         }
 
         int ans = 0;
-        priority_queue<ll> pq;
-        if (a[m] > 0) pq.push(a[m]);
 
+        priority_queue<ll> pq;
+        
+        if (a[m] > 0) pq.push(a[m]);
         for (int i = m - 1; i >= 1; i--) {
             if (psum[i] < psum[m]) {
                 ans++;
