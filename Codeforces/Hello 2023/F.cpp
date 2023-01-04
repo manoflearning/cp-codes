@@ -1,3 +1,9 @@
+// 홀수 크기의 부분 트리에 연산을 적용하는 일은 의미가 없음 -> 짝수 크기의 부분 트리만을 고려
+// 각각 u, v를 루트로 하는 짝수 크기의 부분 트리에 연산을 적용할 때,
+// lca(u, v) == u or v이면 둘 중 dep가 작은 노드(조상 노드)만을 고려하면 됨. 둘 모두에 연산을 적용할 필요 X.
+// 따라서 disjoint한 서브 트리들에 연산을 적용하면 됨.
+// tree dp로 해결.
+
 //#pragma GCC optimize("O3")
 //#pragma GCC optimize("Ofast")
 //#pragma GCC optimize("unroll-loops")
