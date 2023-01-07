@@ -1,7 +1,8 @@
 // 그래프가 주어질 때, 노드 집합을 독립 집합 A과 완전 그래프 집합 B로 분할하는 방법의 수를 구하라.
 // A에 속한 임의의 노드 u와 B에 속한 임의의 노드 v를 생각해보자.
-// deg[u] <= deg[v]이다.
-// sum(deg[v]) = sum(deg[u]) + |B| * (|B| - 1)
+// 1. deg[u] <= deg[v]이다.
+// 2. sum(deg[v]) = sum(deg[u]) + |B| * (|B| - 1)
+// (1, 2를 만족한다) iff (A는 독립 집합이고, B는 완전 그래프 집합이다)
 
 //#pragma GCC optimize("O3")
 //#pragma GCC optimize("Ofast")
@@ -67,8 +68,6 @@ int main() {
     ll ans = 0;
     ll A = n, B = 0;
     for (int i = n - 1; i >= 0; i--) {
-        if (!cnt[i]) continue;
-
         int res = 0;
         for (int j = 0; j < cnt[i]; j++) {
             A--, B++;
