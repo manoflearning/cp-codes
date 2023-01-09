@@ -23,7 +23,7 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 ll A, B, C, K;
-int dp[2020202][4];
+int dp[1010101][4];
 
 int f(int v, int d) {
     int& ret = dp[v][d];
@@ -49,7 +49,7 @@ int main() {
 
 	cin >> A >> B >> C >> K;
 
-    for (int i = 0; i < 2020202; i++) {
+    for (int i = 0; i < 1010101; i++) {
         dp[i][0] = dp[i][1] = dp[i][2] = dp[i][3] = -1;
     }
 

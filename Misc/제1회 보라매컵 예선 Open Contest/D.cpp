@@ -42,9 +42,6 @@ int main() {
         if (cnt == 1) {
             int v; char d;
             cin >> v >> d;
-            if (v == 1 && d == 'R') ans = 0;
-            if (v == m && d == 'L') ans = 0;
-
             if (d == 'R' && v <= prv) ans = 0;
             if (d == 'L') prv = max(prv, v + 1);
         }
@@ -52,11 +49,6 @@ int main() {
             int v1, v2; char d1, d2;
             cin >> v1 >> d1;
             cin >> v2 >> d2;
-            if (v1 == 1 && v2 == m && d1 == 'R' && d2 == 'L') ans = 0;
-            else if (v2 == m && d1 == 'L' && d2 == 'L') ans = 0;
-            else if (v1 == 1 && d1 == 'R' && d2 == 'R') ans = 0;
-            else if (d1 == 'L' && d2 == 'R' && v1 + 1 == v2) ans = 0;
-
             if (d1 == 'R' && d2 == 'L') {
                 if (v1 <= prv && prv <= v2) prv = v2 + 1;
             }
@@ -67,7 +59,10 @@ int main() {
                 if (v1 <= prv) ans = 0;
             }
             if (d1 == 'L' && d2 == 'R') {
-                if (prv < v2) prv = max(prv, v1 + 1);
+                if (prv < v2) {
+                    prv = max(prv, v1 + 1);
+                    if (v2 <= prv) ans = 0;
+                }
                 else ans = 0;
             }
         }

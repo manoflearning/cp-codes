@@ -32,17 +32,14 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
 	int n; cin >> n;
+    
     int ans = 0;
     vector<int> vi(202020);
     for (int i = 0; i < n; i++) {
         int x, y;
         cin >> x >> y;
-        if (vi[x]) {
-            if (y == 1) ans++;
-        }
-        else {
-            if (y == 0) ans++;
-        }
+        if (vi[x] && y == 1) ans++;
+        if (!vi[x] && y == 0) ans++;
 
         vi[x] = y;
     }
