@@ -6,7 +6,7 @@ My codes for solving algorithm problems.
 - AtCoder: [![acbadge](https://cp-logo.vercel.app/atcoder/man_of_learning)](https://atcoder.jp/users/man_of_learning)
 - **Baekjoon OJ**: [![bojbadge](http://mazassumnida.wtf/api/mini/generate_badge?boj=man_of_learning)](https://solved.ac/man_of_learning)
 - **Codeforces**: [![cfbadge](https://badges.joonhyung.xyz/codeforces/man_of_learning.svg)](https://codeforces.com/profile/man_of_learning)
-- LeetCode: [![lcbadge](https://badges.peiyuan.ch/leetcode/77jwk0724/name)](https://leetcode.com/77jwk0724/)
+- LeetCode: [![lcbadge](https://badges.peiyuan.ch/leetcode/manoflearning/name)](https://leetcode.com/manoflearning/)
 - Project Euler: [man_of_learning](https://projecteuler.net/progress=man_of_learning)
 
 ## My Algorithm & Data Structure Status
