@@ -22,13 +22,13 @@ const int MOD = 1e9 + 7;
 const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const int MAXN = 4040404;
+const int MAXN = 202020;
 ll fac[MAXN], inv[MAXN], facInv[MAXN];
 ll binom(int n, int r) {
 	return fac[n] * facInv[r] % MOD * facInv[n - r] % MOD;
 }
 
-int n, m, deg[202020], cnt[202020];
+int n, m, deg[MAXN], cnt[MAXN];
 
 int main() {
 	#ifndef ONLINE_JUDGE
