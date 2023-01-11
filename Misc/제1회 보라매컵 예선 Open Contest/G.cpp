@@ -26,7 +26,7 @@ void input() {
 }
 
 void floyd() {
-    for (int i = 1; i <= n; i++) adj[i][i] = 0;
+    //for (int i = 1; i <= n; i++) adj[i][i] = 0;
     for (int k = 1; k <= n; k++) {
         for (int u = 1; u <= n; u++) {
             for (int v = 1; v <= n; v++) {
@@ -78,6 +78,8 @@ int main() {
             if (res <= ub) r = mid;
             else l = mid + 1;
         }
+
+        res = (psum[st] + w[v[st]]) + adj[v[st]][v[l]] + (psum[x] - psum[l]);
         
         ll cnt = l - st - 1;
         if (res <= ub && (cnt < ans1 || (cnt == ans1 && res < ans2))) {
