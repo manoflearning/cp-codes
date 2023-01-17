@@ -5,7 +5,7 @@ public:
         int ans = 0, cnt1 = 0;
         for (int i = 0; i < s.size(); i++) {
             if (s[i] == '1') cnt1++;
-            else if (cnt1) cnt1--, ans++;
+            else if (cnt1) ans = min(cnt1, ans + 1);
         }
         return ans;
     }
