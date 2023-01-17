@@ -1,3 +1,17 @@
+// solution 2
+class Solution {
+public:
+    int minFlipsMonoIncr(string s) {
+        int ans = 0, cnt1 = 0;
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == '1') cnt1++;
+            else if (cnt1) cnt1--, ans++;
+        }
+        return ans;
+    }
+};
+
+// solution 1
 class Solution {
 public:
     int minFlipsMonoIncr(string s) {
