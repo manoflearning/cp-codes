@@ -94,8 +94,7 @@ int main() {
         }
 
         if (m - curr < at && m - curr < ct) break;
-        //cout << at << ' ' << ct << '\n';
-        //cout << x << ' ' << B1 << ' ' << B2 << '\n';
+        
         f2(at, ct);
         
         if (at == ct) {
