@@ -2,11 +2,14 @@
 using namespace std;
 #define ll long long
 #define sz(x) (int)(x).size()
+#define pll pair<ll, ll>
+#define fr first
+#define sc second
 
 struct wv { ll w; int v; };
 struct Query { int idx; ll ub; };
 
-int n;
+int n, isLeaf[202020];
 vector<wv> adj[202020], t[202020];
 ll dp[202020], dep[202020];
 
@@ -15,6 +18,8 @@ vector<Query> query;
 vector<ll> ans;
 
 void dfs(int v, int prv, int d) {
+    if (prv == 0 && sz(adj[v]) == 1) isLeaf[v] = 1;
+
     dep[v] = d;
     for (auto& i : adj[v]) {
         if (i.v == prv) continue;
@@ -76,40 +81,17 @@ int main() {
         pq.push({ dp[i.v] + i.w - 1, dp[i.v], i.v });
     }
 
-    ll done = -1;
+    ll cnt = 0, curr = pq.top().w, done = -1;
+    priority_queue<pll> pq2;
     for (int i = 0; i < q; i++) {
-        ll ub = query[i].ub;
-
-        while (sz(pq) && ub > 0) {
-            if (sz(pq) >= 2) {
-                Node u = pq.top(); pq.pop();
-                ll diff = min({ ub, u.w - pq.top().w - 1, u.w - u.lb });
-                ub -= diff, u.w -= diff;
-                
-                if (u.w == u.lb) {
-                    for (auto& j : t[u.v]) {
-                        pq.push({ dp[j.v] + j.w - 1, dp[j.v], j.v });
-                    }
-                    if (t[u.v].empty()) done = max(done, u.w);
-                }
-                else pq.push(u);
-            }
-            else {
-                Node u = pq.top(); pq.pop();
-                ll diff = min(ub, u.w - u.lb);
-                ub -= diff, u.w -= diff;
-
-                if (u.w == u.lb) {
-                    for (auto& j : t[u.v]) {
-                        pq.push({ dp[j.v] + j.w - 1, dp[j.v], j.v });
-                    }
-                    if (t[u.v].empty()) done = max(done, u.w);
-                }
-                else pq.push(u);
-            }
+        if (done != -1) {
+            ans[query[i].idx] = done;
+            continue;
         }
 
-        ans[query[i].idx] = max(sz(pq) ? pq.top().w : 0, done);
+        ll ub = query[i].ub;
+
+        while (sz(pq) && )
     }
 
     for (int i = 0; i < q; i++)
