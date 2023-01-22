@@ -18,7 +18,7 @@ vector<Query> query;
 vector<ll> ans;
 
 void dfs(int v, int prv, int d) {
-    if (prv == 0 && sz(adj[v]) == 1) isLeaf[v] = 1;
+    if (prv != 0 && sz(adj[v]) == 1) isLeaf[v] = 1;
 
     dep[v] = d;
     for (auto& i : adj[v]) {
@@ -38,6 +38,17 @@ struct Node {
 };
 
 priority_queue<Node> pq;
+priority_queue<pll> pq2;
+
+int done = 0;
+void add(int v) {
+    if (isLeaf[v]) done = 1;
+
+    for (auto& i : t[v]) {
+        if (i.w == 1) add(i.v);
+        else pq.push({ dp[i.v] + i.w - 1, dp[i.v], i.v });
+    }
+}
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -64,7 +75,7 @@ int main() {
         dp[v] += dep[v];
 
     // offline query
-    cin >> q;    
+    cin >> q;
     query.resize(q);
     ans.resize(q);
     for (int i = 0; i < q; i++) {
@@ -77,21 +88,45 @@ int main() {
     });
 
     // solve
-    for (auto& i : t[1]) {
-        pq.push({ dp[i.v] + i.w - 1, dp[i.v], i.v });
+    for (int i = q - 1; i >= 1; i--) {
+        query[i].ub = query[i].ub - query[i - 1].ub;
     }
 
-    ll cnt = 0, curr = pq.top().w, done = -1;
-    priority_queue<pll> pq2;
+    add(1);
+
+    ll cnt = 0, curr = (sz(pq) ? pq.top().w : dp[1]), sum = 0;
     for (int i = 0; i < q; i++) {
-        if (done != -1) {
-            ans[query[i].idx] = done;
+        if (done) {
+            ans[query[i].idx] = curr;
             continue;
         }
 
-        ll ub = query[i].ub;
+        sum += query[i].ub;
 
-        while (sz(pq) && )
+        while (sum > 0 && !done) {
+            while (sz(pq) && pq.top().w == curr) {
+                cnt++;
+                pq2.push({ pq.top().lb, pq.top().v });
+                pq.pop();
+            }
+            
+            ll nxt = curr - sum / cnt;
+            nxt = max(nxt, sz(pq) ? pq.top().w : 0);
+            nxt = max(nxt, sz(pq2) ? pq2.top().fr : 0);
+
+            if (nxt == curr) break;
+
+            sum -= (curr - nxt) * cnt;
+            curr = nxt;
+
+            while (sz(pq2) && pq2.top().fr == curr) {
+                cnt--;
+                add(pq2.top().sc);
+                pq2.pop();
+            }
+        }
+        
+        ans[query[i].idx] = curr;
     }
 
     for (int i = 0; i < q; i++)
