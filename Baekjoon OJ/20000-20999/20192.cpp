@@ -15,30 +15,27 @@ int main() {
     cin >> n;
     for (int i = 1; i <= n; i++) cin >> a[i];
 
-    int increase = 1, decrease = 1;
-    for (int i = 1; i < n; i++) {
-        if (a[i] > a[i + 1]) increase = 0;
-        if (a[i] < a[i + 1]) decrease = 0;
-    }
-
-    if (increase || decrease) {
+    int already = 1;
+    for (int i = 1; i < n; i++)
+        if (a[i] > a[i + 1]) already = 0;
+    
+    if (already) {
         cout << 0;
         return 0;
     }
 
-    int up = 1, down = 0, cnt = 1;
-    for (int i = 2; i <= n; i++) {
-        if (a[i - 1] == a[i]) continue;
-        if (a[i - 1] < a[i]) {
-            if (down) up = 1, down = 0, cnt++;
+    int cnt = 1, up = 1, down = 0;
+    for (int i = 1; i < n; i++) {
+        if (a[i] < a[i + 1]) {
+            if (down) cnt++, up = 1, down = 0;
         }
-        if (a[i - 1] > a[i]) {
+        if (a[i] > a[i + 1]) {
             if (up) up = 0, down = 1;
         }
     }
 
     int ans = 1;
-    for (int i = 1; i < cnt; i *= 2, ans++);
-    
+    for (int i = 1; i < cnt; i <<= 1, ans++);
+
     cout << ans;
 }
