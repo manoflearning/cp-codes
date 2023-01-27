@@ -17,6 +17,7 @@ My codes for solving algorithm problems.
 - Minimum Spanning Tree, Union Find, Sparse Table, Prefix Sum, MITM
 - Coordinate Compression
 - Segment Tree, Segment Tree with Lazy Propagation
+- Sqrt Decomposition + Mo's Algorithm
 - Inclusion–exclusion Principle
 - Bitmask DP
 
@@ -24,7 +25,7 @@ My codes for solving algorithm problems.
 
 - Bellman-Ford Algorithm, Floyd-Warshall Algorithm
 - Topological Sort, LCA in O(logN) (Sparse Table), SCC, BCC
-- Sqrt Decomposition + Mo's Algorithm, Heavy-Light Decomposition
+- Heavy-Light Decomposition
 - Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
 - CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
 - Sieve of Eratosthenes, GCD + LCM, Catalan Number
