@@ -1,13 +1,55 @@
-#include <iostream>
-#include <vector>
+// INPUT: Given a tree with N nodes. Given M queries of the form (u, v).
+// OUTPUT: For each query, print lca(u, v).
+// TIME COMPLEXITY: O(N) for initialize, O(logN) for each query.
+
+// BOJ 11438 AC Code
+// https://www.acmicpc.net/problem/11438
+
+#include <bits/stdc++.h>
 using namespace std;
+#define ll long long
 
-const int MAX = 101010, MAXD = 16;  // 2^MAXD = 65536
+int arr[202020], dep[101010];
 
-vector<int> adj[MAX];
-int n, dep[MAX], par[MAX][MAXD + 1];
+int flag;  // array size
+struct Seg {  // 1-indexed
+	vector<pair<int, int>> t;
+	void build(int N) {
+		for (flag = 1; flag < N; flag <<= 1);
+		t.resize(flag << 1);
+		for (int i = flag; i < flag + N; i++) {
+			int v = arr[i - flag + 1];
+			t[i] = { dep[v], v };
+		}
+		for (int i = flag - 1; i >= 1; i--) 
+			t[i] = min(t[i << 1], t[i << 1 | 1]);
+	}
+	pair<int, int> query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
+		if (r < nl || nr < l) return { 1e9, 1e9 };
+		if (l <= nl && nr <= r) return t[n];
+		int mid = (nl + nr) / 2;
+		return min(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
+	}
+}seg;
 
-void input() {
+int n, loc[101010], cnt = 1;
+vector<int> adj[101010];
+
+void dfs(int v, int prv) {
+	loc[v] = cnt;
+	arr[cnt++] = v;
+	for (auto& i : adj[v]) {
+		if (i == prv) continue;
+		dep[i] = dep[v] + 1;
+		dfs(i, v);
+		arr[cnt++] = v;
+	}
+}
+
+int main() {
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+
 	cin >> n;
 	for (int i = 0; i < n - 1; i++) {
 		int u, v;
@@ -15,68 +57,16 @@ void input() {
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
-}
-
-void dfs(int now, int prv) {
-	par[now][0] = prv;
-	dep[now] = dep[prv] + 1;
-	for (auto i : adj[now]) {
-		if (i == prv) continue;
-		dfs(i, now);
-	}
-}
-
-void buildSparseTable() {
-	for (int i = 1; i <= MAXD; i++) {
-		for (int v = 1; v <= n; v++) {
-			par[v][i] = par[par[v][i - 1]][i - 1];
-		}
-	}
-}
-
-int lca(int u, int v) {
-	if (dep[u] < dep[v]) swap(u, v);
-
-	int diff = dep[u] - dep[v];
-	for (int i = MAXD; i >= 0; i--)
-		if (diff & (1 << i)) u = par[u][i];
-
-	if (u == v) return u;
-
-	for (int i = MAXD; i >= 0; i--) {
-		if (par[u][i] ^ par[v][i]) {
-			u = par[u][i];
-			v = par[v][i];
-		}
-	}
-	
-	return par[u][0];
-}
-
-int main() {
-	#ifndef ONLINE_JUDGE
-	// Enter the absolute path of the local file input.txt, output.txt
-	// Or just enter the "input.txt", "output.txt"
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
-	#endif
-
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
-	
-	input();
 
 	dfs(1, 0);
 
-	buildSparseTable();
+	seg.build(2 * n - 1);
 
-	int Q; cin >> Q;
-	while (Q--) {
+	int m; cin >> m;
+	for (int i = 0; i < m; i++) {
 		int u, v;
 		cin >> u >> v;
-
-		cout << lca(u, v) << '\n';
+		if (loc[u] > loc[v]) swap(u, v);
+		cout << seg.query(loc[u], loc[v]).second << '\n';
 	}
-
-	return 0;
 }
