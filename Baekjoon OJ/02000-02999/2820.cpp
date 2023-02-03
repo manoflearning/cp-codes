@@ -1,117 +1,91 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 #define ll long long
 
-int flag;
-struct Seg {
-    vector<ll> t, lazy;
+int a[505050], in[505050], out[505050];
 
-    void build(int n, const vector<int>& w, const vector<int>& in, const vector<int>& out) {
-        for (flag = 1; flag < 2 * n; flag <<= 1);
-        t.resize(flag << 1);
-        lazy.resize(flag << 1);
-        
-        for (int i = 1; i <= n; i++) {
-            t[flag + in[i] - 1] = w[i];
-            t[flag + out[i] - 1] = w[i];
+int flag;  // array size
+struct Seg {  // 1-indexed
+	vector<ll> t, lazy;
+	void build(int n) {
+		for (flag = 1; flag < n; flag <<= 1);
+		t.resize(2 * flag);
+		lazy.resize(2 * flag);
+        for (int v = 1; v <= n; v++) {
+            t[in[v] + flag - 1] = a[v];
         }
-        for (int i = flag - 1; i >= 1; i--) {
-            t[i] = t[i << 1] + t[i << 1 | 1];
-        }
-    }
-    void propagate(int n, int nl, int nr) {
-        if (lazy[n]) {
-            if (n < flag) {
-                lazy[n << 1] += lazy[n];
-                lazy[n << 1 | 1] += lazy[n];
-            }
-            t[n] += (nr - nl + 1) * lazy[n];
-            lazy[n] = 0;
-        }
-    }
-    void modify(int l, int r, ll val, int n = 1, int nl = 1, int nr = flag) {
-        propagate(n, nl, nr);
-
-        if (nr < l || r < nl) return;
-        if (l <= nl && nr <= r) {
-            lazy[n] += val;
-            propagate(n, nl, nr);
-            return;
-        }
-
-        int mid = (nl + nr) >> 1;
-        modify(l, r, val, n << 1, nl, mid);
-        modify(l, r, val, n << 1 | 1, mid + 1, nr);
-    }
-    ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-        propagate(n, nl, nr);
-
-        if (nr < l || r < nl) return 0;
-        if (l <= nl && nr <= r) {
-            propagate(n, nl, nr);
-            return t[n];
-        }
-
-        int mid = (nl + nr) >> 1;
-        return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
-    }
+		for (int i = flag - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
+	}
+	// add a value to all elements in interval [l, r]
+	void modify(int l, int r, ll value, int n = 1, int nl = 1, int nr = flag) {
+		propagate(n, nl, nr);
+		if (r < nl || nr < l) return;
+		if (l <= nl && nr <= r) {
+			lazy[n] += value;
+			propagate(n, nl, nr);
+			return;
+		}
+		int mid = (nl + nr) >> 1;
+		modify(l, r, value, n << 1, nl, mid);
+		modify(l, r, value, n << 1 | 1, mid + 1, nr);
+		t[n] = t[n << 1] + t[n << 1 | 1];
+	}
+	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {  // sum on interval [l, r]
+		propagate(n, nl, nr);
+		if (r < nl || nr < l) return 0;
+		if (l <= nl && nr <= r) return t[n];
+		int mid = (nl + nr) / 2;
+		return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
+	}
+	void propagate(int n, int nl, int nr) {
+		if (lazy[n] != 0) {
+			if (n < flag) {
+				lazy[n << 1] += lazy[n];
+				lazy[n << 1 | 1] += lazy[n];
+			}
+			t[n] += lazy[n] * (nr - nl + 1);
+			lazy[n] = 0;
+		}
+	}
 }seg;
 
-int n, q, num;
-vector<int> w, in, out;
-vector<int> chd[505050];
+int n, m, cnt;
+vector<int> adj[505050];
 
-void input() {
-    cin >> n >> q;
-
-    w.resize(n + 1);
-    in.resize(n << 1 | 1);
-    out.resize(n << 1 | 1);
-
-    cin >> w[1];
-    for (int i = 2; i <= n; i++) {
-        int p;
-        cin >> w[i] >> p;
-        chd[p].push_back(i);
+void dfs(int v, int prv) {
+    in[v] = ++cnt;
+    for (auto& i : adj[v]) {
+        if (i != prv) dfs(i, v);
     }
-}
-
-void dfs(int v) {
-    in[v] = ++num;
-    for (auto& i : chd[v]) dfs(i);
-    out[v] = ++num;
+    out[v] = cnt;
 }
 
 int main() {
-	#ifndef ONLINE_JUDGE
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
-	#endif
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
 
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
-
-	input();
-
-    dfs(1);
-
-    seg.build(n, w, in, out);
-
-    while (q--) {
-        char op;
-        int x, y;
-        cin >> op >> x;
-
-        if (op == 'p') {
-            cin >> y;
-            seg.modify(in[x] + 1, out[x] - 1, y);
-        }
-        else {
-            cout << seg.query(in[x], in[x]) << '\n';
-        }
+    cin >> n >> m;
+    for (int v = 1; v <= n; v++) {
+        cin >> a[v];
+        if (v == 1) continue;
+        int u; cin >> u;
+        adj[v].push_back(u);
+        adj[u].push_back(v);
     }
 
-	return 0;
+    dfs(1, 0);
+
+    seg.build(cnt);
+
+    for (int i = 0; i < m; i++) {
+        char op; 
+        int x, y;
+        cin >> op >> x;
+        if (op == 'p') {
+            cin >> y;
+            seg.modify(in[x] + 1, out[x], y);
+        }
+        if (op == 'u')
+            cout << seg.query(in[x], in[x]) << '\n';
+    }
 }
