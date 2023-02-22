@@ -1,97 +1,162 @@
+// solution 1
 #include <bits/stdc++.h>
 using namespace std;
-#define sz(x) (int)(x).size()
-#define all(x) (x).begin(), (x).end()
-#define pii pair<int, int>
-#define fr first
-#define sc second
 
-vector<int> uf(101010, -1);
-int find(int x) {
-    if (uf[x] < 0) return x;
-    return uf[x] = find(uf[x]);
-}
-void merge(int u, int v) {
-    u = find(u), v = find(v);
-    if (u == v) return;
-    uf[u] += uf[v];
-    uf[v] = u;
-}
+int n, m;
+vector<int> adj[101010];
+int in[101010], out[101010], dep[101010], par[101010];
+vector<pair<int, int>> cycle[101010];
 
-int n, in[101010], out[101010], dep[101010], dp[101010];
-vector<int> adj[101010], rdep[101010];
-vector<pii> cy[101010];
-
-void dfs(int v, int prv, int d) {
+void dfs(int v, int prv) {
     in[v] = 1;
-    dep[v] = d;
-    rdep[d].push_back(v);
-    dp[v] = prv;
+
+    par[v] = prv;
+    dep[v] = dep[prv] + 1;
     for (auto& i : adj[v]) {
-        if (in[i]) {
-            if (out[i]) continue;
-            int len = dep[v] - dep[i] + 1;
-            cy[len].push_back({ i, v });
+        if (prv == i) continue;
+        if (!in[i]) dfs(i, v);
+        else if (!out[i]) {
+            cycle[dep[v] - dep[i] + 1].push_back({ i, v });
         }
-        else dfs(i, v, d + 1);
     }
+
     out[v] = 1;
 }
 
+void print(int v, int u) {
+    for (int i = v; i != par[u]; i = par[i])
+        cout << i << ' ';
+    cout << '\n';
+}
+
 int main() {
-    #ifndef ONLINE_JUDGE
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
-	#endif
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
 
-	cin.tie(NULL); cout.tie(NULL);
-	ios_base::sync_with_stdio(false);
-
-	cin >> n;
-    for (int i = 0; i < 2 * n - 3; i++) {
+    // input
+    cin >> n;
+    m = 2 * n - 3;
+    for (int i = 0; i < m; i++) {
         int u, v;
         cin >> u >> v;
         adj[u].push_back(v);
         adj[v].push_back(u);
-        merge(u, v);
     }
 
-    vector<int> arr;
+    // build dfs spanning tree
     for (int v = 1; v <= n; v++) {
-        arr.push_back(find(v));
+        if (!in[v]) {
+            dep[v] = 1; dfs(v, 0);
+        }
     }
 
-    sort(all(arr));
-    arr.erase(unique(all(arr)), arr.end());
+    // print answer
+    for (int len = 3; len <= n; len++) {
+        if (cycle[len].size() < 2) continue;
 
-    for (int i = 0; i + 1 < arr.size(); i++) {
-        int u = arr[i], v = arr[i + 1];
+        cout << len << '\n';
+        print(cycle[len][0].second, cycle[len][0].first);
+        print(cycle[len][1].second, cycle[len][1].first);
+
+        return 0;
+    }
+    
+    cout << 3 << '\n';
+    print(cycle[3][0].second, cycle[3][0].first);
+    
+    vector<int> ans;
+    ans.push_back(cycle[n - 1][0].second);
+    ans.push_back(cycle[n - 1][0].first);
+    auto [u, v] = cycle[n][0];
+    if (u != ans[0] && u != ans[1])
+        ans.push_back(u);
+    else ans.push_back(v);
+    
+    for (auto& i : ans)
+        cout << i << ' ';
+}
+
+// solution 2: random
+/*#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+vector<int> adj[101010];
+int in[101010], out[101010], dep[101010], par[101010];
+vector<pair<int, int>> cycle[101010];
+
+void init() {
+    for (int i = 1; i <= n; i++) {
+        in[i] = out[i] = dep[i] = par[i] = 0;
+        cycle[i].clear();
+    }
+}
+
+void dfs(int v, int prv) {
+    in[v] = 1;
+
+    par[v] = prv;
+    dep[v] = dep[prv] + 1;
+    for (auto& i : adj[v]) {
+        if (prv == i) continue;
+        if (!in[i]) dfs(i, v);
+        else if (!out[i]) {
+            cycle[dep[v] - dep[i] + 1].push_back({ i, v });
+        }
+    }
+
+    out[v] = 1;
+}
+
+void print(int v, int u) {
+    for (int i = v; i != par[u]; i = par[i])
+        cout << i << ' ';
+    cout << '\n';
+}
+
+int main() {
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
+    // input
+    cin >> n;
+    m = 2 * n - 3;
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
 
-    dfs(1, 0, 1);
+    while (1) {
+        // initialize
+        init();
 
-    for (int i = 3; i < 101010; i++) {
-        if (sz(cy[i]) <= 1) continue;
-        cout << i << '\n';
-        int u = cy[i][0].fr, v = cy[i][0].sc;
-        while (dep[v] >= dep[u]) {
-            cout << v << ' ';
-            v = dp[v];
+        // random
+        for (int v = 1; v <= n; v++) {
+            random_shuffle(adj[v].begin(), adj[v].end());
         }
-        cout << '\n';
-        u = cy[i][1].fr, v = cy[i][1].sc;
-        while (dep[v] >= dep[u]) {
-            cout << v << ' ';
-            v = dp[v];
+        vector<int> order;
+        for (int v = 1; v <= n; v++)
+            order.push_back(v);
+        random_shuffle(order.begin(), order.end());
+
+        // build dfs spanning tree
+        for (auto& v : order) {
+            if (!in[v]) {
+                dep[v] = 1; dfs(v, 0);
+            }
         }
-        cout << '\n';
-        return 0;
+
+        // print answer
+        for (int len = 3; len <= n; len++) {
+            if (cycle[len].size() < 2) continue;
+
+            cout << len << '\n';
+            print(cycle[len][0].second, cycle[len][0].first);
+            print(cycle[len][1].second, cycle[len][1].first);
+
+            return 0;
+        }
     }
-
-    cout << 3 << '\n';
-    cout << 
-
-	return 0;
-}
+}*/
