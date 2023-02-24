@@ -64,7 +64,7 @@ int main() {
             if (j != i) q.push_back(p[j]);
         
         sort(q.begin(), q.end(), [&](const Point& lhs, const Point& rhs) {
-            //if ((lhs < p[i]) != (rhs < p[i])) return (lhs < p[i]) > (rhs < p[i]);
+            if ((lhs < p[i]) != (rhs < p[i])) return (lhs < p[i]) > (rhs < p[i]);
             return ccw(p[i], lhs, rhs) < 0;
         });
 
@@ -83,7 +83,6 @@ int main() {
         });
 
         sort(p.begin() + i + 1, p.end(), [&](const Point& lhs, const Point& rhs) {
-            //if ((lhs < p[i]) != (rhs < p[i])) return (lhs < p[i]) < (rhs < p[i]);
             return ccw(p[i], lhs, rhs) > 0;
         });
 
