@@ -29,6 +29,7 @@ My codes for solving algorithm problems.
 - Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
 - CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
 - Sieve of Eratosthenes, GCD + LCM, Catalan Number
+- Sort by Angular
 
 ### Learned but need a lot of practice
 
