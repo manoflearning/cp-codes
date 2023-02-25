@@ -62,7 +62,9 @@ int main() {
 
     // sort by angular
     sort(p.begin(), p.end(), [&](const Point& lhs, const Point& rhs) {
-        return (lhs < o) ^ (rhs < o) ? (lhs < o) < (rhs < o) : ccw(o, lhs, rhs) > 0;
+        if ((lhs < o) ^ (rhs < o)) return (lhs < o) < (rhs < o);
+        if (ccw(o, lhs, rhs)) return ccw(o, lhs, rhs) > 0;
+        return dist(lhs) < dist(rhs);
     });
 
     solve();
