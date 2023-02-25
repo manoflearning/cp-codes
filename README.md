@@ -27,9 +27,8 @@ My codes for solving algorithm problems.
 - Topological Sort, SCC, BCC
 - LCA in O(logN) (Sparse Table), Heavy-Light Decomposition, ETT
 - Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
-- CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
+- CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting, Sort by Angular
 - Sieve of Eratosthenes, GCD + LCM, Catalan Number
-- Sort by Angular
 
 ### Learned but need a lot of practice
 
