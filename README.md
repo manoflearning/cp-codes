@@ -27,7 +27,7 @@ My codes for solving algorithm problems.
 - Topological Sort, SCC, BCC
 - LCA in O(logN) (Sparse Table), Heavy-Light Decomposition, ETT
 - Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
-- CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting, Sort by Angular
+- CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
 - Sieve of Eratosthenes, GCD + LCM, Catalan Number
 
 ### Learned but need a lot of practice
@@ -40,6 +40,7 @@ My codes for solving algorithm problems.
 - KMP Algorithm, Aho-Corasick, Suffix Array
 - Linear Sieve, Extended GCD, Fermat's Little Theorem, Euler's Phi Function, FFT
 - Convex Hull Trick, Knuth Opt, Monotone Queue Opt, DnC Opt
+- Sort by Angular, Bulldozer Trick
 
 ### Have to learn in the future
 
@@ -54,7 +55,6 @@ My codes for solving algorithm problems.
 - Connection Profile DP
 - Sparse Table O(1) RMQ
 - Region Trick (https://github.com/koosaga/iamcoder/blob/master/lectures/%EB%82%98%EC%BD%94%EB%8D%94%201%20Sqrt%20Decomposition.pdf query caching)
-- Rotating Sweep Line Technique (Bulldozer Trick)
 - Aliens Trick
 - Persistent Segment Tree, Splay Tree
 - SOS DP
