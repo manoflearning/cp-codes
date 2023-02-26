@@ -23,7 +23,7 @@ My codes for solving algorithm problems.
 ### Can solve problems to some extent (with cheat sheet)
 
 - Bellman-Ford Algorithm, Floyd-Warshall Algorithm
-- Topological Sort, SCC, BCC
+- Topological Sort, SCC
 - LCA in O(logN) (Sparse Table), Heavy-Light Decomposition, ETT
 - Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
 - CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
@@ -32,7 +32,7 @@ My codes for solving algorithm problems.
 
 ### Learned but need a lot of practice
 
-- Euler Circuit, 2-SAT
+- Euler Circuit, 2-SAT, BCC
 - Merge Sort Tree
 - Network Flow, Max-Flow Min-Cut Theorem, Bipartite Matching, MCMF
 - Centroid Decomposition
