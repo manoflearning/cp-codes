@@ -7,7 +7,6 @@ My codes for solving algorithm problems.
 - **Baekjoon OJ**: https://solved.ac/man_of_learning
 - **Codeforces**: https://codeforces.com/profile/man_of_learning
 - LeetCode: https://leetcode.com/manoflearning/
-- Project Euler: https://projecteuler.net/progress=man_of_learning
 
 ## My Algorithm & Data Structure Status
 
