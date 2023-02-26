@@ -17,7 +17,7 @@ My codes for solving algorithm problems.
 - Coordinate Compression
 - Segment Tree, Segment Tree with Lazy Propagation
 - Sqrt Decomposition + Mo's Algorithm
-- Inclusion–exclusion Principle
+- GCD + LCM, Inclusion–exclusion Principle
 - Bitmask DP
 
 ### Can solve problems to some extent (with cheat sheet)
@@ -27,7 +27,7 @@ My codes for solving algorithm problems.
 - LCA in O(logN) (Sparse Table), Heavy-Light Decomposition, ETT
 - Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
 - CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
-- Sieve of Eratosthenes, GCD + LCM, Catalan Number
+- Sieve of Eratosthenes, Catalan Number
 
 ### Learned but need a lot of practice
 
