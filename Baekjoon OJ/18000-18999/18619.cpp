@@ -21,6 +21,7 @@ struct Seg {
             lazy[n << 1 | 1] = lazy[n];
         }
         t[n] = lazy[n] * (nr - nl + 1);
+        lazy[n] = 0;
     }
     void modify(int l, int r, double val, int n = 1, int nl = 1, int nr = flag) {
         propagate(n, nl, nr);
