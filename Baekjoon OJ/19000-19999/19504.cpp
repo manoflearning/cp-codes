@@ -67,6 +67,8 @@ void dijkstra1() {
         Edge du; du.l = l;
         int st = lower_bound(all(adj[v]), du) - adj[v].begin();
 
+        if (dist[v][st] < w) continue;
+
         for (int idx = st; idx < sz(adj[v]); idx++) {
             auto it = adj[v][idx];
 
@@ -102,6 +104,8 @@ void dijkstra2() {
         Edge du; du.l = l;
         int st = upper_bound(all(adj[v]), du) - adj[v].begin() - 1;
 
+        if (dist[v][st] < w) continue;
+
         for (int idx = st; idx >= 0; idx--) {
             auto it = adj[v][idx];
 
@@ -130,6 +134,11 @@ int main() {
 
     for (int v = 1; v <= n; v++) {
         sort(all(adj[v]));
+        /*for (int i = 0; i < sz(adj[v]); i++) {
+            if (L.find({ v, adj[v][i].l }) == L.end()) 
+                L[{ v, adj[v][i].l }] = i;
+            R[{ v, adj[v][i].l }] = i;
+        }*/
     }
 
     dijkstra1();
