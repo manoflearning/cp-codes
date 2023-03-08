@@ -47,8 +47,7 @@ int main() {
             }
         }
         for (int j = 0; j < n; j++)
-            if (i & (1 << j))
-                sum[i] += (res.fr * res.sc - a[j].fr * a[j].sc) * w[j];
+            if (i & (1 << j)) sum[i] += (res.fr * res.sc - a[j].fr * a[j].sc) * w[j];
     }
 
     for (int i = 0; i < (1 << 15); i++)
