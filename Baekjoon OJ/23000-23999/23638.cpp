@@ -13,13 +13,16 @@ struct Seg {  // 1-indexed
         for (flag = 1; flag < n; flag <<= 1);
         t.resize(flag << 1);
         lazy.resize(flag << 1);
+        for (int i = flag; i < flag + n; i++) t[i] = 0;
+        for (int i = flag + n; i < (flag << 1); i++) t[i] = -INF;
+        for (int i = flag - 1; i >= 1; i--)
+            t[i] = max(t[i << 1], t[i << 1 | 1]);
     }
     // add a value to all elements in interval [l, r]
     void modify(int l, int r, ll value, int n = 1, int nl = 1, int nr = flag) {
         propagate(n);
         if (r < nl || nr < l) return;
         if (l <= nl && nr <= r) {
-            assert(lazy[n] == 0);
             lazy[n] = value;
             propagate(n);
             return;
@@ -113,8 +116,7 @@ int main() {
         ans2 = max(ans2, res);
         seg.modify(1, sz(arr) - 1, -1);
 
-        ll val = seg.query(i, i);
-        seg.modify(i, i, -val);
+        seg.modify(i, i, -seg.query(i, i));
         //assert(seg.query(i, i) == 0);
         //assert(seg.t[flag + i - 1] == 0);
         seg.modify(i, i, dep[v] + sz(arr) - 2);
