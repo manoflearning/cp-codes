@@ -1,0 +1,4 @@
+뱀들을 세로로 배치하기
+
+input 4
+4302 by 4374, but only 44 wormholes
