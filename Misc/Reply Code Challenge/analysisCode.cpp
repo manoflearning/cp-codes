@@ -67,13 +67,10 @@ void input() {
             else {
                 a[i][j] = stoi(s);
                 arr.push_back(a[i][j]);
+                if (a[i][j] > 0) sum++;
             }
         }
     }
-}
-
-inline int Hash(int y, int x) {
-    return 5050 * y + x;
 }
 
 int main() {
@@ -87,26 +84,5 @@ int main() {
 
 	input();
 
-    //sort(arr.rbegin(), arr.rend());
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            if (a[i][j] <= 0) continue;
-            for (int k = 0; k < 4; k++) {
-                int ny = i + dy[k], nx = j + dx[k];
-                if (a[i][j] <= 0) continue;
-                merge(Hash(i, j), Hash(ny, nx));
-            }
-        }
-    }
-
-    set<int> s;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            if (a[i][j] <= 0) continue;
-            s.insert(Hash(i, j));
-        }
-    }
-
-    cout << s.size() << '\n';
+    cout << lenSum << ' ' << sum << '\n';
 }
