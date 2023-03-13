@@ -1,124 +1,129 @@
+//#pragma GCC optimize("O3")
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
 #define sz(x) (int)(x).size()
-#define all(x) (x).begin(), (x).end()
 #define pii pair<int, int>
+#define pll pair<ll, ll>
 #define fr first
 #define sc second
 
 const ll INF = 1e18;
 
-struct Edge {
-    int v; ll w; int l, num;
-    bool operator<(const Edge& rhs) const { return l < rhs.l; }
-    bool operator<=(const Edge& rhs) const { return l <= rhs.l; }
+struct Edge { 
+    int v; ll w; int l, num; 
+    bool operator==(const Edge& rhs) const { return l == rhs.l; }
+    bool operator<(const Edge& rhs) const {
+        if (l ^ rhs.l) return l < rhs.l;
+        else return w < rhs.w;
+    }
 };
-
 int n, m;
-vector<vector<Edge>> adj;
+vector<Edge> adj[101010];
+ll lu[101010];
+vector<int> edgeV(101010, -1);
+vector<pii> idxOfEdge(101010, { -1, -1 });
 
 void input() {
     cin >> n >> m;
-    adj.resize(n + 1);
     for (int i = 0; i < m; i++) {
         int u, v; ll w; int l;
         cin >> u >> v >> w >> l;
         adj[u].push_back({ v, w, l, i + 1 });
         adj[v].push_back({ u, w, l, i + 1 });
+        lu[i + 1] = l;
     }
 }
 
-struct Node {
-    int v; ll w; int l;
-    bool operator<(const Node& rhs) const {
-        return w > rhs.w;
-    }
-};
+map<ll, int> L[101010], R[101010];
 
-struct prvNode {
-    int num, v, idx;
-    prvNode(int Num, int V, int Idx) { num = Num; v = V; idx = Idx; }
-    bool operator!=(const prvNode& rhs) const {
-        return num != rhs.num || v != rhs.v || idx != rhs.idx;
-    }
-};
-
-vector<ll> increase, decrease;
-vector<vector<prvNode>> prvin, prvde;
-
-void dijkstra1() {
-    vector<vector<ll>> dist(n + 1);
-    prvin.resize(n + 1);
+void sorting() {
+    // sorting
     for (int v = 1; v <= n; v++) {
-        dist[v].resize(sz(adj[v]), INF);
-        prvin[v].resize(sz(adj[v]), { -1, -1, -1 });
+        sort(adj[v].begin(), adj[v].end(), [&](const Edge& lhs, const Edge& rhs) {
+            return lhs.l < rhs.l;
+        });
     }
-
-    priority_queue<Node> pq;
-    pq.push({ 1, 0, 0 });
-    dist[1][0] = 0;
-    prvin[1][0] = { 0, 0, 0 };
-    
-    while (sz(pq)) {
-        auto [v, w, l] = pq.top();
-        pq.pop();
-
-        Edge du; du.l = l;
-        int st = lower_bound(all(adj[v]), du) - adj[v].begin();
-
-        if (dist[v][st] < w) continue;
-
-        for (int idx = st; idx < sz(adj[v]); idx++) {
-            auto it = adj[v][idx];
-
-            int nidx = lower_bound(all(adj[it.v]), it) - adj[it.v].begin();
-            if (w + it.w < dist[it.v][nidx]) {
-                pq.push({ it.v, w + it.w, it.l });
-                dist[it.v][nidx] = w + it.w;
-                prvin[it.v][nidx] = { it.num, v, st };
-            }
+    for (int v = 1; v <= n; v++) {
+        for (int i = 0; i < sz(adj[v]); i++) {
+            auto& it = adj[v][i];
+            if (edgeV[it.num] == -1) edgeV[it.num] = v, idxOfEdge[it.num].fr = i;
+            else idxOfEdge[it.num].sc = i;
+            if (!L[v].count(it.l)) L[v][it.l] = i;
+            R[v][it.l] = i;
         }
     }
+}
 
-    increase = dist[2];
+struct state { ll w; int num, pv, pidx; };
+vector<state> dist1[101010], dist2[101010];
+
+struct Node {
+    ll w; int v, num;
+    bool operator<(const Node& rhs) const { return w > rhs.w; }
+};
+
+void dijkstra1() {
+    // dijkstra
+    for (int v = 1; v <= n; v++) 
+        dist1[v].resize(sz(adj[v]), { INF, -1, -1, -1 });
+
+    priority_queue<Node> pq;
+    pq.push({ 0, 1, 0 });
+    dist1[1][0] = { 0, 0, -1, -1 };
+
+    while (sz(pq)) {
+        auto [w, v, num] = pq.top();
+        pq.pop();
+
+        int st = -1;
+        if (num == 0) st = 0;
+        else st = (edgeV[num] == v ? idxOfEdge[num].fr : idxOfEdge[num].sc);
+        
+        if (dist1[v][st].w < w) continue;
+
+        for (int i = L[v][lu[num]]; i < sz(adj[v]); i++) {
+            auto& it = adj[v][i];
+            if (it.l < lu[num]) continue;
+            int nst = (edgeV[it.num] == v ? idxOfEdge[it.num].sc : idxOfEdge[it.num].fr);
+            if (dist1[it.v][nst].w <= w + it.w) continue;
+            pq.push({ w + it.w, it.v, it.num });
+            dist1[it.v][nst] = { w + it.w, it.num, v, st };
+        }
+    }
 }
 
 void dijkstra2() {
-    vector<vector<ll>> dist(n + 1);
-    prvde.resize(n + 1);
-    for (int v = 1; v <= n; v++) {
-        dist[v].resize(sz(adj[v]), INF);
-        prvde[v].resize(sz(adj[v]), { -1, -1, -1 });
-    }
+    // dijkstra
+    for (int v = 1; v <= n; v++) 
+        dist2[v].resize(sz(adj[v]), { INF, -1, -1, -1 });
 
     priority_queue<Node> pq;
-    pq.push({ 1, 0, adj[1].back().l });
-    dist[1][sz(adj[1]) - 1] = 0;
-    prvde[1][sz(adj[1]) - 1] = { 0, 0, 0 };
-    
+    pq.push({ 0, 1, 101009 });
+    dist2[1][sz(adj[1]) - 1] = { 0, 101009, -1, -1 };
+
     while (sz(pq)) {
-        auto [v, w, l] = pq.top();
+        auto [w, v, num] = pq.top();
         pq.pop();
 
-        Edge du; du.l = l;
-        int st = upper_bound(all(adj[v]), du) - adj[v].begin() - 1;
+        int st = -1;
+        if (num == 101009) st = sz(adj[1]) - 1;
+        else st = (edgeV[num] == v ? idxOfEdge[num].fr : idxOfEdge[num].sc);
+        
+        if (dist2[v][st].w < w) continue;
 
-        if (dist[v][st] < w) continue;
-
-        for (int idx = st; idx >= 0; idx--) {
-            auto it = adj[v][idx];
-
-            int nidx = upper_bound(all(adj[it.v]), it) - adj[it.v].begin() - 1;
-            if (w + it.w < dist[it.v][nidx]) {
-                pq.push({ it.v, w + it.w, it.l });
-                dist[it.v][nidx] = w + it.w;
-                prvde[it.v][nidx] = { it.num, v, st };
-            }
+        for (int i = R[v][lu[num]]; i >= 0; i--) {
+            auto& it = adj[v][i];
+            if (lu[num] < it.l) continue;
+            int nst = (edgeV[it.num] == v ? idxOfEdge[it.num].sc : idxOfEdge[it.num].fr);
+            if (dist2[it.v][nst].w <= w + it.w) continue;
+            pq.push({ w + it.w, it.v, it.num });
+            dist2[it.v][nst] = { w + it.w, it.num, v, st };
         }
     }
-
-    decrease = dist[2];
 }
 
 int main() {
@@ -131,52 +136,40 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     input();
-
-    for (int v = 1; v <= n; v++) {
-        sort(all(adj[v]));
-        /*for (int i = 0; i < sz(adj[v]); i++) {
-            if (L.find({ v, adj[v][i].l }) == L.end()) 
-                L[{ v, adj[v][i].l }] = i;
-            R[{ v, adj[v][i].l }] = i;
-        }*/
-    }
+    
+    sorting();
 
     dijkstra1();
+    lu[101009] = INF;
+    R[1][lu[101009]] = sz(adj[1]) - 1;
     dijkstra2();
 
-    ll ans = INF;
-    ll mn = INF; int mnidx = -1;
-    int v1 = -1, v2 = -1, idx1 = -1, idx2 = -1;
-    for (int i = 0; i < sz(increase); i++) {
-        if (increase[i] < mn) {
-            mn = increase[i];
-            mnidx = i;
+    ll ans = INF, mn = 0, j = 0, idx1 = 0, idx2 = 0;
+    for (int i = 0; i < sz(adj[2]); i++) {
+        while (j < sz(adj[2]) && adj[2][j].l <= adj[2][i].l) {
+            if (dist1[2][j].w < dist1[2][mn].w) mn = j;
+            j++;
         }
-        if (mn + decrease[i] < ans) {
-            ans = mn + decrease[i];
-            v1 = v2 = 2;
-            idx1 = mnidx, idx2 = i;
+        if (dist1[2][mn].w + dist2[2][i].w < ans) {
+            ans = dist1[2][mn].w + dist2[2][i].w;
+            idx1 = mn, idx2 = i;
         }
     }
-
+    //for (auto& i : dist2[1]) cout << i.w << ' ';
     cout << ans << '\n';
-    stack<int> print1;
-    for (; prvin[v1][idx1] != prvNode(0, 0, 0); ) {
-        print1.push(prvin[v1][idx1].num);
-
-        prvNode tmp = prvin[v1][idx1];
-        v1 = tmp.v;
-        mnidx = tmp.idx;
+    stack<int> stk;
+    int v = 2;
+    while (dist1[v][idx1].num != 0) {
+        stk.push(dist1[v][idx1].num);
+        int tmpv = dist1[v][idx1].pv, tmpidx = dist1[v][idx1].pidx;
+        v = tmpv, idx1 = tmpidx;
     }
-    while (sz(print1)) {
-        cout << print1.top() << ' ';
-        print1.pop();
-    }
-    for (; prvde[v2][idx2] != prvNode(0, 0, 0); ) {
-        cout << prvde[v2][idx2].num << ' ';
 
-        prvNode tmp = prvde[v2][idx2];
-        v2 = tmp.v;
-        idx2 = tmp.idx;
+    while (sz(stk)) { cout << stk.top() << ' '; stk.pop(); }
+    v = 2;
+    while (dist2[v][idx2].num != 101009) {
+        cout << dist2[v][idx2].num << ' ';
+        int tmpv = dist2[v][idx2].pv, tmpidx = dist2[v][idx2].pidx;
+        v = tmpv, idx2 = tmpidx;
     }
 }
