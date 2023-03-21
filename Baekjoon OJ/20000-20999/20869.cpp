@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const double EPS = 1e-7;
 const double INF = 1e18;
 
 struct Edge { double w; int v; };
@@ -47,7 +46,8 @@ int main() {
     }
 
     double l = 1, r = 2 * 1e6;
-    while (r - l > EPS) {
+    int cnt = 60;
+    while (cnt--) {
         init();
 
         double mid = (l + r) / 2;
