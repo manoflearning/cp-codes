@@ -6,6 +6,11 @@ using namespace std;
 ll arr[(int)1e5];
 
 int main() {
+	#ifndef ONLINE_JUDGE
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
+	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	#endif
+	
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
@@ -30,10 +35,3 @@ int main() {
 
 	return 0;
 }
-/*////////////////////////////////////////////////////////////////////
-문제 해법		: 투 포인터 응용
-결정적 깨달음		: 
-시간복잡도		: O(n)
-오답 원인		: 1. 
-				  2. 
-*/////////////////////////////////////////////////////////////////////
