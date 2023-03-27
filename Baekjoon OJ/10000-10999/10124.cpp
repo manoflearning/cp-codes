@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define sz(x) (int)(x).size()
+#define all(x) (x).begin(), (x).end()
 
 struct PST { // 1-indexed
     int flag; // array size
@@ -35,17 +36,42 @@ struct PST { // 1-indexed
         if (p <= mid) {
             t[n2].r = t[n1].r;
             addNode();
+            t[n2].l = sz(t) - 1;
+            modify(p, l, mid, t[n1].l, t[n2].l);
         }
+        else {
+            t[n2].l = t[n1].l;
+            addNode();
+            t[n2].r = sz(t) - 1;
+            modify(p, mid + 1, r, t[n1].r, t[n2].r);
+        }
+        t[n2].val = t[t[n2].l].val + t[t[n2].r].val;
     }
     void modify(int p) {
         addNode();
         root.push_back(sz(t) - 1);
         modify(p, 1, flag, root[sz(root) - 2], root[sz(root) - 1]);
     }
+    int kth(int k, int l, int r, int n1, int n2) {
+        if (l == r) return l;
+        
+        int mid = (l + r) >> 1;
+        if (k <= t[t[n2].l].val - t[t[n1].l].val) {
+            return kth(k, l, mid, t[n1].l, t[n2].l);
+        }
+        else {
+            k -= t[t[n2].l].val - t[t[n1].l].val;
+            return kth(k, mid + 1, r, t[n1].r, t[n2].r);
+        }
+    }
+    int kth(int k, int n1, int n2) {
+        return kth(k, 1, flag, root[n1], root[n2]);
+    }
 }pst;
 
 int n, m;
 int a[505050];
+vector<int> arr[505050];
 
 void input() {
     cin >> n >> m;
@@ -63,7 +89,22 @@ int main() {
 
     input();
 
+    pst.build(n);
+    for (int i = 1; i <= n; i++) {
+        pst.modify(a[i]);
+        arr[a[i]].push_back(i);
+    }
 
+    while (m--) {
+        int l, r;
+        cin >> l >> r;
+        int len = r - l + 1;
+        int x = pst.kth((len + 1) / 2, l - 1, r);
+        
+        int cnt = upper_bound(all(arr[x]), r) - lower_bound(all(arr[x]), l);
+        if (cnt > len / 2) cout << x << '\n';
+        else cout << 0 << '\n';
+    }
 }
 
 // solution 2 : random
