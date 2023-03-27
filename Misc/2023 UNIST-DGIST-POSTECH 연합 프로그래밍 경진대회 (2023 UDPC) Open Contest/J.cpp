@@ -56,31 +56,19 @@ int main() {
     }
 
     // get size of union
-    int ans2 = 0;
-
-    vector<int> c;
-    for (auto& i : arr) {
-        c.push_back(i.fr);
-        c.push_back(i.sc);
-        c.push_back(i.sc + 1);
-    }
-    
-    sort(c.begin(), c.end());
-    c.erase(unique(c.begin(), c.end()), c.end());
-
-    for (auto& i : arr) {
-        i.fr = lower_bound(c.begin(), c.end(), i.fr) - c.begin();
-        i.sc = lower_bound(c.begin(), c.end(), i.sc) - c.begin();
-    }
-
-    vector<int> psum(sz(c));
-    for (auto& i : arr) {
-        psum[i.fr]++;
-        psum[i.sc + 1]--;
-    }
-    for (int i = 0; i < sz(psum); i++) {
-        if (i > 0) psum[i] += psum[i - 1];
-        if (psum[i]) ans2 += c[i + 1] - c[i];
+    int ans2 = 0; 
+    sort(arr.begin(), arr.end());
+    ans2 += arr[0].sc - arr[0].fr + 1;
+    int mxe = arr[0].sc;
+    for (int i = 1; i < sz(arr); i++) {
+        if (mxe < arr[i].fr) {
+            ans2 += arr[i].sc - arr[i].fr + 1;
+            mxe = arr[i].sc;
+        }
+        else if (mxe < arr[i].sc) {
+            ans2 += arr[i].sc - mxe;
+            mxe = arr[i].sc;
+        }
     }
     
     cout << ans1 << ' ' << ans2;
