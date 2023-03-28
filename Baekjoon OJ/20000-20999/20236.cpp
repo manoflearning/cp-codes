@@ -82,8 +82,9 @@ void constructAnswer() {
     }
 
     int bit = 1;
-    for (int i = sz(res) - 1; i > 0; i--) {
-        int u = res[i], v = res[i - 1];
+    reverse(res.begin(), res.end());
+    for (int i = 0; i + 1 < sz(res); i++) {
+        int u = res[i], v = res[i + 1];
         auto it = edgeIdx.find({ u, v });
         ans.push_back(it->sc);
         edgeIdx.erase(it);
