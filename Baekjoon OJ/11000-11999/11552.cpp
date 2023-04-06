@@ -13,8 +13,11 @@ struct Seg {
         t.clear();
         lazy.clear();
         for (flag = 1; flag < N; flag <<= 1);
-        t.resize(flag << 1);
+        t.resize(flag << 1, INF);
         lazy.resize(flag << 1);
+        for (int i = flag; i < flag + N; i++) t[i] = 0;
+        for (int i = flag - 1; i >= 1; i--)
+            t[i] = min(t[i << 1], t[i << 1 | 1]);
     }
     void modify(int l, int r, int val, int n = 1, int nl = 1, int nr = flag) {
         propagate(n);
@@ -29,13 +32,6 @@ struct Seg {
         modify(l, r, val, n << 1, nl, mid);
         modify(l, r, val, n << 1 | 1, mid + 1, nr);
         t[n] = min(t[n << 1], t[n << 1 | 1]);
-    }
-    int query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-        propagate(n);
-        if (nr < l || r < nl) return INF;
-        if (l <= nl && nr <= r) return t[n];
-        int mid = (nl + nr) >> 1;
-        return min(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
     }
     void propagate(int n) {
         if (lazy[n]) {
@@ -64,25 +60,21 @@ void input() {
     }
 }
 
-vector<pair<pii, int>> idx[1010101];
-
 int f(int len) {
+    vector<vector<pair<pii, int>>> idx(X - len + 2);
     for (auto& i : a) {
         idx[max(1, i.x1 - len + 1)].push_back({ { i.y1 - len + 1, i.y2 - 1 }, i.w });
-        idx[i.x2].push_back({ { i.y1 - len + 1, i.y2 - 1 }, -i.w });
+        idx[min(X - len + 1, i.x2)].push_back({ { i.y1 - len + 1, i.y2 - 1 }, -i.w });
     }
 
-    seg.build(Y);
-
+    seg.build(Y - len);
+    
     int ret = INF;
     for (int i = 1; i <= X - len; i++) {
         for (auto& x : idx[i])
             seg.modify(x.fr.fr, x.fr.sc, x.sc);
-        ret = min(ret, seg.query(1, Y - len));
-        //cout << len << ' ' << i << ' ' << seg.query(1, Y) << '\n';
+        ret = min(ret, seg.t[1]);
     }
-
-    for (int i = 0; i < 1010101; i++) idx[i].clear();
     
     return ret;
 }
