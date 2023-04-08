@@ -15,9 +15,11 @@ void observation(int p) {
     par[v] = p;
     t[p].push_back(v);
     
+    if (sz(t[p]) >= 4) return;
+
     while (1) {
         int isChanged = 0;
-            
+        
         int x = -1, y = -1, z = -1;
         for (auto& i : t[p]) {
             if (dp[p] < dp[i]) {
