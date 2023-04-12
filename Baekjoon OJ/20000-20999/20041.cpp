@@ -9,11 +9,6 @@ Point st;
 vector<Point> p;
 
 int main() {
-    #ifndef ONLINE_JUDGE
-    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
-    #endif
-
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
@@ -34,7 +29,7 @@ int main() {
         if (abs(i.y) <= i.x) r = 1;
         if (i.x <= -abs(i.y)) l = 1;
     }
-    //cout << u << ' ' << d << ' ' << l << ' ' << r << '\n';
+
     if (!u || !d || !l || !r) cout << "YES";
     else cout << "NO";
 }
