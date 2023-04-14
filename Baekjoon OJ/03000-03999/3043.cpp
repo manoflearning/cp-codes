@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const char d[] = { 'L', 'R', 'U', 'D' };
-
 struct Node { int y, x, idx; };
 
 int n, vi[505][505], idxToNode[505];
