@@ -47,7 +47,7 @@ int main() {
         double res = -A * x * x + sum * (x - mnR) + prvSum;
         ans = max(ans, res);
 
-        // ternery search
+        // ternary search
         /*double l = mnR, r = mxR;
         while (r - l > EPS) {
             double mid1 = (2 * l + r) / 3;
@@ -58,8 +58,8 @@ int main() {
             else r = mid2;
         }
 
-        double res = prvSum + sum * (l - mnR) - A * l * l;
-        ans = max(ans, res);*/
+        double res2 = prvSum + sum * (l - mnR) - A * l * l;
+        ans = max(ans, res2);*/
     }
 
     cout << fixed;
