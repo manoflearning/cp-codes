@@ -42,7 +42,13 @@ int main() {
         }
         sum += arr[i].w;
 
-        double l = mnR, r = mxR;
+        // extreme value of a quadratic function
+        double x = (double)sum / (2 * A);
+        double res = -A * x * x + sum * (x - mnR) + prvSum;
+        ans = max(ans, res);
+
+        // ternery search
+        /*double l = mnR, r = mxR;
         while (r - l > EPS) {
             double mid1 = (2 * l + r) / 3;
             double mid2 = (l + 2 * r) / 3;
@@ -53,7 +59,7 @@ int main() {
         }
 
         double res = prvSum + sum * (l - mnR) - A * l * l;
-        ans = max(ans, res);
+        ans = max(ans, res);*/
     }
 
     cout << fixed;
