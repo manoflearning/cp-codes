@@ -48,10 +48,7 @@ int main() {
         u--, v--;
         int L1 = a[u].L, R1 = a[u].R, L2 = a[v].L, R2 = a[v].R;
 
-        if (L1 < L2) {
-            swap(L1, L2);
-            swap(R1, R2);
-        }
+        if (L1 < L2) { swap(L1, L2); swap(R1, R2); }
 
         if (L1 <= R2) {
             cout << 1 << '\n';
