@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAXD = 21;
+const int MAXD = 20;
 
 int n;
 struct Node { int L, R; };
