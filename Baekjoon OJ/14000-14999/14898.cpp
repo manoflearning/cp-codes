@@ -1,11 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define sz(x) (int)(x).size()
 
 struct PST {
     int flag;
     struct Node { int l, r, val; };
-    Node t[50505050];
+    Node t[45'000'000];
     int root[3030303], rp, tp;
 
     void addNode() { t[tp++] = { -1, -1, 0 }; }
