@@ -1,28 +1,17 @@
-#include <stdio.h>
+#include <bits/stdc++.h>
+using namespace std;
 
-void find_sosu(int M, int N) {
-	int arr[2000001];
-	int i, l;
-	
-	for(i=2; i<=N; i++)
-		arr[i]=1;
-		
-	for(i=2; i*i<=N; i++)
-		if(arr[i])
-			for(l=2*i; l<=N; l+=i)
-				arr[l]=0;
-		
-	for(i=M; i<=N; i++)
-		if(arr[i])
-			printf("%d\n", i);
-}
+int main() {
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
 
-int main (void) {
 	int M, N;
-	
-	scanf("%d %d", &M, &N);
-	
-	find_sosu(M, N);
-	
-	return 0;
+	cin >> M >> N;
+	for (int i = max(M, 2); i <= N; i++) {
+		int isPrime = 1;
+		for (int j = 2; j <= sqrt(i); j++) {
+			if (i % j == 0) { isPrime = 0; break; }
+		}
+		if (isPrime) cout << i << '\n';
+	}
 }
