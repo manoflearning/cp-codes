@@ -1,3 +1,4 @@
+// solution 1: greedy + pq
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -35,6 +36,7 @@ int main() {
     cout << ans;
 }
 
+// solution 2: parametric search with segment tree
 /*#include <bits/stdc++.h>
 using namespace std;
 #define ll long long
