@@ -6,14 +6,17 @@ const ll MOD = (1ll << 32);
 
 const int MAX = 1e8;
 bool isPrime[MAX + 1];
+vector<int> prime(1, 2);
 void getPrime() {
-    fill(isPrime + 2, isPrime + MAX + 1, 1);
-    for (ll i = 4; i <= MAX; i += 2)
-        isPrime[i] = 0;
-    for (ll i = 3; i <= MAX; i += 2) {
-        for (ll j = i * i; j <= MAX; j += i * 2)
-            isPrime[j] = 0;
-    }
+	fill(isPrime + 2, isPrime + MAX + 1, 1);
+	for (ll i = 4; i <= MAX; i += 2)
+		isPrime[i] = 0;
+	for (ll i = 3; i <= MAX; i += 2) {
+		if (!isPrime[i]) continue;
+        prime.push_back(i);
+		for (ll j = i * i; j <= MAX; j += i * 2)
+			isPrime[j] = 0;
+	}
 }
 
 int main() {
@@ -29,15 +32,11 @@ int main() {
 
     ll n; cin >> n;
     ll ans = 1;
-    ll x = 2;
-    while (x * 2 <= n) x *= 2;
-    ans = ans * x % MOD;
-    for (int i = 3; i <= n; i += 2) {
-        if (isPrime[i]) {
-            ll x = i;
-            while (x * i <= n) x *= i;
-            ans = ans * x % MOD;
-        }
+    for (auto& i : prime) {
+        if (n < i) break;
+        ll x = i;
+        while (x * i <= n) x *= i;
+        ans = ans * x % MOD;
     }
 
     cout << ans;
