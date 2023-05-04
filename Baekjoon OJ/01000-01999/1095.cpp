@@ -35,18 +35,6 @@ int f(ll x, ll y) {
     return ret;
 }
 
-/*ll bt(int idx, ll res) {
-    if (idx == arr.size()) return res;
-    ll nres = res;
-    ll ret = bt(idx + 1, nres);
-    for (int i = 0; i < arr[idx].second; i++) {
-        nres *= arr[idx].first;
-        if (nres > M) break;
-        ret = max(ret, bt(idx + 1, nres));
-    }
-    return ret;
-}*/
-
 int main() {
     #ifndef ONLINE_JUDGE
     freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
