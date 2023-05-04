@@ -3,7 +3,7 @@ using namespace std;
 
 int n, sum, lb, b[303];
 vector<pair<int, int>> a;
-int dp[30303030], mx;
+int dp[101010], mx;
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -19,24 +19,21 @@ int main() {
     for (int i = 0; i < n; i++) {
         cin >> a[i].first;
         sum += a[i].first;
-        b[i + 1] = a[i].first;
         a[i].second = i + 1;
+        b[i + 1] = a[i].first;
     }
     lb = sum / 2 + 1;
 
     sort(a.rbegin(), a.rend());
 
-    unordered_set<int> s;
-    s.insert(0);
+    dp[0] = n + 1;
     for (auto& i : a) {
-        unordered_set<int> tmp;
-        for (auto& j : s) {
-            if (dp[i.first + j]) continue;
-            dp[i.first + j] = i.second;
-            if (lb <= i.first + j) mx = max(mx, i.first + j);
-            else tmp.insert(i.first + j);
+        for (int j = lb - 1; j >= 0; j--) {
+            if (dp[j] && !dp[j + i.first]) {
+                dp[j + i.first] = i.second;
+                if (lb <= j + i.first) mx = max(mx, j + i.first);
+            }
         }
-        for (auto& j : tmp) s.insert(j);
     }
 
     vector<int> ans;
