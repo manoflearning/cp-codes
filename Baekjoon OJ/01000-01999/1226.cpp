@@ -46,7 +46,6 @@ int main() {
     }
 
     cout << ans.size() << '\n';
-    sort(ans.begin(), ans.end());
     for (auto& i : ans)
         cout << i << ' ';
 }
