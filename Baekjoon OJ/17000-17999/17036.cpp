@@ -27,7 +27,7 @@ int main() {
             res = n - (r - l + 1);
         }
         else {
-            if (r == n || l == 0) res = n - (r - l) + 1;
+            if (r == n || l == 0) continue;
             else res = n - (r - l);
         }
         ansMn = min(ansMn, res);
