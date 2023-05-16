@@ -1,3 +1,5 @@
+// 풀이: https://en.wikipedia.org/wiki/Eight_queens_puzzle#cite_ref-bernhardsson_5-2 (One approach[3] is ...)
+
 #include <bits/stdc++.h>
 using namespace std;
 
