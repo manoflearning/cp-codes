@@ -22,18 +22,18 @@ My codes for solving algorithm problems.
 
 ### Can solve problems to some extent (with cheat sheet)
 
-- Merge Sort Tree
 - Bellman-Ford Algorithm, Floyd-Warshall Algorithm
-- Topological Sort, SCC
+- Topological Sort, SCC, BCC
 - LCA in O(logN) (Sparse Table), Heavy-Light Decomposition, ETT
 - Rabin-Karp Algorithm, Trie, Manacher's Algorithm, Z Algorithm
 - CCW Algorithm, Convex Hull, Rotating Callipers, Ray Casting
 - Sieve of Eratosthenes, Catalan Number
-- Fenwick Tree
+- Fenwick Tree, Persistent Segment Tree
 
 ### Learned but need a lot of practice
 
-- Euler Circuit, 2-SAT, BCC
+- Merge Sort Tree
+- Euler Circuit, 2-SAT
 - Network Flow, Max-Flow Min-Cut Theorem, Bipartite Matching, MCMF
 - Centroid Decomposition
 - Parallel Binary Search
@@ -41,7 +41,6 @@ My codes for solving algorithm problems.
 - Linear Sieve, Extended GCD, Fermat's Little Theorem, Euler's Phi Function, FFT
 - Convex Hull Trick, Knuth Opt, Monotone Queue Opt, DnC Opt
 - Sort by Angular, Bulldozer Trick
-- Persistent Segment Tree
 
 ### Have to learn in the future
 
