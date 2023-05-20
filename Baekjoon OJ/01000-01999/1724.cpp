@@ -58,13 +58,6 @@ int main() {
         if (sy == ey) for (int x = min(sx, ex); x < max(sx, ex); x++) viy[x][sy] = 1;
     }
 
-    /*for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            cout << viy[i][j] << ' ';
-        }
-        cout << '\n';
-    }*/
-
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             int x = i - 1, y = j;
@@ -84,9 +77,6 @@ int main() {
             ans.push_back(-uf[find(505 * i + j)]);
         }
     }
-
-    //for (auto& i : ans)
-    //    cout << i << '\n';
 
     sort(ans.begin(), ans.end());
 
