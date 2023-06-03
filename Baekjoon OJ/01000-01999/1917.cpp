@@ -24,8 +24,7 @@ int dfs(int y, int x, int label) {
     for (int d = 0; d < 4; d++) {
         int ny = y + dy[d], nx = x + dx[d];
         if (ny < 0 || 6 <= ny || nx < 0 || 6 <= nx) continue;
-        if (!vi[ny][nx]) continue;
-        if (!a[ny][nx]) continue;
+        if (!a[ny][nx] || !vi[ny][nx]) continue;
 
         for (int i = 0; i < 4; i++) {
             if (nxt[label][(d + i) % 4] == prv[ny][nx]) { add = i; break; }
@@ -36,8 +35,7 @@ int dfs(int y, int x, int label) {
     for (int d = 0; d < 4; d++) {
         int ny = y + dy[d], nx = x + dx[d];
         if (ny < 0 || 6 <= ny || nx < 0 || 6 <= nx) continue;
-        if (vi[ny][nx]) continue;
-        if (!a[ny][nx]) continue;
+        if (!a[ny][nx] || vi[ny][nx]) continue;
         ret &= dfs(ny, nx, nxt[label][(d + add) % 4]);
     }
 
