@@ -47,8 +47,8 @@ int main() {
     for (int tt = 0; tt < tc; tt++) {
         // initialize
         for (int i = 0; i < 6; i++) {
-            memset(vi[i], 0, sizeof(vi[i]));
-            memset(prv[i], 0, sizeof(prv[i]));
+            for (int j = 0; j < 6; j++)
+                vi[i][j] = prv[i][j] = 0;
             cnt[i] = 0;
         }
 
