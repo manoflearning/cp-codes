@@ -1,6 +1,14 @@
 // r[i][i + 1] means absolute difference between a[i] and a[i + 1] (|a[i] - a[i + 1]|)
+
 // Let r[i][i + 1] > 0 and r[i + 1][i + 2] > 0.
 // r[i][i + 2] = (r[i][i + 1] + r[i + 1][i + 1]) or max(r[i][i + 1], r[i + 1][i + 2])
+
+// If r[i][i + 2] = r[i][i + 1] + r[i + 1][i + 1],
+// sign of (a[i + 1] - a[i]) is equals to (a[i + 2] - a[i]).
+
+// If r[i][i + 2] = max(r[i][i + 1], r[i + 1][i + 2]),
+// sign of (a[i + 1] - a[i]) is equals to -(a[i + 2] - a[i]).
+
 #include <bits/stdc++.h>
 using namespace std;
 
