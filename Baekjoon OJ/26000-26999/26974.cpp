@@ -1,0 +1,62 @@
+// r[i][i + 1] means difference between a[i] and a[i + 1] (|a[i] - a[i + 1]|)
+// if r[i - 1][i + 1] != r[i][i + 1], 
+// 1. r[i - 1][i + 1] = r[i - 1][i] + r[i][i + 1]
+// 2. r[i - 1][i + 1] != r[i - 1][i] + r[i][i + 1] -> r[i - 1][i + 1] = r[i - 1][i]
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+int r[303][303];
+int diff[303], ans[303]; // diff[i] := a[i] - a[i - 1]
+
+int main() {
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
+    // initialize
+    memset(r, -1, sizeof(r));
+
+    // input
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        for (int j = i; j <= n; j++) {
+            cin >> r[i][j];
+        }
+    }
+
+    // solve
+    diff[2] = r[1][2];
+    for (int e = 3; e <= n; e++) {
+        if (r[e - 1][e] == 0) {
+            diff[e] = 0;
+            continue;
+        }
+
+        int s = e - 1;
+        while (s >= 2 && diff[s] == 0) s--;
+        if (s < 2) {
+            diff[e] = r[e - 1][e];
+            continue;
+        }
+
+        s--;
+        if (r[s][e] == r[s][e - 1] + r[e - 1][e]) {
+            if (diff[s + 1] < 0) diff[e] = -r[e - 1][e];
+            else diff[e] = r[e - 1][e];
+        }
+        if (r[s][e] != r[s][e - 1] + r[e - 1][e]) {
+            if (diff[s + 1] < 0) diff[e] = r[e - 1][e];
+            else diff[e] = -r[e - 1][e];
+        }
+    }
+
+    ans[1] = 0;
+    for (int i = 2; i <= n; i++) {
+        ans[i] = diff[i] + ans[i - 1];
+    }
+
+    // output
+    for (int i = 1; i <= n; i++) {
+        cout << ans[i] << ' ';
+    }
+}
