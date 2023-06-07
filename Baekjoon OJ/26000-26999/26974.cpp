@@ -1,4 +1,4 @@
-// r[i][i + 1] means absolute difference between a[i] and a[i + 1] (|a[i] - a[i + 1]|)
+// r[i][i + 1] is absolute difference between a[i] and a[i + 1] (|a[i] - a[i + 1]|)
 
 // Let r[i][i + 1] > 0 and r[i + 1][i + 2] > 0.
 // r[i][i + 2] = (r[i][i + 1] + r[i + 1][i + 1]) or max(r[i][i + 1], r[i + 1][i + 2])
