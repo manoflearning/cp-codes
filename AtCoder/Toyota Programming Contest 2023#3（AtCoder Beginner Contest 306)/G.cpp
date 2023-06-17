@@ -1,10 +1,5 @@
-//#pragma GCC optimize("O3")
-//#pragma GCC optimize("Ofast")
-//#pragma GCC optimize("unroll-loops")
-
 #include <bits/stdc++.h>
 using namespace std;
-#define ll long long
 
 const int MAXV = 202020;
 
@@ -14,19 +9,20 @@ int in[MAXV], out[MAXV], num, p[2 * MAXV];
 int vi[MAXV], cnt;
 vector<vector<int>> scc;
 
-int canGo[MAXV];
-vector<int> adj2[MAXV];
+vector<int> arr;
+int canGo[MAXV], dep[MAXV];
+vector<int> g[MAXV];
 
 void init() {
     num = cnt = 0;
     scc.clear();
+    arr.clear();
     for (int i = 1; i <= n; i++) {
-        adj[i].clear();
-        radj[i].clear();
+        adj[i].clear(); radj[i].clear();
         in[i] = out[i] = p[i << 1] = p[i << 1 | 1] = 0;
-        vi[i] = 0; 
-        canGo[i] = 0;
-        adj2[i].clear();
+        vi[i] = 0;
+        canGo[i] = dep[i] = 0;
+        g[i].clear();
     }
     n = m = 0;
 }
@@ -71,51 +67,36 @@ void kosaraju() {
     }
 }
 
-int bfs(const vector<int>& arr) {
-    vector<int> dist(n + 1, -1);
+void dfsg(int v, int d) {
+    dep[v] = d;
+    for (auto& i : g[v])
+        if (!dep[i]) dfsg(i, d + 1);
+}
 
-	queue<int> q;
-    dist[1] = 0;
-    q.push(1);
-    
-    int ret = 0;
-    while (!q.empty()) {
-        int v = q.front();
-        q.pop();
-
-        ret = max(ret, 1 + dist[v]);
-
-        for (auto& i : adj2[v]) {
-            if (dist[i] == -1) {
-                dist[i] = dist[v] + 1;
-                q.push(i);
-            }
-        }
-    }
-
-    for (auto& v : arr) {
-        for (auto& u : adj2[v]) {
-            if (u != 1 && (dist[v] + 1) != dist[u]) {
-                return -1;
-            }
-        }
-    }
-
-    return ret;
+int gcd(int x, int y) {
+    if (!y) return x;
+    return gcd(y, x % y);
 }
 
 int solve() {
-    vector<int> arr = scc[vi[1]];
+    arr = scc[vi[1]];
     for (auto& i : arr) canGo[i] = 1;
 
-    for (auto& v : arr) {
-        for (auto& u : adj[v])
-            if (canGo[u]) adj2[v].push_back(u);
+    for (auto& i : arr) {
+        for (auto& j : adj[i]) {
+            if (canGo[j]) g[i].push_back(j);
+        }
     }
-    
-    int res = bfs(arr);
-    
-    if (res == -1) return 1;
+
+    dfsg(1, 1);
+
+    int res = -1;
+    for (auto& u : arr) {
+        for (auto& v : g[u]) {
+            if (res == -1) res = abs(dep[u] + 1 - dep[v]);
+            else res = gcd(res, abs(dep[u] + 1 - dep[v]));
+        }
+    }
 
     while (res % 2 == 0) res /= 2;
     while (res % 5 == 0) res /= 5;
@@ -132,13 +113,13 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     int tc; cin >> tc;
-    for (int tt = 1; tt <= tc; tt++) {
+    while (tc--) {
+        init();
+
         input();
 
         kosaraju();
 
         cout << (solve() ? "Yes" : "No") << '\n';
-
-        init();
     }
 }
