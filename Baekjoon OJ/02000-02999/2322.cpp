@@ -25,33 +25,6 @@ void valueCompress() {
     }
 }
 
-/*ll solve() {
-    ll swapSum = 0;
-
-    vector<int> vi(n);
-    for (int i = 0; i < n; i++) {
-        if (vi[i]) continue;
-        if (a[i] != i && a[a[i]] == i) {
-            swapSum += c[i] + c[a[i]];
-            vi[i] = vi[a[i]] = 1;
-        }
-    }
-    
-    ll mn = INF;
-    ll sum = 0, cnt = 0;
-
-    for (int i = 0; i < n; i++) {
-        if (vi[i]) continue;
-        if (a[i] != i) {
-            mn = min(mn, c[a[i]]);
-            sum += c[a[i]];
-            cnt++;
-        }
-    }
-
-    return swapSum + (cnt ? (cnt - 1) * mn + (sum - mn) : 0);
-}*/
-
 ll mn2 = INF;
 
 int vi[101010];
@@ -94,29 +67,4 @@ int main() {
     }
 
     cout << ans;
-
-    /*ll ans = solve();
-
-    ll mn1 = INF, mn2 = INF;
-    int idx1 = -1, idx2 = -1;
-
-    for (int i = 0; i < n; i++) {
-        if (a[i] == i && c[a[i]] < mn1) {
-            mn1 = c[a[i]];
-            idx1 = i;
-        }
-        if (a[i] != i && c[a[i]] < mn2) {
-            mn2 = c[a[i]];
-            idx2 = i;
-        }
-    }
-
-    if (idx1 != -1 && idx2 != -1) {
-        ll res = c[a[idx1]] + c[a[idx2]];
-        swap(a[idx1], a[idx2]);
-        res += solve();
-        ans = min(ans, res);
-    }
-
-    cout << ans;*/
 }
