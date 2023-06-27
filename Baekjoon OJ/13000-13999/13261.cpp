@@ -43,9 +43,7 @@ int main() {
     for (int i = 1; i <= n; i++) 
         psum[i] = a[i] + psum[i - 1];
 
-    // DnC Optimization 
-    // Recurrence: dp[t][i] = min(dp[t - 1][j] + C[j][i]) (1 <= j < n)
-    // Condition: Let opt[t][i] be j with the smallest value of dp[t - 1][j] + C[j][i]. It must satisfy opt[t][i] <= opt[t][i + 1].
+    // dp (dnc opt)
     for (int i = 1; i <= n; i++)
         dp[1][i] = i * psum[i];
 
