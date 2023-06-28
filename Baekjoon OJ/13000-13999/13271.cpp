@@ -1,25 +1,3 @@
-// Given some inequality on some variable (x_i , x_j , ...) in form xj – xi <= w
-// We need to determine whether we can assign values to variables so that all the given inequality is satisfiable or not?
-// If satisfiable, then output A solution.
-
-// Constraint graph
-// For each variable we create a vertex.
-// For each inequality, x_j – x_i <= W , We give an edge (v_i,v_j) with cost w.
-// Create a source vertex S and give an edge (S,v_i) with cost = 0.
-
-// Unsatisfiable constraints
-// If the constraint graph contains a negative-weight cycle, then the system of differences is unsatisfiable.
-
-// Solution
-// For each variable x_i:
-// x_i = shortest path distance of v_i from the source vertex S in constraint graph.
-// Shortest path can be calculated from Bellman-Ford algorithm.
-
-// TIME COMPLEXITY: O(NM) (Bellman-Ford), O(N^3) (Floyd-Warshall)
-
-// BOJ 13271 AC Code
-// https://www.acmicpc.net/problem/13271
-
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
@@ -86,7 +64,7 @@ int main() {
             mn = min(mn, upper[i]);
             mx = max(mx, upper[i]);
         }
-
+        
         cout << (mx - mn <= 100 ? mx - mn : -1);
     }
     else cout << -1;
