@@ -10,20 +10,18 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    int n = 100, m = 50;
+    int n = 100, m = 2;
     vector<pair<int, int>> a;
 
     int en = 1;
-    for (int st = 35; st <= 99; st += 2) {
-        a.push_back({ st, en++ });
+    vector<int> vi(101);
+    for (int st = 3; st <= 99; st += 3) {
+        while (vi[en]) en++;
+        a.push_back({ st, en });
+        vi[st] = vi[en] = 1;
     }
 
     cout << n << ' ' << m << ' ' << a.size() << '\n';
     for (auto& i : a)
         cout << i.first << ' ' << i.second << '\n';
 }
-
-// c := f(33)
-// f(98) = 1/2 * (1 + 1 + c) = 1 + 1/2 * c
-// f(96) = 1/2 * (1 + f(98) + 1 + c) = 1 + 1/2 * f(98) + 1/2 * c = 2 + c
-// f()
