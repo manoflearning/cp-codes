@@ -2,7 +2,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
-#define sz(x) (int)(x).size()
 
 int n, m, T;
 vector<ll> a, b;
@@ -29,24 +28,26 @@ int isImpossible() {
 }
 
 int f(int mid) {
-    vector<ll> d;
+    priority_queue<ll> pq;
 
-    int ap = 0, ccnt = 0;
-    for (auto& i : c) {
-        while (ap < n && i.first < a[ap]) ap++;
-        if (ap > 0 && (ccnt + ap) / ap <= mid) ccnt++;
-        else d.push_back(i.second);
+    int cp = 0;
+    for (auto& i : a) {
+        while (cp < T && c[cp].first < i)
+            pq.push(c[cp++].second);
+
+        for (int j = 0; j < mid && !pq.empty(); j++) pq.pop();
     }
-    
-    sort(d.rbegin(), d.rend());
 
-    int bp = 0;
-    for (int i = 0; i < sz(d); i++) {
-        while (bp < sz(b) && d[i] < b[bp]) bp++;
+    while (cp < T) 
+        pq.push(c[cp++].second);
 
-        if (bp == 0 || ((i + 1) + bp - 1) / bp > mid) return 0;
+    for (auto& i : b) {
+        for (int j = 0; j < mid && !pq.empty(); j++) {
+            if (!(pq.top() < i)) return 0;
+            pq.pop();
+        }
     }
-    return 1;
+    return pq.empty();
 }
 
 int main() {
@@ -65,12 +66,9 @@ int main() {
         return 0;
     }
 
-    sort(a.rbegin(), a.rend());
+    sort(a.begin(), a.end());
     sort(b.rbegin(), b.rend());
-    sort(c.begin(), c.end(), [&](const pair<ll, ll>& p1, const pair<ll, ll>& p2) {
-        //return p1.second ^ p2.second ? p1.second < p2.second : p1.first > p2.first;
-        return p1.first ^ p2.first ? p1.first > p2.first : p1.second > p2.second;
-    });
+    sort(c.begin(), c.end());
 
     int l = 1, r = T;
     while (l < r) {
