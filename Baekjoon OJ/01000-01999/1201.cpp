@@ -38,17 +38,6 @@ int main() {
     int n, m, k;
     cin >> n >> m >> k;
 
-    if (n + 1 < m + k) {
-        cout << -1;
-        return 0;
-    }
-
-    int isSwaped = 0;
-    if (m < k) {
-        swap(m, k);
-        isSwaped = 1;
-    }
-
     vector<int> ans;
 
     int lb = 1, ub = n;
@@ -84,10 +73,6 @@ int main() {
     if (!isValid(ans, n, m, k)) {
         cout << -1;
         return 0;
-    }
-
-    if (isSwaped) {
-        for (auto& i : ans) i = n - i + 1;
     }
 
     for (auto& i : ans)
