@@ -16,19 +16,6 @@ void input() {
     }
 }
 
-int solve2() {
-    vector<int> ps(101010);
-    for (auto& i : a) {
-        ps[i.fr]++, ps[i.sc + 1]--;
-    }
-    int ret = 0;
-    for (int i = 1; i < 101010; i++) {
-        ps[i] += ps[i - 1];
-        ret = max(ret, ps[i]);
-    }
-    return ret;
-}
-
 int solve1() {
     int ret = 0;
 
@@ -43,6 +30,19 @@ int solve1() {
 
     for (auto& i : a) {
         ret = max(ret, ps1[i.sc] - ps2[i.fr - 1]);
+    }
+    return ret;
+}
+
+int solve2() {
+    vector<int> ps(101010);
+    for (auto& i : a) {
+        ps[i.fr]++, ps[i.sc + 1]--;
+    }
+    int ret = 0;
+    for (int i = 1; i < 101010; i++) {
+        ps[i] += ps[i - 1];
+        ret = max(ret, ps[i]);
     }
     return ret;
 }
