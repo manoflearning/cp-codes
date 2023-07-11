@@ -1,61 +1,8 @@
-// 최적해는 나중 말뚝 높이를 x라 할 때, x = H_i 중에 존재한다.
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
 
 int flag;
-/*struct Seg {
-    vector<ll> t, lazy;
-    void build(int n) {
-        for (flag = 1; flag < n; flag <<= 1);
-        t.resize(flag << 1);
-        lazy.resize(flag << 1);
-    }
-    void addA(int l, int r, ll val, int n = 1, int nl = 1, int nr = flag) {
-        propagate(n);
-        if (nr < l || r < nl) return;
-        if (l <= nl && nr <= r) {
-            int lb = (nl - l + 1), ub = (nr - l + 1);
-            lazy[n] += val * (lb + ub) * (nr - nl + 1) / 2;
-            propagate(n);
-            return;
-        }
-        int mid = (nl + nr) >> 1;
-        addA(l, r, val, n << 1, nl, mid);
-        addA(l, r, val, n << 1 | 1, mid + 1, nr);
-        t[n] = t[n << 1] + t[n << 1 | 1];
-    }
-    void addB(int l, int r, ll val, int n = 1, int nl = 1, int nr = flag) {
-        propagate(n);
-        if (nr < l || r < nl) return;
-        if (l <= nl && nr <= r) {
-            int lb = (r - nr + 1), ub = (r - nl + 1);
-            lazy[n] += val * (lb + ub) * (nr - nl + 1) / 2;
-            propagate(n);
-            return;
-        }
-        int mid = (nl + nr) >> 1;
-        addA(l, r, val, n << 1, nl, mid);
-        addA(l, r, val, n << 1 | 1, mid + 1, nr);
-        t[n] = t[n << 1] + t[n << 1 | 1];
-    }
-    ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-        propagate(n);
-        if (nr < l || r < nl) return 0;
-        if (l <= nl && nr <= r) return t[n];
-        int mid = (nl + nr) >> 1;
-        return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1 , mid + 1, nr);
-    }
-    void propagate(int n) {
-        if (!lazy[n]) return;
-        if (n < flag) {
-            lazy[n << 1] += lazy[n];
-            lazy[n << 1 | 1] += lazy[n];
-        }
-        t[n] += lazy[n];
-        lazy[n] = 0;
-    }
-}seg;*/
 
 struct SegA {
     vector<ll> t, lzst, lzd;
