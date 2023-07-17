@@ -8,19 +8,13 @@ int gcd(int a, int b) {
 
 int n;
 vector<int> a;
-
-vector<int> isNotMul[101];
-
-int ans = 0;
-vector<int> vi(101);
+int dp[101010][101];
+set<int> ans;
 
 void init() {
-    a.clear();
-    for (int i = 0; i < 101; i++) {
-        isNotMul[i].clear();
-    }
-    ans = 0;
-    for (int i = 0; i < 101; i++) vi[i] = 0;
+    for (int i = 0; i < 101010; i++)
+        memset(dp[i], 0, sizeof(dp[i]));
+    ans.clear();
 }
 
 void input() {
@@ -44,23 +38,20 @@ int main() {
 
         input();
 
-        a.erase(unique(a.begin(), a.end()), a.end());
-
-        for (int x = 1; x <= 100; x++) {
-            for (int i = 0; i < n; i++) {
-                if (a[i] % x) isNotMul[x].push_back(i);
-            }
-            isNotMul[x].push_back(n);
-        }
-        
-        for (int i = 0; i < n; i++) {
-            int g = 0;
-            for (int j = i; j < n; j = *upper_bound(isNotMul[g].begin(), isNotMul[g].end(), j)) {
-                g = gcd(g, a[j]);
-                if (!vi[g]) ans++, vi[g] = 1;
+        dp[0][a[0]] = 1;
+        ans.insert(a[0]);
+        for (int i = 1; i < n; i++) {
+            dp[i][a[i]] = 1;
+            ans.insert(a[i]);
+            for (int j = 1; j <= 100; j++) {
+                if (dp[i - 1][j]) {
+                    int g = gcd(j, a[i]);
+                    dp[i][g] = 1;
+                    ans.insert(g);
+                }
             }
         }
 
-        cout << ans << '\n';
+        cout << ans.size() << '\n';
     }
 }
