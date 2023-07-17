@@ -19,7 +19,7 @@ int main() {
     
     for (int x = 0; x <= 29; x++) {
         if (!(m & (1 << x))) continue;
-        
+
         vector<int> b(n);
         for (int i = 0; i < n; i++) {
             int idx = ((i - (1 << x)) % n + n) % n;
