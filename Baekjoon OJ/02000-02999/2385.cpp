@@ -14,28 +14,24 @@ int main() {
     vector<string> a(n);
     for (auto& i : a) cin >> i;
 
-    vector<string> b = a;
-    sort(b.begin(), b.end(), [&](const string& p1, const string& p2) {
+    sort(a.begin(), a.end(), [&](const string& p1, const string& p2) {
         return p1 + p2 < p2 + p1;
     });
 
-    string du;
-    if (b[0][0] == '0') du = b[0];
+    string ans(1, '9' + 1);
+    for (int i = 0; i < n; i++) {
+        if (a[i][0] == '0') continue;
+        string res = a[i];
+        for (int j = 0; j < n; j++) {
+            if (j != i) res += a[j];
+        }
+        ans = min(ans, res);
+    }
 
-    sort(a.begin(), a.end(), [&](const string& p1, const string& p2) {
-        if (p1[0] == '0' && p2[0] == '0') return p1 < p2;
-        else if (p1[0] == '0' || p2[0] == '0') return p1 > p2;
-        else return p1 + du + p2 < p2 + du + p1;
-    });
-
-    if (a[0][0] == '0') {
+    if ('9' < ans[0]) {
         cout << "INVALID";
         return 0;
     }
 
-    sort(a.begin() + 1, a.end(), [&](const string& p1, const string& p2) {
-        return p1 + p2 < p2 + p1;
-    });
-
-    for (auto& i : a) cout << i;
+    cout << ans;
 }
