@@ -1,3 +1,10 @@
+// INPUT: Given N points in a 2D plane with integer coordinates.
+// OUTPUT: Find the center and the radius of the minimum enclosing circle(MEC).
+// A minimum enclosing circle is a circle in which all the points lie either inside the circle or on its boundaries.
+// TIME COMPLEXITY: O(N) (using random)
+
+// BOJ 2626 AC Code
+// https://www.acmicpc.net/problem/2626
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -23,13 +30,6 @@ Circle circleFrom(const Point& a, const Point& b, const Point& c) {
 Circle circleFrom(const Point& a, const Point& b) {
     Point c = { (a.x + b.x) / 2.0, (a.y + b.y) / 2.0 };
     return { c, dist(a, b) / 2.0 };
-}
-
-int isValidCircle(const Circle& ci, vector<Point>& p) {
-    for (auto& i : p) {
-        if (ci.r + 1e-9 < dist(i, ci.c)) return 0;
-    }
-    return 1;
 }
 
 Circle minimumEnclosingCircle(int n, const vector<Point>& p) {

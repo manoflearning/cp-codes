@@ -63,6 +63,6 @@ int main() {
     Circle ans = minimumEnclosingCircle(n, p);
 
     cout << fixed;
-    cout.precision(3);
+    cout.precision(11);
     cout << ans.c.x << ' ' << ans.c.y << '\n' << ans.r;
 }
