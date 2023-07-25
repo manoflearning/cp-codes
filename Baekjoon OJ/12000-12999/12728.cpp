@@ -2,35 +2,7 @@
 using namespace std;
 #define ll long long
 
-/*struct Node {
-    ll a, b; // a + b * sqrt(5)
-    Node operator*(const Node& rhs) const {
-        Node ret;
-        ret.a = (a * rhs.a + 5 * b * rhs.b) % 5'000'000;
-        ret.b = (a * rhs.b + b * rhs.a) % 5'000'000;
-        return ret;
-    }
-};
-
-const Node bc = { 3, 1 };
-Node f(ll x) {
-    if (x == 1) return bc;
-    Node res = f(x >> 1);
-    Node ret = res * res;
-    if (x & 1) ret = ret * bc;
-    return ret;
-}
-
-string getAns(Node x) {
-    int num = (ll)(x.a + sqrt((long double)5) * x.b) % 1'000;
-    string ret = to_string(num);
-    while (ret.size() < 3) {
-        ret.insert(0, "0");
-    }
-    return ret;
-}*/
-
-const int MOD = 5'000'000;
+const int MOD = 1'000;
 
 struct Matrix {
     vector<vector<ll>> a;
@@ -80,16 +52,21 @@ int main() {
         cout << "Case #" << tt << ": ";
 
         int n; cin >> n;
+
+        if (n == 2) {
+            cout << "027\n";
+            continue;
+        }
+
         Matrix bc;
         bc.a.resize(2, vector<ll>(2));
-        bc.a[0][0] = 3, bc.a[0][1] = 5;
-        bc.a[1][0] = 1, bc.a[1][1] = 3;
+        bc.a[0][0] = 6, bc.a[0][1] = -4;
+        bc.a[1][0] = 1, bc.a[1][1] = 0;
 
-        Matrix ans = po(bc, n - 1);
+        Matrix ans = po(bc, n - 2);
 
-        ll num = (ans.a[0][0] + ans.a[0][1]) % MOD;
-        num += (ll)(sqrt((long double)5) * (ans.a[1][0] + ans.a[1][1])) % MOD;
-        
+        ll num = (ans.a[0][0] * 28 + ans.a[0][1] * 6) % MOD;
+        num = (num + MOD - 1) % MOD;        
         cout << getAns(num) << '\n';
     }
 }
