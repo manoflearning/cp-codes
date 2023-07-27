@@ -50,18 +50,6 @@ void pre() {
     bottomup(dpy, rdpy, Y);
 }
 
-int cutting1() {
-    vector<int> cntx(26), cnty(26);
-    for (auto& c : X) cntx[c - 'a']++;
-    for (auto& c : Y) cnty[c - 'a']++;
-    for (auto& c : W) cntx[c - 'a']--, cnty[c - 'a']--;
-    
-    int rem = 0;
-    for (int i = 0; i < 26; i++) rem += min(cntx[i], cnty[i]);
-
-    return (rem == 0 ? 1 : 0);
-}
-
 int main() {
     #ifndef ONLINE_JUDGE
     freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
@@ -76,16 +64,6 @@ int main() {
         init();
 
         input();
-
-        if (cutting1()) {
-            cout << 0 << '\n';
-            continue;
-        }
-
-        if (sz(X) == sz(W) || sz(Y) == sz(W)) {
-            cout << 0 << '\n';
-            continue;
-        }
 
         pre();
 
@@ -107,10 +85,7 @@ int main() {
         int ans = 0;
         for (int i = 0; i < 26; i++) {
             for (int j = 0; j <= sz(W); j++) {
-                if (j + min(px[i][j], py[i][j]) >= sz(W)) {
-                    ans = 1;
-                    //cout << (char)(i + 'a') << ' ' << j << ' ' << px[i][j] << ' ' << py[i][j] << '\n';
-                }
+                if (j + min(px[i][j], py[i][j]) >= sz(W)) ans = 1;
             }
         }
 
