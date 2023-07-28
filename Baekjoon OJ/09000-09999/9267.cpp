@@ -2,7 +2,6 @@
 using namespace std;
 #define ll long long
 #define lll __int128_t
-#define plll pair<lll, lll>
 
 void YES() { cout << "YES"; exit(0); }
 void NO() { cout << "NO"; exit(0); }
@@ -19,7 +18,7 @@ lll gcd(lll a, lll b) {
     if (!b) return a;
     return gcd(b, a % b);
 }
-pair<plll, lll> egcd(lll a, lll b) { 
+pair<pair<lll, lll>, lll> egcd(lll a, lll b) { 
     lll s = 0, olds = 1;
     lll t = 1, oldt = 0;
     lll r = b, oldr = a;
