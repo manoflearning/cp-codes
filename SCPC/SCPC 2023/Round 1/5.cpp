@@ -8,8 +8,6 @@ using namespace std;
 const ll INF = 1e18;
 const int MAXN = 101010;
 
-// 아래 const value e와 struct LiChaoTree는 제 개인 깃허브에 공개된, 직접 작성한 코드를 참고했습니다.
-// 출처 : https://github.com/manoflearning/CP-Codes/blob/main/Baekjoon%20OJ/12000-12999/12795.cpp 
 const pll e = { 0, INF };
 struct LiChaoTree {
     ll f(pll l, ll x) { return l.first * x + l.second; }

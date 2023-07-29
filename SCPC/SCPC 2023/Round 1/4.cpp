@@ -1,7 +1,3 @@
-// 아래 코드 중 해싱(라빈-카프 알고리즘)과 관련된 부분들은 장난감(SCPC 2023 Round1 3번 문제)의 제 코드를 참고했습니다.
-// 저의 장난감 문제의 1~6번째 제출 코드와 유사합니다.
-// 해싱(라빈-카프 알고리즘)과 관련된 부분들의 예 : preprocessing, buildHash 함수 등
-
 #pragma GCC optimize("O3")
 #pragma GCC optimize("unroll-loops")
 
@@ -26,8 +22,6 @@ void preprocessing() {
     }
 }
 
-// 제 레퍼런스 코드를 복사/붙여넣기 후 변형했습니다.
-// 출처 : https://github.com/manoflearning/CP-Reference-Codes/blob/master/Reference%20Codes/1.%20Data%20Structure/Segment%20Tree/Iterative%20Segment%20Tree.cpp
 struct Seg {  // 0-indexed
     int n, t[505050];
     void build(int N) {
