@@ -1,4 +1,4 @@
-# CP-Codes
+# CP Codes
 My codes for solving algorithm problems.
 
 ## CP Profiles
