@@ -23,8 +23,8 @@ const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int main() {
 	#ifndef ONLINE_JUDGE
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-	freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+	freopen("/Users/jeongwoo-kyung/programming/cp-codes/input.txt", "r", stdin);
+	freopen("/Users/jeongwoo-kyung/programming/cp-codes/output.txt", "w", stdout);
 	#endif
 
 	cin.tie(NULL); cout.tie(NULL);
