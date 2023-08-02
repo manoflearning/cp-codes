@@ -1,13 +1,6 @@
 # CP Codes
 My codes for solving algorithm problems.
 
-## CP Profiles
-- Algospot: https://algospot.com/user/profile/93932
-- AtCoder: https://atcoder.jp/users/man_of_learning
-- **Baekjoon OJ**: https://solved.ac/man_of_learning
-- **Codeforces**: https://codeforces.com/profile/man_of_learning
-- LeetCode: https://leetcode.com/manoflearning/
-
 ## My Algorithm & Data Structure Status
 
 ### Can solve problems to some extent (without cheat sheet)
