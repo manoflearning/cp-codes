@@ -5,15 +5,15 @@ My codes for solving algorithm problems.
 
 ### Can solve problems to some extent (without cheat sheet)
 
-- DFS, BFS / Minimum Spanning Tree / Union Find / Sparse Table / Prefix Sum / 2D Prefix Sum / MITM / Coordinate Compression / Segment Tree / Segment Tree with Lazy Propagation / Inclusion–exclusion Principle / Bitmask DP / Topological Sort / Random / Basic Sqrt-Time Algorithms / Fraction Data Type
+- DFS, BFS / Minimum Spanning Tree / Union Find / Sparse Table / Prefix Sum / 2D Prefix Sum / MITM / Coordinate Compression / Segment Tree / Segment Tree with Lazy Propagation / Inclusion–exclusion Principle / Bitmask DP / Topological Sort / Random / Basic Sqrt-Time Algorithms / Fraction Data Type / Rabin-Karp Algorithm
 
 ### Can solve problems to some extent (with cheat sheet)
 
-- Dijkstra's, Bellman-Ford, Floyd-Warshall / SCC, 2-SAT / BCC / Euclidean Algorithms / LCA in O(logN) (Sparse Table) / Heavy-Light Decomposition / Euler Tour Technique / Rabin-Karp Algorithm / Trie / Manacher's Algorithm / Z Algorithm / CCW Algorithm / Convex Hull / Rotating Callipers / Ray Casting / Bulldozer Trick / Minimum Enclosing Circle / Sieve / Catalan Number, Derangement Number / Fenwick Tree / Persistent Segment Tree / Fermat's Little Theorem / Binomial Coefficient / Matrix / Li Chao Tree / Sqrt Decomposition, Mo's Algorithm / Rotation Matrix, Manhattan Distance, Chebyshev Distance / Ternary Search / LIS in O(NlogN) / System of Difference Constraints
+- Dijkstra's, Bellman-Ford, Floyd-Warshall / SCC, 2-SAT / BCC / Euclidean Algorithms / LCA in O(logN) (Sparse Table) / Heavy-Light Decomposition / Euler Tour Technique / Trie / Manacher's Algorithm / Z Algorithm / CCW Algorithm / Convex Hull / Rotating Callipers / Ray Casting / Bulldozer Trick / Minimum Enclosing Circle / Sieve / Catalan Number, Derangement Number / Fenwick Tree / Persistent Segment Tree / Fermat's Little Theorem / Binomial Coefficient / Matrix / Li Chao Tree / Sqrt Decomposition, Mo's Algorithm / Rotation Matrix, Manhattan Distance, Chebyshev Distance / Ternary Search / LIS in O(NlogN) / System of Difference Constraints
 
 ### Learned but need a lot of practice
 
-- Merge Sort Tree / Euler Circuit / Maximum Flow / Bipartite Matching / Max-Flow Min-Cut Theorem / MCMF / Centroid Decomposition / Parallel Binary Search / KMP Algorithm / Aho-Corasick / Suffix Array / Euler's Phi Function / FFT / Convex Hull Trick / Knuth Opt / Monotone Queue Opt / DnC Opt / Sort by Angular / 
+- Convex Hull Trick / KMP Algorithm / Aho-Corasick / Suffix Array / FFT / Maximum Flow / Bipartite Matching / Max-Flow Min-Cut Theorem / MCMF / Knuth Opt / Monotone Queue Opt / DnC Opt / Merge Sort Tree / Euler Circuit / Centroid Decomposition / Parallel Binary Search / Euler's Phi Function / Sort by Angular
 
 ### Have to learn in the future
 
