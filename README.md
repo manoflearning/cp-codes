@@ -1,5 +1,5 @@
 # CP Codes
-My codes for solving algorithm problems.
+My codes for solving algorithm problems. Include Baekjoon OJ, Codeforces, Google Code Jam, ICPC, LeetCode, Meta Hacker Cup, SCPC, etc.
 
 ## My Algorithm & Data Structure Status
 
