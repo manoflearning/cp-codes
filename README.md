@@ -13,7 +13,7 @@ My codes for solving algorithm problems.
 
 ### Learned but need a lot of practice
 
-- Convex Hull Trick / KMP Algorithm / Aho-Corasick / Suffix Array / FFT / Maximum Flow / Bipartite Matching / Max-Flow Min-Cut Theorem / MCMF / Knuth Opt / Monotone Queue Opt / DnC Opt / Merge Sort Tree / Euler Circuit / Centroid Decomposition / Parallel Binary Search / Euler's Phi Function / Sort by Angular
+- Convex Hull Trick / KMP Algorithm / Aho-Corasick / Suffix Array / FFT / Maximum Flow / Bipartite Matching / Max-Flow Min-Cut Theorem / MCMF / Knuth Opt / Monotone Queue Opt / DnC Opt / Small to Large Trick / Merge Sort Tree / Euler Circuit / Centroid Decomposition / Parallel Binary Search / Euler's Phi Function / Sort by Angular
 
 ### Have to learn in the future
 
