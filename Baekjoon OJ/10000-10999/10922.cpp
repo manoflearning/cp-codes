@@ -63,13 +63,8 @@ struct OptSeg {
             t[p >> 1] = cal(t[p], t[p ^ 1]);
         }
     }
-    int query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-        if (r < nl || nr < l) return 1;
-        if (l <= nl && nr <= r) return t[n];
-        int mid = (nl + nr) >> 1;
-        return cal(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-    }
-}optSeg;
+    int query() { return t[1]; }
+}opt;
 
 void input() {
     cin >> n;
@@ -97,9 +92,9 @@ int main() {
     mul.build(n);
     for (int i = 1; i <= n; i++) mul.modify(i, x[i]);
 
-    optSeg.build(n);
+    opt.build(n);
 
-    cout << getAns(optSeg.query(1, n)) << '\n';
+    cout << getAns(opt.query()) << '\n';
 
     // query
     int m; cin >> m;
@@ -110,13 +105,13 @@ int main() {
         
         if (op == 1) {
             mul.modify(p, q);
-            optSeg.modify(p);
+            opt.modify(p);
         }
         if (op == 2) {
             y[p] = q;
-            optSeg.modify(p);
+            opt.modify(p);
         }
         
-        cout << getAns(optSeg.query(1, n)) << '\n';
+        cout << getAns(opt.query()) << '\n';
     }
 }
