@@ -10,24 +10,40 @@ int find(int x) {
 void merge(int u, int v) {
     int U = find(u), V = find(v);
     if (U == V) return;
+    uf[V] += uf[U];
     uf[U] = V;
 }
 
-int n, deg[1515];
-int qCnt = 0;
+int n;
+set<int> s[1515];
 
 void initialize(int N) {
     n = N;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            s[i].insert(j);
+        }
+    }
+}
+
+int condition(int v) {
+    for (int i = 0; i < n; i++) {
+        if (find(i) != find(v)) continue;
+        for (auto& u : s[i]) {
+            if (find(v) != find(u)) return 0;
+        }
+    }
+    
+    return 1;
 }
 
 int hasEdge(int u, int v) {
-    qCnt++;
-    if (qCnt == n * (n - 1) / 2) {
-        assert(find(u) != find(v));
-    }
+    s[u].erase(v);
+    s[v].erase(u);
 
-    // solve
-    deg[u]++, deg[v]++;
-    if (deg[u] == n - 1 || deg[v] == n - 1) return 1;
+    if (find(u) != find(v) && (condition(u) || condition(v))) {
+        merge(u, v);
+        return 1;
+    }
     return 0;
 }

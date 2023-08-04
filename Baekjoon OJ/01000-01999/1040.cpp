@@ -95,8 +95,12 @@ int main() {
  
     // now ans should be strictly bigger than n (ans > n)
 
+    // if sz(a) + 1 == sz(ans)
+    ans.push_back(1);
+    for (int i = 0; i < (sz(a) + 1) - (k - 1); i++) ans.push_back(0);
+    for (int i = 2; i < k; i++) ans.push_back(i);
+
     // if sz(a) == sz(ans)
-    ans.resize(sz(a), 10);
     for (int i = 0; i < sz(a); i++) {
         if (valCnt > k) break;
         
@@ -104,20 +108,15 @@ int main() {
             add(x);
             if (valCnt <= k) {
                 vector<int> res = getRem();
-                if (isValidAns(res)) ans = min(ans, res);
+                if (isValidAns(res)) {
+                    if (sz(res) == sz(ans)) ans = min(ans, res);
+                    else ans = res;
+                }
             }
             del();
         }
         add(a[i]);
     }
 
-    // if sz(a) + 1 == sz(ans)
-    if (ans[0] == 10) {
-        ans.clear();
-        ans.push_back(1);
-        for (int i = 0; i < (sz(a) + 1) - (k - 1); i++) ans.push_back(0);
-        for (int i = 2; i < k; i++) ans.push_back(i);
-    }
-    
     for (auto& i : ans) cout << i;
 }
