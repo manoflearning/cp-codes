@@ -2,6 +2,10 @@
 #include <cassert>
 #include "game.h"
 using namespace std;
+#define sz(x) (int)(x).size()
+
+int n;
+multiset<int> edge[1515];
 
 vector<int> uf(1515, -1);
 int find(int x) {
@@ -11,36 +15,45 @@ int find(int x) {
 void merge(int u, int v) {
     int U = find(u), V = find(v);
     if (U == V) return;
-    uf[V] += uf[U];
-    uf[U] = V;
-}
 
-int n;
-set<int> s[1515];
+    uf[U] = V;
+
+    for (auto& i : edge[U]) edge[V].insert(i);
+    edge[U].clear();
+
+    multiset<int> s = edge[V];
+    for (auto& i : s) {
+        if (find(i) == V) edge[V].erase(i);
+    }
+}
 
 void initialize(int N) {
     n = N;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            s[i].insert(j);
+            if (i != j) edge[i].insert(j);
         }
     }
 }
 
-int condition(int v) {
-    for (auto& u : s[v]) {
-        if (find(v) != find(u)) return 0;
+int condition(int u, int v) {
+    int U = find(u), V = find(v);
+    for (auto& i : edge[U]) {
+        if (find(i) == V) return 0;
+    }
+    for (auto& i : edge[V]) {
+        if (find(i) == U) return 0;
     }
     return 1;
 }
 
 int hasEdge(int u, int v) {
-    s[u].erase(v);
-    s[v].erase(u);
-
     if (find(u) == find(v)) return 0;
 
-    if (condition(u) || condition(v)) {
+    edge[find(u)].erase(edge[find(u)].find(v));
+    edge[find(v)].erase(edge[find(v)].find(u));
+
+    if (condition(u, v)) {
         merge(u, v);
         return 1;
     }
@@ -65,6 +78,7 @@ int main() {
     for (int i = 0; i < n * (n - 1) / 2; i++) {
         u = read_int();
         v = read_int();
+        //hasEdge(u, v);
         printf("%d\n", hasEdge(u, v));
     }
     return 0;
