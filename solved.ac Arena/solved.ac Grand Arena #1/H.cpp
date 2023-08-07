@@ -22,7 +22,7 @@ const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
 const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
 int n, m, q;
-vector<vector<ll>> a;
+vector<ll> ro, co;
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -34,28 +34,20 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     cin >> n >> m >> q;
-    a.resize(n + 10, vector<ll>(m + 10));
+
+    ro.resize(n);
+    co.resize(m);
 
     while (q--) {
         int op, x, y;
         cin >> op >> x >> y;
-        if (op == 1) {
-            a[x][1] += y;
-            a[x + 1][1] -= y;
-        }
-        if (op == 2) {
-            a[1][x] += y;
-            a[1][x + 1] -= y;
-        }
+        if (op == 1) ro[x - 1] += y;
+        if (op == 2) co[x - 1] += y;
     }
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            a[i][j] += a[i - 1][j];
-            a[i][j] += a[i][j - 1];
-            a[i][j] -= a[i - 1][j - 1];
-
-            cout << a[i][j] << ' ';
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cout << ro[i] + co[j] << ' ';
         }
         cout << '\n';
     }
