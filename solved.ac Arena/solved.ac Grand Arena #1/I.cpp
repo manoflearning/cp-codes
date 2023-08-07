@@ -49,15 +49,11 @@ bool isAnswerExist() {
 }
 
 void getAnsR() {
-    for (int r = 1; r <= N; r++) {
-        ansR[r] = A[r][1];
-    }
+    for (int r = 1; r <= N; r++) ansR[r] = A[r][1];
 }
 
 void getAnsC() {
-    for (int c = 1; c <= M; c++) {
-        ansC[c] = A[1][c] - ansR[1];
-    }
+    for (int c = 1; c <= M; c++) ansC[c] = A[1][c] - ansR[1];
 }
 
 void optimize() {
