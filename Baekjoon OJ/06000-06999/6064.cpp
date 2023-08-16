@@ -1,3 +1,9 @@
+// INPUT: Given 4 integers, M, N, p, q. (1 <= M, 1 <= N, 0 <= p < M, 0 <= q < N)
+// OUTPUT: Solve a system of linear congruence
+// x = p (mod M), x = q (mod N)
+// TIME COMPLEXITY: O(log(max(M, N)))
+// BOJ 6064 AC Code
+// https://www.acmicpc.net/problem/6064
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
@@ -37,19 +43,15 @@ pll crt(pll U, pll V) {
 }
 
 int main() {
-	#ifndef ONLINE_JUDGE
-	freopen("/Users/jeongwoo-kyung/programming/cp-codes/input.txt", "r", stdin);
-	freopen("/Users/jeongwoo-kyung/programming/cp-codes/output.txt", "w", stdout);
-	#endif
-
 	cin.tie(NULL); cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
 	int tc; cin >> tc;
 	while (tc--) {
-		int m, n, x, y;
-		cin >> m >> n >> x >> y;
-		pll ans = crt({ x - 1, m }, { y - 1, n });
+		ll M, N, p, q;
+		cin >> M >> N >> p >> q;
+		p--, q--;
+		pll ans = crt({ p, M }, { q, N });
 		cout << (ans.fr == -1 ? ans.fr : ans.fr + 1) << '\n';
 	}
 }
