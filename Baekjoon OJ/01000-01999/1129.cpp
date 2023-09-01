@@ -72,7 +72,11 @@ void simul() {
         vector<int> res = minDiff(i);
         int resDiff = getDiff(res);
 
-        if (ans.empty() || (resDiff < ansDiff || (resDiff == ansDiff && res < ans))) {
+        if (ans.empty()) {
+            ans = res;
+            ansDiff = resDiff;
+        }
+        else if (resDiff < ansDiff || (resDiff == ansDiff && res < ans)) {
             ans = res;
             ansDiff = resDiff;
         }
