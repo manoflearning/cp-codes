@@ -3,13 +3,23 @@
 using namespace std;
 #define ll long long
 #define sz(x) (int)(x).size()
+#define all(x) (x).begin(), (x).end()
 
 const ll MX = 1e18;
+
+vector<ll> arr;
+
+ll cal() {
+    ll ret = 0;
+    for (int i = 0; i + 1 < sz(arr); i++) {
+        ret = max(ret, arr[i + 1] - arr[i]);
+    }
+    return ret;
+}
 
 ll T1(int N) {
     ll lb = 0, ub = MX;
 
-    vector<ll> arr;
     stack<ll> stk;
     while (lb <= ub && sz(arr) + sz(stk) < N) {
         ll mn = -1, mx = -1;
@@ -25,14 +35,29 @@ ll T1(int N) {
         stk.pop();
     }
 
-    ll ret = 0;
-    for (int i = 0; i + 1 < sz(arr); i++) {
-        ret = max(ret, arr[i + 1] - arr[i]);
+    return cal();
+}
+
+ll T2(int N) {
+    ll lb = -1, ub = -1;
+    MinMax(0, MX, &lb, &ub);
+    
+    ll anslb = (ub - lb + N - 2) / (N - 1);
+    for (ll l = lb; l <= ub; l += anslb + 1) {
+        ll r = min(ub, l + anslb);
+        ll mn = -1, mx = -1;
+        MinMax(l, r, &mn, &mx);
+        if (mn != -1) arr.push_back(mn);
+        if (mx != -1 && mx != mn) arr.push_back(mx);
     }
-    return ret;
+
+    sort(all(arr));
+
+    return cal();
 }
 
 ll findGap(int T, int N) {
+    srand(time(NULL));
     if (T == 1) return T1(N);
-    if (T == 2) return 0;
+    if (T == 2) return T2(N);
 }
