@@ -1,3 +1,4 @@
+// 1 ~ K ~ 2K
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("Ofast")
 // #pragma GCC optimize("unroll-loops")
@@ -8,67 +9,52 @@ using namespace std;
 #define all(c) (c).begin(), (c).end()
 #define sz(x) (int)(x).size()
 
-int X;
-vector<int> ans;
-int K;
+ll X;
+int ans[404], flag;
 
 void init() {
-    ans.clear();
-    K = 0;
+    memset(ans, 0, sizeof(ans));
+    flag = 0;
 }
 
 void input() { cin >> X; }
 
-void print() {
-    cout << sz(ans) << ' ' << K << '\n';
-    for (auto& i : ans) cout << i << ' ';
-    cout << '\n';
-}
-
-void group2(ll rem) {
-    if (rem == 0) return;
-    if (rem == 1) {
-        K += 1;
-        ans.push_back(1);
-        return;
-    }
-
-    ll tmp = rem;
+void solve(ll now) {
     vector<ll> p;
-    ll sum = 1;
-    for (int i = 2; i <= sqrt(tmp); i++) {
-        while (tmp % i == 0) {
-            tmp /= i;
+    int sum = 0;
+    for (int i = 2; i <= sqrt(now); i++) {
+        while (now % i == 0) {
             p.push_back(i);
+            now /= i;
             sum += i;
         }
     }
-    if (tmp > 1) {
-        p.push_back(tmp);
-        sum += tmp;
-    }
+    if (now > 1) p.push_back(now);
 
-    if (100 < sum) {
-        K += 2;
-        ans.push_back(1);
-        ans.push_back(0);
-        ans.push_back(0);
-        ans.push_back(0);
-        ans.push_back(0);
-        ans.push_back(0);
-        ans.push_back(0);
-        ans.push_back(1);
-        group2(rem - 7);
+    if (400 - flag < sum + 1) {
+        ans[flag++] = 1;
+        ans[flag++] = 0;
+        ans[flag++] = 1;
+        solve((now + 1) / 2);
     }
     else {
-        K += sz(p) + 1;
-        ans.push_back(1);
-        for (auto& x : p) {
-            for (ll i = 0; i < x - 1; i++) 
-                ans.push_back(0);
-            ans.push_back(1);
+        ans[flag++] = 1;
+        for (auto& i : p) {
+            for (int j = 0; j < i; j++) {
+                if (j == i - 1) ans[flag++] = 1;
+                else ans[flag++] = 0;
+            }
         }
     }
+}
+
+void print() {
+    int K = 0;
+    for (int i = 0; i < flag; i++) K += ans[i];
+
+    cout << flag << ' ' << K << '\n';
+    for (int i = 0; i < flag; i++) cout << ans[i] << ' ';
+    cout << '\n';
 }
 
 int main() {
@@ -83,31 +69,12 @@ int main() {
     int tc; cin >> tc;
     for (int tt = 1; tt <= tc; tt++) {
         cout << "Case #" << tt << '\n';
-        
+
         init();
 
         input();
 
-        if (X == 0) {
-            K = 2;
-            ans.push_back(1);
-            ans.push_back(0);
-        }
-        else if (X <= 100) {
-            K = 2;
-            ans.push_back(1);
-            for (int i = 0; i < X - 1; i++) 
-                ans.push_back(0);
-            ans.push_back(1);
-        }
-        else if (X <= 100'000) {
-            group2(X);
-        }
-        else {
-            K = 2;
-            ans.push_back(1);
-            ans.push_back(0);
-        }
+        solve(X);
 
         print();
 

@@ -13,7 +13,7 @@ const int MAXN = 3030;
 int n;
 ll a[MAXN];
 // ll psum[MAXN];
-ll dp[MAXN][MAXN], dp1[MAXN][MAXN], dp2[MAXN][MAXN];
+ll dp[MAXN][MAXN];
 
 void init() {}
 
@@ -37,25 +37,18 @@ void f() { // dp[l][r] = [l, r] 범위에서 최적해
     // base case
     for (int i = 1; i <= n; i++) {
         dp[i][i] = a[i];
-        dp1[i][i] = a[i] + a[i + 1];
-        dp2[i][i] = a[i] + a[i - 1];
-        
-        dp1[i][i - 1] = a[i];
-        dp2[i + 1][i] = a[i];
     }
     
     // inductive step
     for (int len = 2; len <= n; len++) {
         for (int l = 1; ; l++) {
             int r = l + len - 1;
-            if (r > n) break;
+            if (n < r) break;
 
             dp[l][r] = 0;
             for (int i = l; i <= r; i++) {
-                dp[l][r] = max(dp[l][r], min(dp1[l][i - 1], dp2[i + 1][r]));
+                dp[l][r] = max(dp[l][r], a[i] + min(dp[l][i - 1], dp[i + 1][r]));
             }
-            dp1[l][r] = dp[l][r] + a[r + 1];
-            dp2[l][r] = dp[l][r] + a[l - 1];
         }
     }
 }
