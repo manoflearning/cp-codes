@@ -1,4 +1,4 @@
-// solution 2: segment tree
+// solution 3: priority queue
 #include <bits/stdc++.h>
 using namespace std;
 #define pii pair<int, int>
