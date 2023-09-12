@@ -1,3 +1,7 @@
+// f * g = 2(4x^3 - 3x)^2 - 1
+// = 32x^6 - 48x^4 + 18x^2 - 1
+// g * f = 4(2x^2 - 1)^3 - 3(2x^2 - 1)
+// = 32x^6 - 48x^4 + 18x^2 - 1
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
