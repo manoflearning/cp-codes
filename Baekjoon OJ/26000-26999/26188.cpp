@@ -24,7 +24,7 @@ void input() {
 
 void preprocessing() {
     for (int i = 1; i <= n; i++) {
-        for (int j = i; j <= n; j++) {
+        for (int j = i + 1; j <= n; j++) {
             ll res = (a[i].fr - a[j].fr) * (a[i].fr - a[j].fr) 
             + (a[i].sc - a[j].sc) * (a[i].sc - a[j].sc);
 
