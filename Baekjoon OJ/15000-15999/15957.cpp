@@ -45,26 +45,10 @@ void dfs(int v) {
         siz[v] += siz[i];
     }
 
-    // sort(all(wei[v]));
-    for (int i = 0; i < sz(wei[v]); i++) {
-        wei[v][i].sc /= siz[v];
-        // if (i > 0) wei[v][i].sc += wei[v][i - 1].sc;
-    }
+    for (auto& i : wei[v]) i.sc /= siz[v];
 
     out[v] = p;
 }
-
-// void dfsGetCumWeight(int v) {
-//     for (auto u : t[v]) {
-//         for (int i = 0; i < sz(wei[u]); i++) {
-//             pll du = { wei[u][i].fr, 1e18 };
-//             int idx = upper_bound(all(wei[v]), du) - wei[v].begin() - 1;
-//             if (idx == -1) continue;
-//             wei[u][i].sc += wei[v][idx].sc;
-//         }
-//         dfsGetCumWeight(u);
-//     }
-// }
 
 vector<int> c;
 void cc() {
@@ -111,7 +95,7 @@ void dfsPbs(int v) {
     int id = co[v];
     sum[id] += seg.query(1, mid[id]);
     for (auto& i : t[v]) dfsPbs(i);
-    // cout << v << ' ' << mid[id] << ' ' << sum[id] << '\n';
+
     for (auto& i : wei[v]) seg.add(i.fr, -i.sc);
 }
 
@@ -149,8 +133,6 @@ int main() {
     input();
 
     dfs(1);
-
-    // dfsGetCumWeight(1);
 
     cc();
 
