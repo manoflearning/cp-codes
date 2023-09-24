@@ -144,6 +144,16 @@ struct PST { // 1-indexed
     int query(int l, int r, int v) {
         return query(l, r, root[vHash[v]], 1, flag);
     }
+    int kth(int u, int v, int p, int q, int nl, int nr, int k) {
+        int mid = (nl + nr) >> 1;        
+        int leftChildCount = t[t[u].l].val + t[t[v].l].val - t[t[p].l].val - t[t[q].l].val;
+
+        if (k <= leftChildCount) return kth(t[u].l, t[v].l, t[p].l, t[q].l, nl, mid, k);
+        else return kth(t[u].r, t[v].r, t[p].r, t[q].r, mid + 1, nr, k - leftChildCount);
+    }
+    int kth(int u, int v, int p, int q, int k) {
+        return kth(root[vHash[u]], root[vHash[v]], root[vHash[p]], root[vHash[q]], 1, flag, k);
+    }
 }pst;
 
 void constructPST() {
@@ -151,6 +161,7 @@ void constructPST() {
     for (int v = 1; v <= n; v++) {
         ord.push_back({ dep[v], v });
     }
+
     sort(all(ord));
     pst.build(n);
     for (int i = 0; i < n; i++) {
@@ -163,19 +174,7 @@ void constructPST() {
 
 int query(int u, int v, int k) {
     int lc = lca(u, v);
-    int l = 1, r = n;
-    while (l < r) {
-        int mid = (l + r) >> 1;
-        int cnt = 0;
-        cnt += pst.query(1, mid, u);
-        cnt += pst.query(1, mid, v);
-        cnt -= pst.query(1, mid, lc);
-        if (par[lc][0] > 0) cnt -= pst.query(1, mid, par[lc][0]);
-
-        if (cnt < k) l = mid + 1;
-        else r = mid;
-    }
-    return c[l];
+    return c[pst.kth(u, v, lc, par[lc][0], k)];
 }
 
 int main() {
