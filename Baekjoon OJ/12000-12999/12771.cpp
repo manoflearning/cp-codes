@@ -7,8 +7,8 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define all(x) (x).begin(), (x).end()
 
-struct Deposit { ll sx, ex, y; };
-struct Point { ll x, y, w, idx; };
+struct Deposit { int sx, ex, y; };
+struct Point { ll x, y; int w, idx; };
 
 int n;
 vector<Deposit> a;
