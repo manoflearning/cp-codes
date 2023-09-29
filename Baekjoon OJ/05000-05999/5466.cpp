@@ -1,11 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
-#define all(x) (x).begin(), (x).end()
-#define sz(x) (int)(x).size()
 #define pll pair<ll, ll>
 #define fr first
 #define sc second
+#define all(x) (x).begin(), (x).end()
+#define sz(x) (int)(x).size()
 
 const int MAXN = 505050;
 const int MAXL = 500001;
@@ -76,22 +76,33 @@ void f() {
     modifyL(S, dp[S]);
 
     for (int i = 1; i <= MAXT; i++) {
+        vector<ll> psum(sz(a[i])), ssum(sz(a[i]));
+        for (int j = 1; j < sz(a[i]); j++) {
+            ll len = a[i][j].x - a[i][j - 1].x;
+            psum[j] = max(0ll, a[i][j - 1].M - len * (U + D) + max(0ll, psum[j - 1]));
+        }
+        for (int j = sz(a[i]) - 2; j >= 0; j--) {
+            ll len = a[i][j + 1].x - a[i][j].x;
+            ssum[j] = max(0ll, a[i][j + 1].M - len * (U + D) + max(0ll, ssum[j + 1]));
+        }
+
         for (int j = 0; j < sz(a[i]); j++) {
             int x = a[i][j].x; ll M = a[i][j].M;
-            ll res = M + queryR(x);
+            ll res = M + queryR(x) + ssum[j];
             dp[x] = max(dp[x], res);
             modifyR(x, res);
         }
         for (int j = sz(a[i]) - 1; j >= 0; j--) {
             int x = a[i][j].x; ll M = a[i][j].M;
-            ll res = M + queryL(x);
+            ll res = M + queryL(x) + psum[j];
             dp[x] = max(dp[x], res);
             modifyL(x, res);
         }
 
-        for (auto& j : a[i]) {
-            modifyR(j.x, dp[j.x]);
-            modifyL(j.x, dp[j.x]);
+        // update
+        for (int j = 0; j < sz(a[i]); j++) {
+            modifyR(a[i][j].x, dp[a[i][j].x]);
+            modifyL(a[i][j].x, dp[a[i][j].x]);
         }
     }
 }
