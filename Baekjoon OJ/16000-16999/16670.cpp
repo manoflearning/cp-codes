@@ -4,19 +4,35 @@ using namespace std;
 
 const int MAXT = 1'000'000;
 
+struct Node {
+    ll mx, sum;
+    Node operator+(const Node& rhs) const {
+        Node ret;
+        ret.mx = max(rhs.mx, mx + rhs.sum);
+        ret.sum = sum + rhs.sum;
+        return ret;
+    }
+};
+
 int flag;
 struct Seg {
-    vector<ll> t;
+    vector<Node> t;
     void build(int n) {
         for (flag = 1; flag < n; flag <<= 1);
         t.resize(flag << 1);
+        for (int i = flag; i < flag + n; i++) t[i] = { i - flag + 1, 0 };
+        for (int i = flag - 1; i >= 1; i--)
+            t[i] = t[i << 1] + t[i << 1 | 1];
     }
     void add(int p, ll val) {
-        for (t[p += flag - 1] += val; p > 1; p >>= 1)
-            t[p >> 1] = t[p] + t[p ^ 1];
+        t[p + flag - 1].mx += val;
+        t[p + flag - 1].sum += val;
+        for (p += flag - 1; p > 1; p >>= 1) {
+            t[p >> 1] = t[min(p, p ^ 1)] + t[max(p, p ^ 1)];
+        }
     }
-    ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-        if (r < nl || nr < l) return 0;
+    Node query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
+        if (r < nl || nr < l) return { 0, 0 };
         if (l <= nl && nr <= r) return t[n];
         int mid = (nl + nr) >> 1;
         return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
@@ -42,15 +58,7 @@ void solve() {
     for (auto& i : event) {
         if (i.op == '+') seg.add(i.x, i.y);
         if (i.op == '-') seg.add(event[i.x - 1].x, -event[i.x - 1].y);
-        if (i.op == '?') {
-            int l = i.x, r = MAXT;
-            while (l < r) {
-                int mid = (l + r) >> 1;
-                if (seg.query(i.x, mid) > mid - i.x) l = mid + 1;
-                else r = mid;
-            }
-            cout << l - i.x << '\n';
-        }
+        if (i.op == '?') cout << seg.query(1, i.x).mx - i.x << '\n';
     }
 }
 
