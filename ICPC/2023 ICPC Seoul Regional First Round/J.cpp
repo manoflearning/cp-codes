@@ -21,27 +21,6 @@ void input() {
 ll dp[MAXN][MAXN / 3 + 5];
 ll dp2[MAXK];
 
-// int flag;
-// struct Seg {
-//     vector<ll> t;
-//     void build(int n) {
-//         for (flag = 1; flag < n; flag <<= 1);
-//         t.resize(flag << 1);
-//     }
-//     void modify(int p, ll val) {
-//         t[p + flag - 1] = max(t[p + flag - 1], val);
-//         for (p += flag - 1; p > 1; p >>= 1) {
-//             t[p >> 1] = max(t[p], t[p ^ 1]);
-//         }
-//     }
-//     ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-//         if (nr < l || r < nl) return 0;
-//         if (l <= nl && nr <= r) return t[n];
-//         int mid = (nl + nr) >> 1;
-//         return max(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-//     }
-// }seg;
-
 void bottomup() {
     // first dp
     for (int r = 1; r <= n; r++) {
@@ -77,13 +56,6 @@ void bottomup() {
             dp[r][i] = max(dp[r][i], dpRow[i]);
         }
     }
-
-    // for (int r = 1; r <= n; r++) {
-    //     for (int k = 1; k <= n / 3 + 5; k++) {
-    //         cout << dp[r][k] << ' ';
-    //     }
-    //     cout << '\n';
-    // }
 
     // second dp
     for (int r = 1; r <= n; r++) {
