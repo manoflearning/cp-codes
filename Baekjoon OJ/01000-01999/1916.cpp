@@ -1,65 +1,51 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <climits>
+#include <bits/stdc++.h>
 using namespace std;
 
-const int MAX = 1000;
+int n, m;
+vector<pair<int, int>> adj[1010];
+int st, en;
+vector<int> dist(1010, 1e9 + 7);
 
-vector<pair<int, int>> bus[MAX + 1];
-int path[MAX + 1];
-
-void shortestPath(int start, int end);
+struct State {
+	int w, v;
+	bool operator<(const State& rhs) const {
+		return w > rhs.w;
+	}
+};
 
 int main() {
-	int n, m;
+	#ifndef ONLINE_JUDGE
+	freopen("/Users/jeongwoo-kyung/programming/cp-codes/input.txt", "r", stdin);
+	freopen("/Users/jeongwoo-kyung/programming/cp-codes/output.txt", "w", stdout);
+	#endif
+
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+
 	cin >> n >> m;
-
 	for (int i = 0; i < m; i++) {
-		int s, e, v;
-		cin >> s >> e >> v;
-
-		bus[s].push_back({ v, e });
+		int u, v, w;
+		cin >> u >> v >> w;
+		adj[u].push_back({ w, v });
 	}
+	cin >> st >> en;
 
-	int start, end;
-	cin >> start >> end;
-
-	for (int i = 1; i <= n; i++)
-		path[i] = INT_MAX;
-
-	shortestPath(start, end);
-
-	return 0;
-}
-
-void shortestPath(int start, int end) {
-	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-
-	pq.push({ 0, start });
-
+	priority_queue<State> pq;
+	pq.push({ 0, st });
+	dist[st] = 0;
 	while (!pq.empty()) {
-		int v = pq.top().first, e = pq.top().second;
-
-		if (e == end) {
-			cout << v;
-			break;
-		}
-
-		if (v < path[e]) {
-			path[e] = v;
-
-			for (int i = 0; i < bus[e].size(); i++)
-				pq.push({ v + bus[e][i].first, bus[e][i].second });
-		}
-
+		auto [w, v] = pq.top();
 		pq.pop();
+
+		if (dist[v] < w) continue;
+
+		for (auto& i : adj[v]) {
+			if (w + i.first < dist[i.second]) {
+				dist[i.second] = w + i.first;
+				pq.push({ w + i.first, i.second });
+			}
+		}
 	}
+
+	cout << dist[en];
 }
-/*////////////////////////////////////////////////////////////////////
-문제 해법		: 다익스트라 알고리즘
-접근 방식		: 음이 아닌 가중치의 그래프에서 한 정점으로부터 연결된 모든 정점까지의 최단거리를 구할 수 있다.
-결정적 깨달음		:
-오답 원인		: 1. 런타임에러. 배열의 크기를 MAX + 1로 선언해야 했음
-				  2.
-*/////////////////////////////////////////////////////////////////////
