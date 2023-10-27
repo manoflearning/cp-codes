@@ -27,7 +27,9 @@ int main() {
                 cout << (a[0] || a[2] ? "number_theory" : "geometry");
             }
         }
-        else cout << "hanbyeol";
+        else {
+            cout << "hanbyeol";
+        }
 
         cout << '\n';
     }
