@@ -23,14 +23,16 @@ int main() {
     ll ans = 0;
     for (int x = 1; x <= n; x++) {
         if (vi[x]) continue;
-
-        int mx = 0;
-        for (int b = 0; (1 << b) <= x; b++) {
-            if ((1 << b) & x) mx = (1 << b);
+        int leadingOne = 0;
+        for (int d = 20; d >= 0; d--) {
+            if ((1 << d) & x) {
+                leadingOne = (1 << d);
+                break;
+            }
         }
-
-        ans += (x - mx);
+        ans += x - leadingOne;
     }
+    ans *= 2;
 
-    cout << 2 * ans;
+    cout << ans;
 }
