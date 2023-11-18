@@ -35,9 +35,7 @@ void partitions() {
 
         for (auto& i : arr) {
             vi[i] = 1;
-            // cout << i << ' ';
         }
-        // cout << '\n';
     }
 }
 
