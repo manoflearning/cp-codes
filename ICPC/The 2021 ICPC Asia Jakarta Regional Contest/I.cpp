@@ -34,8 +34,6 @@ void cc() {
 
 long double ans = 1e18;
 
-multiset<int> s;
-
 void solve1() {
     sort(all(a), [&](const Planet& p1, const Planet& p2) {
         return p1.r < p2.r;
@@ -82,8 +80,8 @@ void solve2() {
         set<Point> s;
         for (int i = sz(p) - 1; i >= 0; i--) {
             vector<Point> lazyErase;
-            auto it = s.lower_bound({ p[i].x, p[i].y - ans });
-            auto ub = s.upper_bound({ p[i].x, p[i].y + ans });
+            auto it = s.upper_bound({ p[i].x, p[i].y - ans });
+            auto ub = s.lower_bound({ p[i].x, p[i].y + ans });
             while (it != ub) {
                 ans = min(ans, dist(p[i], *it));
                 if (p[i].x + ans <= it->x)

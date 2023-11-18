@@ -2,21 +2,7 @@
 using namespace std;
 #define ll long long
 
-const int MAX = 1e6;
-bool isPrime[MAX + 1];
-vector<int> prime(1, 2);
-
-void getPrime() {
-    fill(isPrime + 2, isPrime + MAX + 1, 1);
-    for (ll i = 4; i <= MAX; i += 2) isPrime[i] = 0;
-    for (ll i = 3; i <= MAX; i += 2) {
-        if (!isPrime[i]) continue;
-        prime.push_back(i);
-        for (ll j = i * i; j <= MAX; j += i * 2) {
-            isPrime[j] = 0;
-        }
-    }
-}
+const int MAX = 1'000'000;
 
 int gcd(int x, int y) {
     if (!y) return x;
@@ -60,16 +46,14 @@ void input() {
 }
 
 void solve() {
-    for (auto p : prime) {
+    for (int p = 2; p <= MAX; p++) {
         for (auto& i : e[p]) {
             merge(i.u, i.v);
             ans = max(ans, -uf[find(i.u)]);
         }
 
-        for (auto& i : e[p]) {
-            uf[i.u] = -1;
-            uf[i.v] = -1;
-        }
+        for (auto& i : e[p])
+            uf[i.u] = -1, uf[i.v] = -1;
     }
 }
 
@@ -81,8 +65,6 @@ int main() {
 
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
-
-    getPrime();
 
     input();
 
