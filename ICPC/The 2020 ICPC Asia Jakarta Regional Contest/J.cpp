@@ -1,110 +1,92 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define ll long long
 
 const int INF = 1e9 + 7;
+const int FLAG = 131072;
 
-ll gcd(ll x, ll y) {
-    if (!y) return x;
-    else return gcd(y, x % y);
-}
-
-int flag;  // array size
-struct SegMax {  // 1-indexed
-	vector<ll> t;
-	void build(int n) {
-		for (flag = 1; flag < n; flag <<= 1);
-		t.resize(2 * flag, 0);
-	}
-	void modify(int p, ll value) {  // set value at position p
-		for (t[p += flag - 1] = value; p > 1; p >>= 1) 
+struct SegMax {
+    vector<int> t;
+    void build() { t.resize(2 * FLAG, -INF); }
+    void modify(int p, int val) {
+        for (t[p += FLAG - 1] = val; p > 1; p >>= 1)
             t[p >> 1] = max(t[p], t[p ^ 1]);
-	}
-	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-		if (r < nl || nr < l) return 0;
-		if (l <= nl && nr <= r) return t[n];
-		int mid = (nl + nr) >> 1;
-		return max(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-	}
+    }
+    int query(int l, int r, int n = 1, int nl = 1, int nr = FLAG) {
+        if (nr < l || r < nl) return 0;
+        if (l <= nl && nr <= r) return t[n];
+        int mid = (nl + nr) >> 1;
+        return max(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
+    }
 }segmax, segequal;
 
-struct SegMin {  // 1-indexed
-	vector<ll> t;
-	void build(int n) {
-		for (flag = 1; flag < n; flag <<= 1);
-		t.resize(2 * flag, INF);
-	}
-	void modify(int p, ll value) {  // set value at position p
-		for (t[p += flag - 1] = value; p > 1; p >>= 1) 
+struct SegMin {
+    vector<int> t;
+    void build() { t.resize(2 * FLAG, INF); }
+    void modify(int p, int val) {
+        for (t[p += FLAG - 1] = val; p > 1; p >>= 1)
             t[p >> 1] = min(t[p], t[p ^ 1]);
-	}
-	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-		if (r < nl || nr < l) return INF;
-		if (l <= nl && nr <= r) return t[n];
-		int mid = (nl + nr) >> 1;
-		return min(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-	}
+    }
+    int query(int l, int r, int n = 1, int nl = 1, int nr = FLAG) {
+        if (nr < l || r < nl) return INF;
+        if (l <= nl && nr <= r) return t[n];
+        int mid = (nl + nr) >> 1;
+        return min(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
+    }
 }segmin;
 
-struct SegGcd {  // 1-indexed
-	vector<ll> t;
-	void build(int n) {
-		for (flag = 1; flag < n; flag <<= 1);
-		t.resize(2 * flag, 0);
-	}
-	void modify(int p, ll value) {  // set value at position p
-        if (value < 0) value = -value;
-		for (t[p += flag - 1] = value; p > 1; p >>= 1) 
+struct SegGcd {
+    vector<int> t;
+    void build() { t.resize(2 * FLAG, 0); }
+    int gcd(int x, int y) {
+        if (!y) return x;
+        else return gcd(y, x % y);
+    }
+    void modify(int p, int val) {
+        if (val < 0) val *= -1;
+        for (t[p += FLAG - 1] = val; p > 1; p >>= 1)
             t[p >> 1] = gcd(t[p], t[p ^ 1]);
-	}
-	ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
-		if (r < nl || nr < l) return 0;
-		if (l <= nl && nr <= r) return t[n];
-		int mid = (nl + nr) >> 1;
-		return gcd(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
-	}
+    }
+    int query(int l, int r, int n = 1, int nl = 1, int nr = FLAG) {
+        if (nr < l || r < nl) return 0;
+        if (l <= nl && nr <= r) return t[n];
+        int mid = (nl + nr) >> 1;
+        return gcd(query(l, r, n << 1, nl, mid), query(l, r, n << 1 | 1, mid + 1, nr));
+    }
 }seggcd;
 
 int n, q;
-int a[101010], closestEqual[101010];
-map<int, set<int>> equals;
-
-void YES() { cout << "YES" << '\n'; }
-void NO() { cout << "NO" << '\n'; }
+int a[101010];
+map<int, set<int>> mp;
+int closestEqual[101010];
 
 void input() {
     cin >> n >> q;
     for (int i = 1; i <= n; i++) cin >> a[i];
 }
 
-void buildSegmentTrees() {
-    segmax.build(n);
-    segmin.build(n);
-    segequal.build(n);
-    seggcd.build(n);
-
+void buildSegmentTree() {
+    segmax.build();
+    segequal.build();
+    segmin.build();
+    seggcd.build();
     for (int i = 1; i <= n; i++) {
         segmax.modify(i, a[i]);
-        segmin.modify(i, a[i]);
-
-        if (!equals[a[i]].empty()) {
-            closestEqual[i] = *equals[a[i]].rbegin();
-        }
-        equals[a[i]].insert(i);
+        if (mp.count(a[i])) closestEqual[i] = *mp[a[i]].rbegin();
+        else closestEqual[i] = -1;
+        mp[a[i]].insert(i);
         segequal.modify(i, closestEqual[i]);
-
+        segmin.modify(i, a[i]);
         if (i < n) seggcd.modify(i, a[i + 1] - a[i]);
     }
 }
 
-void modifyEqual(set<int>& equal, int mid) {
-    auto it = equal.lower_bound(mid);
-    if (it == equal.end()) return;
+void modifyEqual(set<int>& s, int mid) {
+    auto it = s.lower_bound(mid);
+    if (it == s.end()) return;
     int idx = *it;
-    
-    if (it == equal.begin()) closestEqual[idx] = 0;
+    if (it == s.begin()) closestEqual[idx] = -1;
     else {
-        --it;
+        it--;
         closestEqual[idx] = *it;
     }
     segequal.modify(idx, closestEqual[idx]);
@@ -112,56 +94,55 @@ void modifyEqual(set<int>& equal, int mid) {
 
 void solve() {
     while (q--) {
-        int op, x, y;
-        cin >> op >> x >> y;
-
+        int op; cin >> op;
         if (op == 1) {
+            int x, y;
+            cin >> x >> y;
+
             int tmp = a[x];
             a[x] = y;
-
             segmax.modify(x, a[x]);
+
+            set<int>& olds = mp[tmp];
+            set<int>& news = mp[a[x]];
+            olds.erase(x);
+            news.insert(x);
+            modifyEqual(olds, x + 1);
+            modifyEqual(news, x);
+            modifyEqual(news, x + 1);
+
             segmin.modify(x, a[x]);
-
-            set<int>& oldEqual = equals[tmp];
-            set<int>& newEqual = equals[a[x]];
-
-            oldEqual.erase(x);
-            newEqual.insert(x);
-            
-            modifyEqual(oldEqual, x + 1);
-            modifyEqual(newEqual, x);
-            modifyEqual(newEqual, x + 1);
-
             if (1 < x) seggcd.modify(x - 1, a[x] - a[x - 1]);
             if (x < n) seggcd.modify(x, a[x + 1] - a[x]);
         }
         if (op == 2) {
-            ll delta = segmax.query(x, y) - segmin.query(x, y);
-            ll len = y - x;
-            ll g = seggcd.query(x, y - 1);
-            
-            if (delta == 0) YES();
-            else {
-                if (delta != g * len) NO();
-                else if (segequal.query(x, y) >= x) NO();
-                else YES();
-            }
+            int L, R;
+            cin >> L >> R;
+
+            int delta = segmax.query(L, R) - segmin.query(L, R);
+            int g = seggcd.query(L, R - 1);
+
+            if (delta == 0) cout << "YES\n";
+            else if (segequal.query(L, R) >= L) cout << "NO\n";
+            else if (delta % (R - L)) cout << "NO\n";
+            else if (delta / (R - L) != g) cout << "NO\n";
+            else cout << "YES\n";
         }
     }
 }
 
 int main() {
-    #ifndef ONLNE_JUDGE
+    #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
     #endif
 
-    cin.tie(NULL); cin.tie(NULL);
+    cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
     input();
 
-    buildSegmentTrees();
+    buildSegmentTree();
 
     solve();
 }
