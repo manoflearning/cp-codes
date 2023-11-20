@@ -3,55 +3,54 @@ using namespace std;
 #define ll long long
 #define sz(x) (int)(x).size()
 
-const ll INF = 1e18;
+const int MAXN = 101010;
 
 int n;
 struct Edge { ll w; int v; };
-vector<Edge> t[101010];
+vector<Edge> t[MAXN];
 
 void input() {
     cin >> n;
     for (int i = 0; i < n - 1; i++) {
-        int u, v, w;
+        int u, v; ll w;
         cin >> u >> v >> w;
         t[u].push_back({ w, v });
         t[v].push_back({ w, u });
     }
 }
 
-int r = -1;
-pair<ll, ll> dp[101010][2];
+ll ans = 0;
+ll dp[MAXN][2];
 
 void dfs(int v, int prv) {
-    dp[v][0] = { 0, 0 };
-    dp[v][1] = { 0, 0 };
+    vector<vector<ll>> arr;
 
     for (auto& i : t[v]) {
         if (i.v == prv) continue;
-
         dfs(i.v, v);
-
-        pair<ll, ll> res0 = dp[v][0];
-        pair<ll, ll> res1 = dp[v][1];
-
-        auto [w0, left0] = dp[i.v][0];
-
-        res0.first = max(res0.first, dp[v][0].first + w0);
-        res1.first = max(res1.first, dp[v][1].first + w0);
-
-        auto [w1, left1] = dp[i.v][1];
-        left1 += i.w;
-
-        res0.first = max(res0.first, dp[v][1].first + dp[v][1].second + w1 + left1);
-        res1.first = max(res1.first, dp[v][0].first + w1);
-        res1.second = left1;
-
-        dp[v][0] = res0;
-        dp[v][1] = res1;
+        arr.push_back({ dp[i.v][0], dp[i.v][1] });
+        arr.back()[1] += i.w;
     }
 
-    cout << v << '\n';
-    cout << dp[v][0].first << '\n';
+    if (arr.empty()) return;
+
+    // knapsack dp
+    vector<vector<ll>> dp2(sz(arr), vector<ll>(2));
+    dp2[0][0] = arr[0][0];
+    dp2[0][1] = arr[0][1];
+    for (int i = 1; i < sz(arr); i++) {
+        dp2[i][0] = max(dp2[i][0], dp2[i - 1][0] + arr[i][0]);
+        dp2[i][0] = max(dp2[i][0], dp2[i - 1][1] + arr[i][1]);
+
+        dp2[i][1] = max(dp2[i][1], dp2[i - 1][0] + arr[i][1]);
+        dp2[i][1] = max(dp2[i][1], dp2[i - 1][1] + arr[i][0]);
+    }
+
+    dp[v][0] = dp2[sz(arr) - 1][0];
+    dp[v][1] = dp2[sz(arr) - 1][1];
+
+    // update answer
+    ans = max(ans, dp[v][0]);
 }
 
 int main() {
@@ -71,10 +70,8 @@ int main() {
     }
 
     for (int v = 1; v <= n; v++) {
-        if (sz(t[v]) >= 2) { r = v; break; }
+        if (sz(t[v]) >= 2) { dfs(v, -1); break; }
     }
 
-    dfs(r, -1);
-
-    cout << max(dp[r][0].first, dp[r][1].first);
+    cout << ans;
 }
