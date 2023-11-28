@@ -7,8 +7,8 @@ using namespace std;
 #define sz(x) (int)(x).size()
 
 int N, K, M, F;
-set<int> st[111];
-map<string, vector<int>> mp;
+unordered_map<int, vector<int>> cards;
+unordered_map<string, vector<int>> mp;
 
 void input() {
     cin >> N >> K >> M >> F;
@@ -16,18 +16,15 @@ void input() {
         int cnt = M;
         while (cnt--) {
             int x; cin >> x;
-            st[i].insert(x);
+            cards[x].push_back(i);
         }
     }
 }
 
 void buildMap() {
     for (int x = 1; x <= N; x++) {
-        string res;
-        for (int i = 1; i <= K; i++) {
-            if (st[i].count(x)) res.push_back('Y');
-            else res.push_back('N');
-        }
+        string res(K, 'N');
+        for (auto& i : cards[x]) res[i - 1] = 'Y';
         mp[res].push_back(x);
     }
 }
