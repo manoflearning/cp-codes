@@ -5,6 +5,7 @@ using namespace std;
 #define fr first
 #define sc second
 #define sz(x) (int)(x).size()
+#define all(x) (x).begin(), (x).end()
 
 int main() {
     #ifndef ONLINE_JUDGE
