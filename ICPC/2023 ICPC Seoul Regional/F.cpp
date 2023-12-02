@@ -11,6 +11,7 @@ using namespace std;
 int n, K;
 vector<pii> a;
 vector<int> dp;
+int cnt[10101][10101];
 
 void input() {
     cin >> n >> K;
@@ -19,19 +20,13 @@ void input() {
         cin >> i.fr >> i.sc;
 }
 
-void valueCompression() {
-    vector<int> c(1, -1e7);
-
-    for (auto& i : a) {
-        c.push_back(i.fr);
-        c.push_back(i.sc);
-    }
-
-    sort(all(c));
-
-    for (auto& i : a) {
-        i.fr = lower_bound(all(c), i.fr) - c.begin();
-        i.sc = lower_bound(all(c), i.sc) - c.begin();
+void preprocessing() {
+    for (int i = 0; i < n; i++) {
+        int res = 0, x = a[i].sc;
+        for (int j = i; j < n; j++) {
+            if (a[j].fr <= x && x <= a[j].sc) res++;
+            cnt[i][j] = res;
+        }
     }
 }
 
@@ -94,12 +89,12 @@ int main() {
 
     input();
 
-    // valueCompression();
-
     sort(all(a), [&](const pii& p1, const pii& p2) {
         return p1.sc < p2.sc;
     });
 
+    preprocessing();
+    
     bottomup();
 
     cout << dp[n - 1];
