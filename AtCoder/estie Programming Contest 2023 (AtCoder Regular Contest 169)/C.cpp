@@ -69,25 +69,21 @@ void bottomup() {
             }
         }
         else {
-            for (int j = x; j <= x; j++) {
-                dp[j].push_front(0);
-                if (j + 1 < sz(dp[j])) {
-                    sum[j] = (sum[j] + MOD - dp[j][j + 1]) % MOD;
-                    dp[j].resize(j + 1);
-                }   
+            dp[x].push_front(0);
+            if (x + 1 < sz(dp[x])) {
+                sum[x] = (sum[x] + MOD - dp[x][x + 1]) % MOD;
+                dp[x].resize(x + 1);
             }
 
+            dp[x][1] = (dp[x][1] + tmpall - tmp[x]) % MOD;
+            dp[x][1] = (dp[x][1] + MOD) % MOD;
+            sum[x] = (sum[x] + dp[x][1]) % MOD;
+
             for (int j = 1; j <= n; j++) {
-                if (x == j) {
-                    dp[j][1] = (dp[j][1] + tmpall - tmp[j]) % MOD;
-                    dp[j][1] = (dp[j][1] + MOD) % MOD;
-                    sum[j] = (sum[j] + dp[j][1]) % MOD;
-                }
-                else {
-                    dp[j].clear();
-                    dp[j].resize(2);
-                    sum[j] = 0;
-                }
+                if (x == j) continue;
+                dp[j].clear();
+                dp[j].resize(2);
+                sum[j] = 0;
             }
         }
     }
