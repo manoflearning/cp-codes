@@ -1,87 +1,110 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAXN = 10101;
 const int INF = 1e9 + 7;
+const int MAXN = 10101;
 
-const int dy[] = { 0, 0, 1, -1 };
-const int dx[] = { 1, -1, 0, 0 };
+int N, W;
+int a[4][MAXN];
+int banned[4][MAXN];
+int dp[MAXN][4];
 
-int n, m;
-int a[3][MAXN];
-int vi[3][MAXN];
-
-void init() {
-    memset(a, 0, sizeof(a));
-    memset(vi, 0, sizeof(vi));
-}
+void init() {}
 
 void input() {
-    cin >> n >> m;
-    for (int i = 1; i <= n; i++) cin >> a[1][i];
-    for (int i = 1; i <= n; i++) cin >> a[2][i];
+    cin >> N >> W;
+    for (int i = 1; i <= N; i++) cin >> a[1][i];
+    for (int i = 1; i <= N; i++) cin >> a[2][i];
 }
 
-pair<int, int> dfs(int y, int x) {
-    vi[y][x] = 1;
-
-    pair<int, int> ret;
-    for (int d = 0; d < 4; d++) {
-        int ny = y + dy[d], nx = x + dx[d];
-        if (ny < 1 || 2 < ny || nx < 1 || n < nx) continue;
-        if (vi[ny][nx]) continue;
-        if (a[y][x] + a[ny][nx] > m) continue;
-        pair<int, int> res = dfs(ny, nx);
-        ret.first += res.first;
-        ret.second += res.second;
-    }
-    
-    if (ret.second > 0) {
-        ret.first += ret.second;
-        ret.second = 0;
-    }
-    else ret.second = 1;
-
-    return ret;
+int query(int x1, int x2) {
+    // assert(abs(x1 - x2) <= 1);
+    // assert(dp.count({ x1, x2 }));
+    if (x1 == x2 - 1) return dp[x1][0];
+    if (x1 == x2 + 0) return dp[x1][1];
+    if (x1 == x2 + 1) return dp[x1][2];
+}
+void modify(int x1, int x2, int val) {
+    // assert(abs(x1 - x2) <= 1);
+    if (x1 == x2 - 1) dp[x1][0] = min(dp[x1][0], val);
+    if (x1 == x2 + 0) dp[x1][1] = min(dp[x1][1], val);
+    if (x1 == x2 + 1) dp[x1][2] = min(dp[x1][2], val);
 }
 
-int f() {
-    int ret = 0;
-    for (int i = 1; i <= n; i++) {
-        if (!vi[1][i]) {
-            pair<int, int> res = dfs(1, i);
-            ret += res.first + res.second;
+void solveInit() {
+    banned[1][1] = banned[2][1] = banned[1][N] = banned[2][N] = 0;
+    for (int i = 0; i < MAXN; i++) {
+        dp[i][0] = dp[i][1] = dp[i][2] = dp[i][3] = INF;
+    }
+}
+
+int bottomup() {
+    // base case
+    modify(0, 0, 0);
+    modify(1, 0, 1 - banned[1][1]);
+    modify(0, 1, 1 - banned[2][1]);
+    modify(1, 1, 2 - banned[1][1] - banned[2][1]);
+    if (!banned[1][1] && !banned[2][1] && a[1][1] + a[2][1] <= W) modify(1, 1, 1);
+
+    // inductive step
+    for (int x = 2; x <= N; x++) {
+        int y1 = 1, x1 = -1;
+        int y2 = 2, x2 = -1;
+
+        // x1 = x, x2 = x - 1
+        x1 = x, x2 = x - 1;
+        modify(x1, x2, 1 + query(x1 - 1, x2));
+        if (a[y1][x1 - 1] + a[y1][x1] <= W) {
+            modify(x1, x2, 1 + query(x1 - 2, x2));
         }
-        if (!vi[2][i]) {
-            pair<int, int> res = dfs(2, i);
-            ret += res.first + res.second;
+        
+        // x1 = x - 1, x2 = x
+        x1 = x - 1, x2 = x;
+        modify(x1, x2, 1 + query(x1, x2 - 1));
+        if (a[y2][x2 - 1] + a[y2][x2] <= W) {
+            modify(x1, x2, 1 + query(x1, x2 - 2));
+        }
+
+        // x1 = x, x2 = x
+        x1 = x, x2 = x;
+        modify(x1, x2, 1 + query(x1 - 1, x2));
+        modify(x1, x2, 1 + query(x1, x2 - 1));
+        if (a[y1][x1] + a[y2][x2] <= W) {
+            modify(x1, x2, 1 + query(x1 - 1, x2 - 1));
+        }
+        if (a[y1][x1 - 1] + a[y1][x1] <= W && a[y2][x2 - 1] + a[y2][x2] <= W) {
+            modify(x1, x2, 2 + query(x1 - 2, x2 - 2));
         }
     }
-    return ret;
+
+    // return answer
+    return query(N - banned[1][N], N - banned[2][N]);
 }
 
 int solve() {
-    int ret = f();
-    memset(vi, 0, sizeof(vi));
+    int ret = INF;
+    
+    solveInit();
+    ret = min(ret, bottomup());
 
-    if (a[1][1] + a[1][n] <= m) {
-        vi[1][1] = vi[1][n] = 1;
-        ret = min(ret, 1 + f());
+    if (a[1][1] + a[1][N] <= W) {
+        solveInit();
+        banned[1][1] = banned[1][N] = 1;
+        ret = min(ret, 1 + bottomup());
     }
-    memset(vi, 0, sizeof(vi));
 
-    if (a[2][1] + a[2][n] <= m) {
-        vi[2][1] = vi[2][n] = 1;
-        ret = min(ret, 1 + f());
+    if (a[2][1] + a[2][N] <= W) {
+        solveInit();
+        banned[2][1] = banned[2][N] = 1;
+        ret = min(ret, 1 + bottomup());
     }
-    memset(vi, 0, sizeof(vi));
 
-    if (a[1][1] + a[1][n] <= m && a[2][1] + a[2][n] <= m) {
-        vi[1][1] = vi[1][n] = 1;
-        vi[2][1] = vi[2][n] = 1;
-        ret = min(ret, 2 + f());
+    if (a[1][1] + a[1][N] <= W && a[2][1] + a[2][N] <= W) {
+        solveInit();
+        banned[1][1] = banned[1][N] = 1;
+        banned[2][1] = banned[2][N] = 1;
+        ret = min(ret, 2 + bottomup());
     }
-    memset(vi, 0, sizeof(vi));
 
     return ret;
 }
@@ -101,11 +124,10 @@ int main() {
 
         input();
 
-        if (n == 1) {
-            cout << (a[1][1] + a[2][1] <= m ? 1 : 2) << '\n';
-            continue;
+        if (N == 1) {
+            if (a[1][1] + a[2][1] <= W) cout << 1 << '\n';
+            else cout << 2 << '\n';
         }
-
-        cout << solve() << '\n';
+        else cout << solve() << '\n';
     }
 }
