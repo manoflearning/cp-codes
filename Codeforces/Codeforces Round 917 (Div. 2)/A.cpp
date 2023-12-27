@@ -1,5 +1,5 @@
-// |(x1y2 + x2y3 + x3y1) - (x2y1 + x3y2 + x1y3)|
-// = |x1(y2 - y3) + y1(x3 - x2) + (x2y3 - x3y2)|
+// if cnt_neg is odd -> 0
+// if cnt_neg is even -> 1
 
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("Ofast")
@@ -33,5 +33,28 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    
+    int tc; cin >> tc;
+    for (int tt = 1; tt <= tc; tt++) {
+        int n; cin >> n;
+        vector<int> a(n);
+
+        int cnt_0 = 0, cnt_neg = 0;
+        for (auto& i : a) {
+            cin >> i;
+            if (i < 0) cnt_neg++;
+            if (i == 0) cnt_0++;
+        }
+
+        if (cnt_0 > 0) {
+            cout << 0 << '\n';
+            continue;
+        }
+        else {
+            if (cnt_neg & 1) cout << 0 << '\n';
+            else {
+                cout << 1 << '\n';
+                cout << 1 << ' ' << 0 << '\n';
+            }
+        }
+    }
 }
