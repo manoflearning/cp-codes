@@ -12,6 +12,9 @@ const int INF = 1e9 + 7;
 
 struct Point {
     ll x, y;
+    bool operator<(const Point& rhs) const {
+        return (x ^ rhs.x ? x < rhs.x : y < rhs.y);
+    }
     bool operator>(const Point& rhs) const {
         return (x ^ rhs.x ? x > rhs.x : y > rhs.y);
     }
@@ -60,7 +63,9 @@ pll getSlope(const Point& a, const Point& b) {
     return slope;
 }
 
-void getCrossPoint(Point a, Point b, Point c, Point d) {
+// Get intersection point of two line segments ab and cd.
+// Note: ab, cd is not a infinite line, it's a line segment.
+void getIntersectionPoint(Point a, Point b, Point c, Point d) {
     if (isCross(a, b, c, d)) {
         cout << 1 << '\n';
 
@@ -100,5 +105,5 @@ int main() {
 
     cout << fixed;
     cout.precision(10);
-    getCrossPoint(p1, p2, p3, p4);
+    getIntersectionPoint(p1, p2, p3, p4);
 }
