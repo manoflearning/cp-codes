@@ -33,62 +33,62 @@ const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 const int MAXN = 202020;
 
 int n, a[MAXN];
-vector<vector<int>> idx;
+int prv[MAXN], nxt[MAXN];
+vector<bool> vis;
 
 void init() {
-    idx.clear();
+    vis.clear();
 }
 
 void input() {
     cin >> n;
-    idx.resize(n);
+    vis.resize(n + 2);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+}
+
+bool good(int v) {
+    if (v < 1 || n < v) return false;
+    return a[prv[v]] == a[v] - 1 || a[nxt[v]] == a[v] - 1;
+}
+
+void solve() {
+    priority_queue<pii> pq;
+    a[0] = a[n + 1] = -2;
     for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        idx[a[i]].push_back(i);
+        prv[i] = i - 1;
+        nxt[i] = i + 1;
+        if (good(i)) {
+            vis[i] = true;
+            pq.push({ a[i], i });
+        }
+    }
+
+    while (!pq.empty()) {
+        auto [_, v] = pq.top();
+        pq.pop();
+
+        nxt[prv[v]] = nxt[v];
+        prv[nxt[v]] = prv[v];
+        
+        if (!vis[prv[v]] && good(prv[v])) {
+            vis[prv[v]] = true;
+            pq.push({ a[prv[v]], prv[v] });
+        }
+        if (!vis[nxt[v]] && good(nxt[v])) {
+            vis[nxt[v]] = true;
+            pq.push({ a[nxt[v]], nxt[v] });
+        }
     }
 }
 
-bool naiveCheck(int s, int e, int sub) {
-    if (s > e) return true;
-
-    vector<int> arr;
-    for (int i = s; i <= e; i++)
-        arr.push_back(a[i]);
-    sort(all(arr));
-    arr.erase(unique(all(arr)), arr.end());
-
-    if (arr[0] != sub + 1) return false;
-    for (int i = 1; i < sz(arr); i++) {
-        if (arr[i - 1] + 1 < arr[i]) return false;
+void output() {
+    int cntVis = 0;
+    int cnt0 = 0;
+    for (int i = 1; i <= n; i++) {
+        if (vis[i]) cntVis++;
+        if (a[i] == 0) cnt0++;
     }
-    return true;
-}
-
-int naiveMin(int s, int e) {
-    int ret = INF;
-    for (int i = s; i <= e; i++) {
-        ret = min(ret, a[i]);
-    }
-    return ret;
-}
-
-bool f(int l, int r, int sub) {
-    if (l > r) return true;
-    if (l == r) return false;
-    if (naiveMin(l, r) < sub) return false;
-
-    int itl = lower_bound(all(idx[sub]), l) - idx[sub].begin();
-    int itr = upper_bound(all(idx[sub]), r) - idx[sub].begin();
-    if (itl + 1 != itr) return false;
-
-    bool ret = false;
-
-    int flag = idx[sub][itl];
-
-    if (naiveCheck(l, flag - 1, sub)) ret |= f(flag + 1, r, sub + 1);
-    if (naiveCheck(flag + 1, r, sub)) ret |= f(l, flag - 1, sub + 1);
-
-    return ret;
+    cout << (cntVis == n - 1 && cnt0 > 0 ? "YES" : "NO") << '\n';
 }
 
 int main() {
@@ -106,6 +106,8 @@ int main() {
 
         input();
 
-        cout << (f(1, n, 0) ? "YES" : "NO") << '\n';
+        solve();
+
+        output();
     }
 }
