@@ -1,12 +1,3 @@
-// |T| = 2 * n - 1
-
-// if n = 2 and YES
-// <=> a = [1, 0] or [0, 1]
-
-// if n = 3 and YES
-// <=> a = [1, 2, 0] or [2, 1, 0] or [0, 1, 2] or [0, 2, 1]
-// or [1, 0, 1] or [0, 1, 1] or [1, 1, 0]
-
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("Ofast")
 // #pragma GCC optimize("unroll-loops")
