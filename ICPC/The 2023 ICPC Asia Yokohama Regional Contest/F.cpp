@@ -5,8 +5,9 @@ using namespace std;
 const int MAXN = 505050;
 
 int n, q;
-map<int, int> mpR, mpC;
-ll ans = 0, rowCnt, colCnt;
+int color[2][MAXN];
+int cnt[2];
+ll ans = 0;
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -19,58 +20,35 @@ int main() {
 
     cin >> n >> q;
 
-    ans = (ll)n * n;
-    rowCnt = colCnt = n;
+    for (int i = 1; i <= n; i++) color[0][i] = color[1][i] = (i & 1);
 
-    for (int i = 0; i < q; i++) {
+    ans = (ll)n * n;
+    cnt[0] = cnt[1] = n;
+
+    while (q--) {
         string op; int x;
         cin >> op >> x;
-
-        if (op == "ROW") {
-            int b = (mpC[x] & 1);
-            int bl = (mpC[x - 1] & 1), br = (mpC[x + 1] & 1);
-
-            if (x > 1 && b == bl) {
-                ans -= rowCnt;
-                colCnt--;
-            }
-            if (x > 1 && b != bl) {
-                ans += rowCnt;
-                colCnt++;
-            }
-            if (x < n && b == br) {
-                ans -= rowCnt;
-                colCnt--;
-            }
-            if (x < n && b != br) {
-                ans += rowCnt;
-                colCnt++;
-            }
-
-            mpC[x]++;
+        
+        int idx = -1;
+        if (op == "ROW") idx = 0;
+        if (op == "COLUMN") idx = 1;
+        
+        color[idx][x] = !color[idx][x];
+        if (x > 1 && color[idx][x - 1] != color[idx][x]) {
+            ans += cnt[idx];
+            cnt[!idx]++;
         }
-        if (op == "COLUMN") {
-            int b = (mpR[x] & 1);
-            int bl = (mpR[x - 1] & 1), br = (mpR[x + 1] & 1);
-
-            if (x > 1 && b == bl) {
-                ans -= colCnt;
-                rowCnt--;
-            }
-            if (x > 1 && b != bl) {
-                ans += colCnt;
-                rowCnt++;
-            }
-            if (x < n && b == br) {
-                ans -= colCnt;
-                rowCnt--;
-            }
-            if (x < n && b != br) {
-                ans += colCnt;
-                rowCnt++;
-            }
-
-            mpR[x]++;
+        if (x > 1 && color[idx][x - 1] == color[idx][x]) {
+            ans -= cnt[idx];
+            cnt[!idx]--;
+        }
+        if (x < n && color[idx][x] != color[idx][x + 1]) {
+            ans += cnt[idx];
+            cnt[!idx]++;
+        }
+        if (x < n && color[idx][x] == color[idx][x + 1]) {
+            ans -= cnt[idx];
+            cnt[!idx]--;
         }
 
         cout << ans << '\n';

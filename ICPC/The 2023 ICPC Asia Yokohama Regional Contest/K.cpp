@@ -60,10 +60,10 @@ int main() {
     while (l < r) {
         int mid = (l + r + 1) >> 1;
         double res = query(ansx, 0, ansx, mid);
-        if (res > 0.5) r = mid - 1;
+        if (res > zzinr) r = mid - 1;
         else l = mid;
     }
-    ansy = l + zzinr;
+    ansy = l;
 
     cout << "answer " << ansx << ' ' << ansy << ' ' << zzinr;
     cout << flush;
