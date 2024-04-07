@@ -8,7 +8,7 @@
 using namespace std;
 
 int N, M;
-int A[101010];
+int A[101010] __attribute__ ((aligned (32)));
 
 int main() {
     cin.tie(NULL); cout.tie(NULL);
