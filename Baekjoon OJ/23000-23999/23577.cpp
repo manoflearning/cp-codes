@@ -35,8 +35,6 @@ ll solve() { // O(N^3 / 16)
     
     for (int i = 0; i < N; i++) {
         for (int j = i + 1; j < N; j++) {
-            ll tmpRet = ret;
-            
             __m256i acc = _mm256_setzero_si256();
             
             __m256i Cij = _mm256_set1_epi16(C[i][j]);
