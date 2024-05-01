@@ -1,0 +1,6 @@
+E. math
+F. ds?
+G. 
+
+I. lazy segment tree
+H. constructive
