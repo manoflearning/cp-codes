@@ -28,7 +28,7 @@ void dfs(int v, int prv) {
     }
     cnt[v]++;
 
-    // hit the root node
+    // hit the root node 1
     ll pcnt = 0;
     for (auto& i : adj[v]) {
         if (i == prv) continue;
