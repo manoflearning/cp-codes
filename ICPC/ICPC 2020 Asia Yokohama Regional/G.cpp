@@ -22,7 +22,6 @@ vector<int> adj[101010];
 vector<pii> e;
 
 int cnt_0[101010], cnt_1[101010];
-int cnt_node_0[101010], cnt_node_1[101010];
 
 vector<int> c;
 int ans = -1;
@@ -79,7 +78,6 @@ void solve() {
         }
 
         cnt_0[i] = res;
-        cnt_node_0[i] = i + 1;
     }
 
     // cnt_1
@@ -99,23 +97,18 @@ void solve() {
         }
 
         cnt_1[i] = res;
-        cnt_node_1[i] = n - (i + 1);
     }
 
     // get answer
     for (int i = 0; i < n; i++) {
         if (i + 1 < n && a[ord[i]] == a[ord[i + 1]]) continue;
 
-        // cout << a[ord[i]] << ' ' << cnt_0[i] << ' ' << cnt_1[i] << '\n';
         int x = cnt_0[i];
         int y = cnt_1[i + 1];
 
         if (x == 0 || y == 0) continue;
         
-        int x_node = cnt_node_0[i];
-        int y_node = n - cnt_node_0[i];
-
-        int node = min(x_node, y_node);
+        int node = min(i + 1, n - (i + 1));
         if (x + y <= node + 1) {
             ans = a[ord[i]];
             break;
