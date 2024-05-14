@@ -41,10 +41,31 @@ struct UF {
     }
 }uf;
 
-int N
-ll H, X[202020]; // the heights of all poles are equal
+int flag;
+struct Seg {
+    vector<int> t;
+    void init(int N) {
+        t.clear();
+        for (flag = 1; flag < N; flag <<= 1);
+        t.resize(flag << 1);
+    }
+    void add(int v) {
+        for (t[v += flag - 1]++; v > 1; v >>= 1)
+            t[v >> 1] = (t[v] * t[v ^ 1]) % MOD;
+    }
+    ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {
+        if (nr < l || r < nl) return 1;
+        if (l <= nl && nr <= r) return t[n];
+        int mid = (nl + nr) >> 1;
+        return query(l, r, n << 1, nl, mid) * query(l, r, n << 1 | 1, mid + 1, nr) % MOD;
+    }
+}seg;
+
+int N, H, X[202020];
 
 int chunk[202020];
+vector<int> lm(202020, INF), rm(202020, -INF);
+int ladj[202020], radj[202020];
 ll ans[202020];
 
 void input() {
@@ -52,7 +73,7 @@ void input() {
     for (int i = 1; i <= N; i++) cin >> X[i];
 }
 
-void build_chunk() {
+void get_chunk() {
     vector<int> ord(N);
     iota(all(ord), 1);
     sort(all(ord), [](int p1, int p2) {
@@ -65,44 +86,46 @@ void build_chunk() {
         if (X[u] + H > X[v]) uf.merge(u, v);
     }
 
-    for (int i = 1; i <= N; i++) chunk[i] = uf.find(i);
+    vector<int> c(1, -INF);
+    for (int i = 1; i <= N; i++) c.push_back(uf.find(i));
+
+    sort(all(c));
+    c.erase(unique(all(c)), c.end());
+
+    vector<int> chunk_prv(sz(c), INF);
+    for (auto& i : ord) {
+        chunk[i] = lower_bound(all(c), uf.find(i)) - c.begin();
+        lm[chunk[i]] = min(lm[chunk[i]], X[i]);
+        rm[chunk[i]] = max(rm[chunk[i]], X[i]);
+        
+        int prv = chunk_prv[chunk[i]];
+        ladj[i] = prv;
+        if (prv != INF) radj[chunk_prv[chunk[i]]] = i;
+        chunk_prv[chunk[i]] = i;
+    }
 }
 
-// if it ends in time t_i:
-// * all the poles in one side (suppose left) are already fallen:
-//   * for each chunk k, there exists pole j s.t. t_j < t_i
-//     * if max(X[k]) + H > X[i]: k must be fallen to the opposite dir
-//       * for p := max_p(X[p]) (i.e., rightmost pole p in the chunk k), t_p < t_i is true
-//       * |possible cases| = 1
-//     * if max(X[k]) + H <= X[i]: the dir doesn't matter
-//       * if the leftmost pole p satisfies t_p < t_i, |possible cases|++
-//       * if the rightmost pole p satisfies t_p < t_i, |possible cases|++
-//       * for all the adjacent (p, q) satisfies t_p < t_i, t_q < t_i, |possible cases|++
-// * all the poles in one side (suppose right) are not fallen yet:
-//   * for all the poles j in the side, t_i < t_j
-
-// to modify X[i] := 10^9 - X[i], we can handle the reverse cases
+// if it ends in time i:
+// (1) chunk including i: 
+// (2) chunk excluding i:
 
 void solve() {
+    seg.init(N);
     vector<int> ord(N);
-    iota(all(ord), 1);
-    sort(all(ord), [](int p1, int p2) {
-        return X[p1] < X[p2];
-    });
 
-    vector<ll> l_cases(N + 1, 1), chunk_cnt(N + 1, 1), l_tot(N + 1);
-    for (int i = 1; i < sz(ord); i++) {
-        int v = ord[i], prv = ord[i - 1];
-        if (chunk[prv] != chunk[v]) {
-            l_cases[v] = 2 * l_cases[prv] % MOD;
-            chunk_cnt[v] = 1 + chunk_cnt[prv];
-        }
-        else {
-            l_cases[v] = l_cases[prv];
-            chunk_cnt[v] = chunk_cnt[prv];
-        }
+    for (int i = 1; i <= N; i++) {
+        int ch_idx = chunk[i];
 
+        ll res1 = seg.query(1, ch_idx - 1) * seg.query(1, ch_idx + 1) % MOD;
+        ll res2 = 0;
+
+        if (X[i] == lm[ch_idx]) { seg.add(ch_idx); res2++; }
+        if (X[i] == rm[ch_idx] && lm[ch_idx] != rm[ch_idx]) { seg.add(ch_idx); res2++; }
         
+        if (ladj[ch_idx] < i) { seg.add(ch_idx); res2++; }
+        if (radj[ch_idx] < i) { seg.add(ch_idx); res2++; }
+
+        ans[i] = res1 * res2 % MOD;
     }
 }
 
@@ -117,20 +140,10 @@ int main() {
 
     input();
 
-    build_chunk();
+    get_chunk();
 
-    // (1) left chunks are already fallen
-    // (2) right chunks are not fallen yet
-    solve(); 
-
-    // (1) left chunks are not fallen yet
-    // (2) right chunks are already fallen
-    for (int i = 1; i <= N; i++)
-        X[i] = (int)(1e9) - X[i];
-    
     solve();
 
-    // print answer
     for (int i = 1; i <= N; i++)
         cout << ans[i] << ' ';
 }
