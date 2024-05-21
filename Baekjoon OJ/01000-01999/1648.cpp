@@ -3,6 +3,8 @@ using namespace std;
 
 const int MOD = 9901;
 
+int N, M;
+
 int main() {
     #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
