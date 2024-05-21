@@ -4,7 +4,7 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define all(x) (x).begin(), (x).end()
 
-const int sq = 373;
+const int sq = 232;
 
 struct UF {
     vector<int> uf;
@@ -19,14 +19,13 @@ struct UF {
     void merge(int u, int v) {
         int U = find(u), V = find(v);
         if (U == V) return;
-        // uf[U] += uf[V];
         uf[V] = U;
     }
 }uf;
 
 int N, E, P;
 vector<int> t[101010];
-set<pair<int, int>> edges;
+unordered_set<ll> edges;
 
 void input() {
     cin >> N >> E >> P;
@@ -35,11 +34,12 @@ void input() {
         cin >> u >> v;
         if (u > v) swap(u, v);
         t[u].push_back(v);
-        edges.insert({ u, v });
+        edges.insert(u * 101010ll + v);
     }
 }
 
-ll case1(int x, const vector<int>& arr) { // O(x * x / 2)
+ll case1(int x, const vector<int>& arr) {
+    // total: O(sq^3)
     int ret = x;
 
     uf.init(x);
@@ -48,7 +48,7 @@ ll case1(int x, const vector<int>& arr) { // O(x * x / 2)
             int u = arr[i], v = arr[j];
             if (u > v) swap(u, v);
 
-            if (!edges.count({ u, v })) continue;
+            if (!edges.count(u * 101010ll + v)) continue;
             if (uf.find(i) == uf.find(j)) continue;
 
             uf.merge(i, j);
@@ -59,21 +59,25 @@ ll case1(int x, const vector<int>& arr) { // O(x * x / 2)
     return ret;
 }
 
+vector<int> vis(101010, -1);
+
 ll case2(int x, const vector<int>& arr) {
+    // total: O(E) * O(P / sq) + O(10^5)
     int ret = x;
 
+    for (int i = 0; i < sz(arr); i++) vis[arr[i]] = i;
+
     uf.init(x);
-    for (int i = x - 1; i >= 0; i--) {
-        int u = arr[i];
-        for (auto& v : t[u]) {
-            int j = lower_bound(all(arr), v) - arr.begin();
-            if (j == sz(arr) || (j < sz(arr) && arr[j] != v)) continue;
-            if (uf.find(i) == uf.find(j)) continue;
-            uf.merge(i, j);
-            ret--;
-        }
+    for (auto& val : edges) {
+        int u = val / 101010, v = val % 101010;
+        if (vis[u] == -1 || vis[v] == -1) continue;
+        if (uf.find(vis[u]) == uf.find(vis[v])) continue;
+        uf.merge(vis[u], vis[v]);
+        ret--;
     }
     
+    for (int i = 0; i < sz(arr); i++) vis[arr[i]] = -1;
+
     return ret;
 }
 
