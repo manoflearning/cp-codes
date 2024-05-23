@@ -24,66 +24,45 @@ void input() {
     }
 }
 
-vector<int> arr;
+vector<int> grundy;
 
-void get() {
-    string t; int val;
-    cin >> t >> val;
-    if (t == s[0]) arr[0] -= val;
-    if (t == s[1]) arr[1] -= val;
-    if (t == s[2]) arr[2] -= val;
-    if (t == s[3]) arr[3] -= val;
+inline int xor_val() { return grundy[0] ^ grundy[1] ^ grundy[2] ^ grundy[3]; }
+
+pair<int, int> get_idx() {
+    int x = xor_val();
+    for (int i = 0; i < 4; i++) {
+        if ((grundy[i] ^ x) <= grundy[i]) return { i, grundy[i] ^ x };
+    }
+    return { -1, -1 };
 }
 
-void print(int idx, int val = 0) {
-    if (idx != 4) cout << s[idx] << ' ' << val << endl;
-    else cout << s[idx] << endl;
-    arr[idx] -= val;
+void my_turn(pair<int, int> i) {
+    if (i.first == 4) cout << s[i.first] << endl;
+    else {
+        cout << s[i.first] << ' ' << i.second << endl;
+        grundy[i.first] -= i.second;
+    }
 }
+void other_turn() {
+    string t; cin >> t;
+    if (t == "yuck!") exit(0);
 
-int num_rows() {
-    int cnt = 0;
-    cnt += (1 <= arr[0]);
-    cnt += (1 <= arr[1]);
-    cnt += (1 <= arr[2]);
-    cnt += (1 <= arr[3]);
-    return cnt;
-}
-int num_rows_bg_1() {
-    int cnt = 0;
-    cnt += (2 <= arr[0]);
-    cnt += (2 <= arr[1]);
-    cnt += (2 <= arr[2]);
-    cnt += (2 <= arr[3]);
-    return cnt;
+    int val; cin >> val;
+    for (int i = 0; i < 4; i++) {
+        if (t == s[i]) grundy[i] -= val;
+    }
 }
 
 void solve() {
-    arr.push_back(t_cnt);
-    arr.push_back(b_cnt);
-    arr.push_back(l_cnt);
-    arr.push_back(r_cnt);
-    arr.push_back(0);
-
     // initial choice
-    if (num_rows() == 0) print(4);
-    else if (num_rows() == 1) {
-        if (num_rows_bg_1() == 0) print(4);
-        else {
-            int res = 0;
-            for (int i = 0; i < 4; i++) {
-                if (arr[i] > 1) print(i, arr[i] - 1);
-            }
-        }
-    }
-    else if (num_rows() == 2) {
-        if (num_rows_bg_1() == 0) print(4);
-        else if (num_rows_bg_1() == 1) {
-            int res = 0;
-            for (int i = 0; i < 4; i++) {
-                if (arr[i] > 1) print(i, arr[i] - 1);
-            }
-        }
+    if (xor_val() == 0) my_turn({ 4, -1 });
+    else my_turn(get_idx());
+
+    other_turn();
+
+    while (1) {
+        my_turn(get_idx());
+        other_turn();
     }
 }
 
@@ -95,10 +74,10 @@ int main() {
 
     input();
 
-    t_cnt = mny - 1;
-    b_cnt = R - mxy;
-    l_cnt = mnx - 1;
-    r_cnt = C - mxx;
+    grundy.push_back(mny - 1);
+    grundy.push_back(R - mxy);
+    grundy.push_back(mnx - 1);
+    grundy.push_back(C - mxx);
 
-    
+    solve();
 }
