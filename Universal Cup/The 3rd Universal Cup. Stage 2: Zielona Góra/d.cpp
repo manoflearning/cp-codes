@@ -6,16 +6,9 @@ using namespace std;
 
 const int MOD = 1e9 + 7;
 
-// int flag;
-// struct Seg {
-//     void init(int n) {}
-//     void add(int l, int r, ll x, int n = 1, int nl = 1, int nr = flag) {}
-//     ll query(int l, int r, int n = 1, int nl = 1, int nr = flag) {}
-// }seg;
-
 int n;
 ll a[303030], pxor[303030];
-ll dp[303030];
+ll dp[303030], pdp[66][2];
 
 ll XOR(int l, int r) { return pxor[r] ^ pxor[l - 1]; }
 
@@ -33,34 +26,30 @@ int main() {
     for (int i = 1; i <= n; i++) cin >> a[i];
 
     // prefix xor
-    // for (int i = 1; i <= n; i++)
-        // pxor[i] = a[i] ^ pxor[i - 1];
+    for (int i = 1; i <= n; i++)
+        pxor[i] = a[i] ^ pxor[i - 1];
 
-    // solve
-    unordered_map<ll, ll> mp;
-    mp[a[1]] = 1;
-    // seg.init(n);
-    // seg.add(1, 1, XOR(1, n) % MOD * 1);
-    for (int i = 2; i <= n; i++) {
-        auto tmp = mp;
-        mp.clear();
+    // naive sol
+    // dp[0] = 1;
+    // for (int i = 1; i <= n; i++) {
+    //     for (int j = 0; j < i; j++) {
+    //         dp[i] = (dp[i] + (pxor[i] ^ pxor[j]) % MOD * dp[j]) % MOD;
+    //     }
+    // }
 
-        for (auto& [x, y] : tmp) {
-            mp[a[i]] += x % MOD * y; // range [i, i]
-            mp[a[i]] %= MOD;
-            mp[x ^ a[i]] += y; // range [j, i]
-            mp[x ^ a[i]] %= MOD;
+    // sol
+    dp[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        for (int b = 0; (1ll << b) <= 1e18; b++) {
+            bool bit = (pxor[i - 1] & (1ll << b)) ? 1 : 0;
+            pdp[b][bit] = (pdp[b][bit] + dp[i - 1]) % MOD;
         }
 
-        // ll res = seg.query(1, i - 1) ^ XOR(i, n);
-        // seg.add(i, i, XOR(i, n));
+        for (int b = 0; (1ll << b) <= 1e18; b++) {
+            bool bit = (pxor[i] & (1ll << b)) ? 1 : 0;
+            dp[i] = (dp[i] + (1ll << b) % MOD * pdp[b][!bit]) % MOD;
+        }
     }
 
-    // output
-    ll ans = 0;
-    for (auto& [x, y] : mp) {
-        ans = (ans + x % MOD * y) % MOD;
-    }
-
-    cout << ans;
+    cout << dp[n];
 }
