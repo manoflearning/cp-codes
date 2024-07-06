@@ -22,23 +22,6 @@ ll power(ll x, ll y) {
     return res * res % MOD * (y & 1 ? x : 1) % MOD;
 }
 
-ll dp[101][101];
-
-ll naive(ll n, ll m) {
-    ll& ret = dp[n][m];
-    if (ret != -1) return ret;
-    if (n == 1) return ret = m * m % MOD;
-    if (m == 1) return ret = 1;
-    
-    ret = 0;
-    ret = (ret + 2 * power(m, n) % MOD + MOD - 1) % MOD;
-    for (int k = 0; k <= n - 1; k++) {
-        ret = (ret + binom(n, k) * naive(n - k, m - 1) % MOD) % MOD;
-    }
-
-    return ret;
-}
-
 int main() {
     #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
@@ -47,8 +30,6 @@ int main() {
 
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
-
-    memset(dp, -1, sizeof(dp));
 
     // Preprocessing in O(N)
 	fac[0] = fac[1] = inv[1] = 1;
@@ -60,23 +41,18 @@ int main() {
 		facInv[i] = facInv[i - 1] * inv[i] % MOD;
 	}
 
+    // solve
     ll n, m;
     cin >> n >> m;
 
     ll ans = 0;
-    for (ll i = 1; i <= m; i++) {
-        ans = (ans + 2 * power(i, n) % MOD + MOD - 1) % MOD;
-        ans = (ans + power(i - 1, 2) * n % MOD) % MOD;
+
+    for (int p = 1; p <= m; p++) {
+        ans = (ans + power(m, n) - power(p, n)) % MOD;
+        ans = (ans + MOD) % MOD;
     }
+    ans = 2 * ans % MOD;
+    ans = (ans + power(m, n)) % MOD;
 
     cout << ans;
-
-    // for (ll n = 1; n <= 10; n++) {
-    //     // cout << "n is: " << n << ", ";
-    //     // cout << "ans = " << naive(n, 2) << ' ';
-    //     cout << naive(n, 2) << ", ";
-    // }
-    // cout << '\n';
-
-    // cout << naive(n, m);
 }
