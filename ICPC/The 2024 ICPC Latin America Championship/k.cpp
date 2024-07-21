@@ -31,7 +31,6 @@ int f(int idx, int cnt) {
 
         ret = min(ret, i + 1 + f(idx + 1, cnt));
     }
-    
     return ret;
 }
 

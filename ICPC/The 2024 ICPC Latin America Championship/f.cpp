@@ -36,5 +36,10 @@ int main() {
     for (int i = 2; i <= n; i++)
         p = gcd(p, r[i]);
     
-    
+    map<int, int> mp;
+    for (int i = 1; i <= n; i++) mp[g[i]]++;
+
+    for (auto& [x, cnt] : mp) {
+        
+    }
 }

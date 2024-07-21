@@ -16,7 +16,6 @@ bool dfs(int v) {
     vis[v] = 1;
 
     int bit = 0;
-
     for (auto& i : adj[v]) {
         if (vis[i]) bit |= co[i];
     }
