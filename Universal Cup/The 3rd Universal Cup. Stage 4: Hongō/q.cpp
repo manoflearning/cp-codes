@@ -1,13 +1,8 @@
-#pragma GCC optimize ("O3")
-#pragma GCC optimize ("unroll-loops")
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
-#define pll pair<ll, ll>
-#define fr first
-#define sc second
-#define sz(x) (int)(x).size()
-#define all(x) (x).begin(), (x).end()
+
+const ll INF = 1e18;
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -22,34 +17,35 @@ int main() {
     vector<ll> a(n);
     for (auto& i : a) cin >> i;
 
-    // sort(all(a));
+    sort(a.begin(), a.end());
+    
+    vector<ll> dp(n, INF);
 
-    priority_queue<ll, vector<ll>, greater<ll>> pq;
+    dp[0] = 0;
+    for (int i = 0; i + 1 < n; i++) {
+        if (dp[i] == INF) continue;
 
-    for (auto& i : a) pq.push(i);
-
-    ll ans = 0;
-
-    ll now = pq.top();
-    pq.pop();
-    while (!pq.empty()) {
-        vector<ll> nxt;
-
-        nxt.push_back(pq.top());
-        pq.pop();
-
-        while (!pq.empty() && pq.top() / now == nxt[0] / now) {
-            nxt.push_back(pq.top());
-            pq.pop();
+        int k = i + 1;
+        if (a[i + 1] / a[i] == 1) {
+            int l = i + 1, r = n - 1;
+            while (l < r) {
+                int mid = (l + r) >> 1;
+                if (a[mid] / a[i] >= 2) r = mid;
+                else l = mid + 1;
+            }
+            k = l;
+            dp[k - 1] = min(dp[k - 1], dp[i] + 1);
         }
 
-        ans += nxt.back() / now;
-        now = nxt.back();
-
-        if (sz(nxt) > 1 && !pq.empty()) {
-            if (pq.top() / nxt[0] > pq.top() / nxt.back() + 1) ans++;
+        int l = k, r = n - 1;
+        while (l < r) {
+            int mid = (l + r + 1) >> 1;
+            if (a[mid] / a[i] == a[k] / a[i]) l = mid;
+            else r = mid - 1;
         }
+
+        dp[l] = min(dp[l], dp[i] + a[l] / a[i]);
     }
 
-    cout << ans;
+    cout << dp[n - 1];
 }
