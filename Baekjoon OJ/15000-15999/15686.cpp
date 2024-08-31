@@ -1,96 +1,72 @@
-/*
-문제 해법		: 완전 탐색
-접근 방식		: 
-결정적 깨달음	: 
-오답 원인		: 1. 
-				  2.
-*/
-
-#include <iostream>
-#include <cstdio>
-#include <vector>
-#include <climits>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-int n, m;
-vector< vector<int> > city;
-//치킨집의 수
-int chiCount;
-//치킨 거리의 최솟값
-int ans = INT_MAX;
+const int dy[] = { 1, 0, -1, 0 };
+const int dx[] = { 0, 1, 0, -1 };
 
-//폐업할 치킨집 결정
-void chooseChicken(int count = 0, int f1 = 0, int f2 = -1);
-//폐업할 치킨집이 결정된 도시의 치킨 거리 계산
-void calMin();
-//하나의 집을 기준으로 치킨 거리 계산
-int findNearChicken(int y, int x);
+int n, m;
+int a[55][55], dist[55][55];
+vector<pair<int, int>> chkn;
+int ans = 1e9;
+
+void bfs() {
+	memset(dist, -1, sizeof(dist));
+
+	queue<pair<int, int>> qu;
+	for (auto& [y, x] : chkn) {
+		if (a[y][x] != 2) continue;
+		qu.push({ y, x });
+		dist[y][x] = 0;
+	}
+
+	int res = 0;
+
+	while (!qu.empty()) {
+		auto [y, x] = qu.front();
+		qu.pop();
+
+		if (a[y][x] == 1) res += dist[y][x];
+
+		for (int d = 0; d < 4; d++) {
+			int ny = y + dy[d], nx = x + dx[d];
+			// cout << ny << ' ' << nx << '\n';
+			if (ny < 1 || n < ny || nx < 1 || n < nx) continue;
+			if (dist[ny][nx] != -1) continue;
+			// cout << ny << ' ' << nx << '\n';
+			qu.push({ ny, nx });
+			dist[ny][nx] = dist[y][x] + 1;
+		}
+	}
+
+	ans = min(ans, res);
+}
+
+void backtracking(int idx, int cnt) {
+	if (cnt == m) { bfs(); return; }
+	if (idx == chkn.size()) return;
+	// if (idx == 10) return;
+	// cout << idx << '\n';
+
+	backtracking(idx + 1, cnt);
+	a[chkn[idx].first][chkn[idx].second] = 0;
+	backtracking(idx + 1, cnt - 1);
+	a[chkn[idx].first][chkn[idx].second] = 2;
+}
 
 int main() {
-	scanf("%d %d", &n, &m);
+	#ifndef ONLINE_JUDGE
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+	#endif
 
-	city.resize(n, vector<int>(n));
-
-	for (int i = 0; i < n; i++)
-		for (int l = 0; l < n; l++) {
-			cin >> city[i][l];
-
-			if (city[i][l] == 2) chiCount++;
+	cin >> n >> m;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++) {
+			cin >> a[i][j];
+			if (a[i][j] == 2) chkn.push_back({ i, j });
 		}
 
-	chooseChicken();
+	backtracking(0, chkn.size());
 
-	printf("%d", ans);
-
-	return 0;
+	cout << ans;
 }
-
-//폐업할 치킨집 결정
-void chooseChicken(int count, int f1, int f2) {
-	if (count == chiCount - m) {
-		calMin();
-	}
-	
-	for(int l = f2 + 1; l < n; l++)
-		if (city[f1][l] == 2) {
-			city[f1][l] = 0;
-			chooseChicken(count + 1, f1, l);
-			city[f1][l] = 2;
-		}
-	for (int i = f1 + 1; i < n; i++)
-		for (int l = 0; l < n; l++) {
-			if (city[i][l] == 2) {
-				city[i][l] = 0;
-				chooseChicken(count + 1, i, l);
-				city[i][l] = 2;
-			}
-		}
-}
-
-//폐업할 치킨집이 결정된 도시의 치킨 거리 계산
-void calMin() {
-	int Sans = 0;
-	for (int i = 0; i < n; i++)
-		for (int l = 0; l < n; l++) {
-			if (city[i][l] == 1) 
-				Sans += findNearChicken(i, l);
-		}
-
-	ans = min(ans, Sans);
-}
-//하나의 집을 기준으로 치킨 거리 계산
-int findNearChicken(int y, int x) {
-	int dista = INT_MAX;
-	for (int i = 0; i < n; i++)
-		for (int l = 0; l < n; l++) {
-			if (city[i][l] == 2)
-				dista = min(dista, abs(i - y) + abs(l - x));
-		}
-
-	return dista;
-}
-
-
-
