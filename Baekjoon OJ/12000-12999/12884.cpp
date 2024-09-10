@@ -84,13 +84,9 @@ int main() {
         print_fr();
     }
     else if (can_win) {
-        // ... -> lose -> win -> lose -> win
+        // win -> lose -> win -> lose -> ...
         if (k & 1) print_fr();
         else print_sc();
-    }
-    else if (can_lose) {
-        // lose -> lose -> lose -> ... -> lose
-        print_sc();
     }
     else {
         // lose -> lose -> lose -> ... -> lose
