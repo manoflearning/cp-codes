@@ -34,22 +34,17 @@ int main() {
         for (int s = 1; s + len - 1 <= n; s++) {
             int e = s + len;
 
+            int j = e - 1;
             for (int i = s + 1; i < e; i++) {
                 if (dp[s][i - 1] == -1) continue;
-                
+
                 if (dp[s][i - 1] == dp[i][e - 1])
                     dp[s][e - 1] = dp[s][i - 1] + dp[i][e - 1];
 
-                int l = i, r = e - 1;
-                while (l < r) {
-                    int mid = (l + r + 1) >> 1;
-                    if (dp[s][i - 1] > psum[e - 1] - psum[mid - 1]) r = mid - 1;
-                    else l = mid;
-                }
+                while (j > i && psum[i - 1] - psum[s - 1] > psum[e - 1] - psum[j - 1]) j--;
 
-                if (dp[i][l - 1] == -1 || dp[l][e - 1] == -1) continue;
-                if (dp[s][i - 1] == dp[l][e - 1])
-                    dp[s][e - 1] = dp[s][i - 1] + dp[i][l - 1] + dp[l][e - 1];
+                if (i < j && dp[s][i - 1] == dp[j][e - 1] && dp[i][j - 1] != -1)
+                    dp[s][e - 1] = dp[s][i - 1] + dp[i][j - 1] + dp[j][e - 1];
             }
         }
     }
