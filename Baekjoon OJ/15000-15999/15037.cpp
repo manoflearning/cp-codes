@@ -107,17 +107,14 @@ int dinic() {
 
 vector<int> arr;
 vector<vector<int>> ans(MAXM);
-vector<bool> vis(505);
 
 void get_answer(int v) {
-    vis[v] = 1;
     if (2 * n + 1 <= v && v <= 2 * n + m) {
         ans[v - 2 * n] = arr;
         return;
     }
 
     for (auto& i : adj[v]) {
-        if (vis[i]) continue;
         if (c[v][i] == 1 && f[v][i] == 1) {
             if (1 <= i && i <= n) {
                 arr.push_back(i);
