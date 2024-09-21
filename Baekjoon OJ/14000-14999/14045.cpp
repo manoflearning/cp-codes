@@ -5,7 +5,7 @@ using namespace std;
 const int MAXN = 444;
 
 int n;
-vector<int> a(MAXN);
+vector<int> a(MAXN), psum(MAXN);
 vector<vector<int>> dp(MAXN, vector<int>(MAXN, -1));
 
 int main() {
@@ -19,7 +19,10 @@ int main() {
 
     // input
     cin >> n;
-    for (int i = 1; i <= n; i++) cin >> a[i];
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        psum[i] = a[i] + psum[i - 1];
+    }
 
     // base case
     for (int i = 1; i <= n; i++) {
@@ -37,13 +40,16 @@ int main() {
                 if (dp[s][i - 1] == dp[i][e - 1])
                     dp[s][e - 1] = dp[s][i - 1] + dp[i][e - 1];
 
-                for (int j = i + 1; j < e; j++) {
-                    if (dp[i][j - 1] == -1) continue;
-                    if (dp[j][e - 1] == -1) continue;
-                    
-                    if (dp[s][i - 1] == dp[j][e - 1])
-                        dp[s][e - 1] = dp[s][i - 1] + dp[i][j - 1] + dp[j][e - 1];
+                int l = i, r = e - 1;
+                while (l < r) {
+                    int mid = (l + r + 1) >> 1;
+                    if (dp[s][i - 1] > psum[e - 1] - psum[mid - 1]) r = mid - 1;
+                    else l = mid;
                 }
+
+                if (dp[i][l - 1] == -1 || dp[l][e - 1] == -1) continue;
+                if (dp[s][i - 1] == dp[l][e - 1])
+                    dp[s][e - 1] = dp[s][i - 1] + dp[i][l - 1] + dp[l][e - 1];
             }
         }
     }
