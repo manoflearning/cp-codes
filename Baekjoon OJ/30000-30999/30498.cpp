@@ -28,12 +28,12 @@ void dfs(int v) {
 
     for (auto& u : chd[v]) {
         dfs(u);
-        siz[v] += siz[u];
         for (int j = siz[v]; j >= 1; j--) {
             for (int i = 1; i <= siz[u]; i++) {
                 dp[v][i + j] = (dp[v][i + j] + dp[u][i] * dp[v][j]) % MOD;
             }
         }
+        siz[v] += siz[u];
     }
 }
 
