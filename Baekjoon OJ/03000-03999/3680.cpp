@@ -4,9 +4,8 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define all(x) (x).begin(), (x).end()
 
-const ll INF = 1e18;
 const double EPS = 1e-7;
-
+const int INF = 1e9 + 7;
 const int MAXN = 55;
 const int MAXM = 111;
 
@@ -20,107 +19,103 @@ struct Point {
     bool operator==(const Point& rhs) const {
         return x == rhs.x && y == rhs.y && z == rhs.z;
     }
-    ll dist(const Point& rhs) const {
-        ll d2 = 0;
-        d2 += (x - rhs.x) * (x - rhs.x);
-        d2 += (y - rhs.y) * (y - rhs.y);
-        d2 += (z - rhs.z) * (z - rhs.z);
-
-        double d = sqrt(d2);
-
-        ll ret = (ll)d;
-        if (abs(ret - d) > EPS) ret++;
-        return ret;
-    }
 };
+ll dist(const Point& p1, const Point& p2) {
+    ll d2 = (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
+    double d = sqrt(d2);
+    ll ret = (ll)d;
+    if (abs(ret - d) > EPS) ret++;
+    return ret;
+}
 
-struct Wormhole {
-    Point u, v;
-    int p, q; ll t, d;
-};
-
-int n;
-Point stp, enp;
-int st, en;
-vector<Wormhole> wh(MAXN);
+Point st, en;
+int n, sti, eni;
+vector<tuple<Point, Point, ll, ll>> a;
+vector<tuple<int, int, ll, ll>> b;
 
 int m;
-vector<vector<vector<pair<ll, int>>>> adj(2, vector<vector<pair<ll, int>>>(MAXM));
-vector<vector<ll>> upper(2, vector<ll>(MAXM, INF));
+vector<Point> p(1, { -INF, -INF, -INF });
 
-void init() {}
+struct Edge { ll w, t; int v; };
+vector<Edge> adj[MAXM];
+
+vector<ll> upper;
+
+void init() {
+    a.clear();
+    b.clear();
+    p.resize(1);
+    for (int i = 1; i <= m; i++) adj[i].clear();
+    upper.clear();
+}
 
 void input() {
-    cin >> stp.x >> stp.y >> stp.z;
-    cin >> enp.x >> enp.y >> enp.z;
+    cin >> st.x >> st.y >> st.z >> en.x >> en.y >> en.z;
     cin >> n;
-    for (int i = 1; i <= n; i++) {
-        cin >> wh[i].u.x >> wh[i].u.y >> wh[i].u.z;
-        cin >> wh[i].v.x >> wh[i].v.y >> wh[i].v.z;
-        cin >> wh[i].t >> wh[i].d;
+    for (int i = 0; i < n; i++) {
+        Point u, v; ll t, d;
+        cin >> u.x >> u.y >> u.z >> v.x >> v.y >> v.z;
+        cin >> t >> d;
+        a.push_back({ u, v, t, d });
     }
 }
 
-void coordinate_compression() {
-    vector<Point> ps;
-    ps.push_back({ -INF, -INF, -INF });
-    ps.push_back(stp);
-    ps.push_back(enp);
-    for (int i = 1; i <= n; i++) {
-        ps.push_back(wh[i].u);
-        ps.push_back(wh[i].v);
+void value_compression() {
+    p.push_back(st);
+    p.push_back(en);
+    for (int i = 0; i < n; i++) {
+        p.push_back(get<0>(a[i]));
+        p.push_back(get<1>(a[i]));
     }
 
-    sort(all(ps));
-    ps.erase(unique(all(ps)), ps.end());
+    sort(all(p));
+    p.erase(unique(all(p)), p.end());
 
-    st = lower_bound(all(ps), stp) - ps.begin();
-    en = lower_bound(all(ps), enp) - ps.begin();
-
-    for (int i = 1; i <= n; i++) {
-        wh[i].p = lower_bound(all(ps), wh[i].u) - ps.begin();
-        wh[i].q = lower_bound(all(ps), wh[i].v) - ps.begin();
+    sti = lower_bound(all(p), st) - p.begin();
+    eni = lower_bound(all(p), en) - p.begin();
+    for (int i = 0; i < n; i++) {
+        int u = lower_bound(all(p), get<0>(a[i])) - p.begin();
+        int v = lower_bound(all(p), get<1>(a[i])) - p.begin();
+        b.push_back({ u, v, get<2>(a[i]), get<3>(a[i]) });
     }
-
-    m = sz(ps) - 1;
+    m = sz(p) - 1;
 }
 
 void graph_modeling() {
-    for (int i = 1; i <= n; i++) {
-        int p = wh[i].p, q = wh[i].q;
-        ll d = wh[i].d;
-        Point u = wh[i].u, v = wh[i].v;
+    for (int u = 1; u <= m; u++) {
+        for (int v = u + 1; v <= m; v++) {
+            adj[u].push_back({ dist(p[u], p[v]), -INF, v });
+            adj[v].push_back({ dist(p[u], p[v]), -INF, u });
+        }
+    }
 
-        adj[0][p].push_back({ u.dist(v), q });
-        adj[0][q].push_back({ u.dist(v), p });
-
-        adj[1][p].push_back({ d, q });
-        adj[1][q].push_back({ d, p });
-
-        adj[0][p].push_back({ u.dist(stp), st });
-        adj[0][st].push_back({ u.dist(stp), p });
-        adj[0][p].push_back({ u.dist(enp), en });
-        adj[0][en].push_back({ u.dist(enp), p });
-
-        adj[0][q].push_back({ v.dist(stp), st });
-        adj[0][st].push_back({ v.dist(stp), q });
-        adj[0][q].push_back({ v.dist(enp), en });
-        adj[0][en].push_back({ v.dist(enp), q });
+    for (auto& [u, v, t, d] : b) {
+        adj[u].push_back({ d, t, v });
+        adj[v].push_back({ d, t, u });
     }
 }
 
 bool bellman_ford() {
-    upper[0][st] = 0;
+    upper.resize(m + 1, INF);
+    upper[sti] = 0;
 
-    for (int k = 0; k <= 2 * m + 1; k++) {
+    bool updated = 0;
+    // for (int cnt = 0; cnt <= m; cnt++) {
+    while (1) {
+        updated = 0;
         for (int v = 1; v <= m; v++) {
-            if (upper[0][v] < INF) {
-                for (auto& i : adj[0][v]) {
-                    
+            if (upper[v] == INF) continue;
+            for (auto& i : adj[v]) {
+                ll nupper = max(upper[v], i.t) + i.w;
+                if (upper[i.v] > nupper) {
+                    upper[i.v] = nupper;
+                    updated = 1;
                 }
             }
         }
+        if (!updated) break;
     }
+    return !updated;
 }
 
 int main() {
@@ -134,12 +129,19 @@ int main() {
 
     int tc; cin >> tc;
     while (tc--) {
-        init();
-        
         input();
 
-        coordinate_compression();
+        value_compression();
 
         graph_modeling();
+
+        assert(bellman_ford());
+
+        cout << upper[eni] << '\n';
+        // for (int i = 1; i <= m; i++) {
+        //     cout << p[i].x << ' ' << p[i].y << ' ' << p[i].z << ' ' << upper[i] << '\n';
+        // }
+
+        init();
     }
 }
