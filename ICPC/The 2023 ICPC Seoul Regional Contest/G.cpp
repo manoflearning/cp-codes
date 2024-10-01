@@ -1,39 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
-#define pll pair<ll, ll>
-#define fr first
-#define sc second
 #define sz(x) (int)(x).size()
 
-int N, K, M, F;
-unordered_map<int, vector<int>> cards;
-unordered_map<string, vector<int>> mp;
+const int MAXN = 505050;
+const int MAXK = 111;
+
+int n, k, m, f;
+int a[MAXK][MAXN];
+map<string, vector<int>> mp;
 
 void input() {
-    cin >> N >> K >> M >> F;
-    for (int i = 1; i <= K; i++) {
-        int cnt = M;
-        while (cnt--) {
+    cin >> n >> k >> m >> f;
+    for (int i = 1; i <= k; i++) {
+        for (int j = 0; j < m; j++) {
             int x; cin >> x;
-            cards[x].push_back(i);
+            a[i][x] = 1;
         }
     }
 }
 
-void buildMap() {
-    for (int x = 1; x <= N; x++) {
-        string res(K, 'N');
-        for (auto& i : cards[x]) res[i - 1] = 'Y';
-        mp[res].push_back(x);
-    }
-}
-
 void solve() {
-    for (int i = 0; i < F; i++) {
-        string s; cin >> s;
-        if (sz(mp[s]) == 1) cout << mp[s][0] << '\n';
-        else cout << 0 << '\n';
+    for (int x = 1; x <= n; x++) {
+        string s;
+        for (int i = 1; i <= k; i++) {
+            if (a[i][x]) s.push_back('Y');
+            else s.push_back('N');
+        }
+        mp[s].push_back(x);
     }
 }
 
@@ -48,7 +42,11 @@ int main() {
 
     input();
 
-    buildMap();
-
     solve();
+
+    while (f--) {
+        string s; cin >> s;
+        if (sz(mp[s]) == 1) cout << mp[s][0] << '\n';
+        else cout << 0 << '\n';
+    }
 }

@@ -1,34 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
-#define pll pair<ll, ll>
-#define fr first
-#define sc second
-#define sz(x) (int)(x).size()
 
 const int MAXN = 1010101;
+const int INF = 1e9 + 7;
 
-int n, a[MAXN], b[MAXN];
-
-void input() {
-    cin >> n;
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i] >> b[i];
-    }
-}
-
-int ans = 0;
-
-void solve() {
-    int height = -1;
-    for (int i = n; i >= 1; i--) {
-        if (height < a[i]) {
-            ans++;
-            height = b[i];
-        }
-        else height = min(height, b[i]);
-    }
-}
+int n;
+ll l[MAXN], m[MAXN];
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -39,9 +17,21 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    input();
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+        cin >> l[i] >> m[i];
 
-    solve();
+    int ans = 1, prv = INF;
+    for (int i = n; i >= 1; i--) {
+        if (m[i] <= prv) {
+            prv = m[i];
+        } else if (l[i] <= prv && prv < m[i]) {
+            continue;
+        } else if (prv < l[i]) {
+            ans++;
+            prv = m[i];
+        } else assert(0);
+    }
 
     cout << ans;
 }

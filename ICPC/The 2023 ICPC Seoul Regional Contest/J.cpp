@@ -1,143 +1,106 @@
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
 #define sz(x) (int)(x).size()
 
 const int MOD = 1e9 + 7;
+const double EPS = 1e-4;
 
 ll k;
-string l, r;
-struct State { int cnt2, cnt3, cnt5, cnt7; };
-State a[11], cntk;
-ll dp[22][2][67][45][23][23];
+string L, R;
 
-void preprocessing() {
-    a[1] = { 0, 0, 0, 0 };
-    a[2] = { 1, 0, 0, 0 };
-    a[3] = { 0, 1, 0, 0 };
-    a[4] = { 2, 0, 0, 0 };
-    a[5] = { 0, 0, 1, 0 };
-    a[6] = { 1, 1, 0, 0 };
-    a[7] = { 0, 0, 0, 1 };
-    a[8] = { 3, 0, 0, 0 };
-    a[9] = { 0, 2, 0, 0 };
+const ll p[] = { 2, 3, 5, 7 };
+
+const vector<int> d[10] = {
+    { 100, 100, 100, 100 }, // 0
+    { 0, 0, 0, 0 }, // 1
+    { 1, 0, 0, 0 }, // 2
+    { 0, 1, 0, 0 }, // 3
+    { 2, 0, 0, 0 }, // 4
+    { 0, 0, 1, 0 }, // 5
+    { 1, 1, 0, 0 }, // 6
+    { 0, 0, 0, 1 }, // 7
+    { 3, 0, 0, 0 }, // 8
+    { 0, 2, 0, 0 }, // 9
+};
+
+int cnt[4];
+ll digit[5];
+
+void div(int x) {
+    while (k % p[x] == 0) { k /= p[x]; cnt[x]++; }
 }
 
-ll f(string s) {
-    reverse(s.begin(), s.end());
-    memset(dp, 0, sizeof(dp));
-
+ll dp0[24][2][2][2];
+ll f0(int idx, bool has_0, bool is_ub, bool all_0, const string& num) {
+    auto& ret = dp0[idx][has_0][is_ub][all_0];
+    if (ret != -1) return ret;
+    
     // base case
-    for (int i = 0; i < sz(s); i++) {
-        for (int x = 1; x <= 9; x++) {
-            if (i == sz(s) - 1 && x > s[i] - '0') continue;
-            bool isMax = (i == sz(s) - 1 && x == s[i] - '0');
-            dp[i][isMax][a[x].cnt2][a[x].cnt3][a[x].cnt5][a[x].cnt7] = 1;
-        }
+    if (idx == sz(num)) {
+        if (has_0) return ret = 1;
+        else return ret = 0;
     }
 
     // inductive step
-    for (int i = sz(s) - 2; i >= 0; i--) {
-        for (int cnt2 = 0; cnt2 <= 3 * (sz(s) - i); cnt2++) {
-            for (int cnt3 = 0; cnt3 <= 2 * (sz(s) - i); cnt3++) {
-                for (int cnt5 = 0; cnt5 <= sz(s) - i; cnt5++) {
-                    for (int cnt7 = 0; cnt7 <= sz(s) - i; cnt7++) {
-                        for (int x = 1; x <= 9; x++) {
-                            State nxt = { cnt2, cnt3, cnt5, cnt7 };
-                            nxt.cnt2 = min(60, a[x].cnt2 + nxt.cnt2);
-                            nxt.cnt3 = min(40, a[x].cnt3 + nxt.cnt3);
-                            nxt.cnt5 = min(20, a[x].cnt5 + nxt.cnt5);
-                            nxt.cnt7 = min(20, a[x].cnt7 + nxt.cnt7);
-
-                            ll& dpNot = dp[i][0][nxt.cnt2][nxt.cnt3][nxt.cnt5][nxt.cnt7];
-                            ll& dpMax = dp[i][1][nxt.cnt2][nxt.cnt3][nxt.cnt5][nxt.cnt7];
-
-                            if (x == s[i] - '0') {
-                                dpNot = (dpNot + dp[i + 1][0][cnt2][cnt3][cnt5][cnt7]) % MOD;
-                                dpMax = (dpMax + dp[i + 1][1][cnt2][cnt3][cnt5][cnt7]) % MOD;
-                            }
-                            else if (x < s[i] - '0') {
-                                dpNot = (dpNot + dp[i + 1][0][cnt2][cnt3][cnt5][cnt7]) % MOD;
-                                dpNot = (dpNot + dp[i + 1][1][cnt2][cnt3][cnt5][cnt7]) % MOD;
-                            }
-                            else if (x > s[i] - '0') {
-                                dpNot = (dpNot + dp[i + 1][0][cnt2][cnt3][cnt5][cnt7]) % MOD;
-                            }
-                        }
-                    }
-                }
-            }
+    ret = 0;
+    if (is_ub) {
+        for (char c = '0'; c <= num[idx]; c++) {
+            bool n_has_0 = has_0 || (c == '0' && !all_0);
+            bool n_is_ub = (c == num[idx]);
+            bool n_all_0 = all_0 && (c == '0');
+            ret = (ret + f0(idx + 1, n_has_0, n_is_ub, n_all_0, num)) % MOD;
+        }
+    } else {
+        for (char c = '0'; c <= '9'; c++) {
+            bool n_has_0 = has_0 || (c == '0' && !all_0);
+            bool n_all_0 = all_0 && (c == '0');
+            ret = (ret + f0(idx + 1, n_has_0, 0, n_all_0, num)) % MOD;
         }
     }
-
-    // get answer
-    ll ret = 0;
-    for (int cnt2 = cntk.cnt2; cnt2 <= 66; cnt2++) {
-        for (int cnt3 = cntk.cnt3; cnt3 <= 44; cnt3++) {
-            for (int cnt5 = cntk.cnt5; cnt5 <= 22; cnt5++) {
-                for (int cnt7 = cntk.cnt7; cnt7 <= 22; cnt7++) {
-                    ret = (ret + dp[0][0][cnt2][cnt3][cnt5][cnt7]) % MOD;
-                    ret = (ret + dp[0][1][cnt2][cnt3][cnt5][cnt7]) % MOD;
-                }
-            }
-        }
-    }
-
     return ret;
 }
 
-ll dp0[22][2][2];
+ll dp[24][1102941 + 10][2];
+ll f(int idx, int state, bool is_ub, const string& num) {
+    auto& ret = dp[idx][state][is_ub];
+    if (ret != -1) return ret;
 
-ll f0(string s) {
-    reverse(s.begin(), s.end());
-    memset(dp0, 0, sizeof(dp0));
-
+    vector<int> arr(4);
+    for (int i = 0; i < 4; i++)
+        arr[i] = state % digit[i + 1] / digit[i];
+    
     // base case
-    for (int i = 0; i < sz(s); i++) {
-        for (int x = 1; x <= 9; x++) {
-            if (i == sz(s) - 1 && x > s[i] - '0') continue;
-            bool isMax = (i == sz(s) - 1 && x == s[i] - '0');
-            dp0[i][isMax][0]++;
+    if (idx == sz(num)) {
+        bool is_valid = 1;
+        for (int i = 0; i < 4; i++) {
+            is_valid &= (cnt[i] <= arr[i]);
         }
+        return ret = (is_valid ? 1 : 0);
     }
 
     // inductive step
-    for (int i = sz(s) - 2; i >= 0; i--) {
-        ll& dp0Not0 = dp0[i][0][0];
-        ll& dp0Not1 = dp0[i][0][1];
-        ll& dp0Max0 = dp0[i][1][0];
-        ll& dp0Max1 = dp0[i][1][1];
+    ret = 0;
+    if (is_ub) {
+        for (int i = 1; i <= num[idx] - '0'; i++) {            
+            int n_state = 0;
+            for (int j = 0; j < 4; j++)
+                n_state += digit[j] * (arr[j] + d[i][j]);
 
-        dp0Not1 = (dp0Not1 + dp0[i + 1][0][0] + dp0[i + 1][0][1]) % MOD;
-        if (0 == s[i] - '0') {
-            dp0Max1 = (dp0Max1 + dp0[i + 1][1][0] + dp0[i + 1][1][1]) % MOD;
+            bool n_is_ub = (i == num[idx] - '0');
+
+            ret = (ret + f(idx + 1, n_state, n_is_ub, num)) % MOD;
         }
-        else dp0Not1 = (dp0Not1 + dp0[i + 1][1][0] + dp0[i + 1][1][1]) % MOD;
+    } else {
+        for (int i = 1; i <= 9; i++) {
+            int n_state = 0;
+            for (int j = 0; j < 4; j++)
+                n_state += digit[j] * (arr[j] + d[i][j]);
 
-        for (int x = 1; x <= 9; x++) {
-            if (x < s[i] - '0') {
-                dp0Not0 = (dp0Not0 + dp0[i + 1][0][0]) % MOD;
-                dp0Not1 = (dp0Not1 + dp0[i + 1][0][1]) % MOD;
-                dp0Not0 = (dp0Not0 + dp0[i + 1][1][0]) % MOD;
-                dp0Not1 = (dp0Not1 + dp0[i + 1][1][1]) % MOD;
-            }
-            else if (x == s[i] - '0') {
-                dp0Not0 = (dp0Not0 + dp0[i + 1][0][0]) % MOD;
-                dp0Not1 = (dp0Not1 + dp0[i + 1][0][1]) % MOD;
-                dp0Max0 = (dp0Max0 + dp0[i + 1][1][0]) % MOD;
-                dp0Max1 = (dp0Max1 + dp0[i + 1][1][1]) % MOD;
-            }
-            else if (x > s[i] - '0') {
-                dp0Not0 = (dp0Not0 + dp0[i + 1][0][0]) % MOD;
-                dp0Not1 = (dp0Not1 + dp0[i + 1][0][1]) % MOD;
-            }
+            ret = (ret + f(idx + 1, n_state, 0, num)) % MOD;
         }
     }
-
-    // get answer
-    return (dp0[0][0][1] + dp0[0][1][1]) % MOD;
+    return ret;
 }
 
 int main() {
@@ -149,46 +112,60 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    preprocessing();
-
-    cin >> k >> l >> r;
-
-    while (k % 2 == 0) { cntk.cnt2++; k /= 2; }
-    while (k % 3 == 0) { cntk.cnt3++; k /= 3; }
-    while (k % 5 == 0) { cntk.cnt5++; k /= 5; }
-    while (k % 7 == 0) { cntk.cnt7++; k /= 7; }
+    digit[0] = 1;
+    digit[1] = digit[0] * (20 * 3 + 1);
+    digit[2] = digit[1] * (20 * 2 + 1);
+    digit[3] = digit[2] * (20 + 1);
+    digit[4] = digit[3] * (20 + 1);
+    
+    cin >> k >> L >> R;
+    
+    div(0); div(1);
+    div(2); div(3);
 
     ll ans = 0;
 
-    if (k == 1) {
-        ans = (ans + f(r) - f(l)) % MOD;
+    // case 1: 0 exists
+    {
+        memset(dp0, -1, sizeof(dp0));
+        ans += f0(0, 0, 1, 1, R);
         
-        bool isValid = true;
-        State now = { 0, 0, 0, 0 };
-        for (auto& c : l) {
-            if (c == '0') isValid = false;
-            else {
-                now.cnt2 += a[c - '0'].cnt2;
-                now.cnt3 += a[c - '0'].cnt3;
-                now.cnt5 += a[c - '0'].cnt5;
-                now.cnt7 += a[c - '0'].cnt7;
-            }
+        memset(dp0, -1, sizeof(dp0));
+        ans -= f0(0, 0, 1, 1, L);
+    }
+
+    // case 2: 0 does not exist
+    if (k == 1) {
+        memset(dp, -1, sizeof(dp));
+        ans += f(0, 0, 1, R);
+        for (int i = 1; i < sz(R); i++)
+            ans += f(i, 0, 0, R);
+
+        memset(dp, -1, sizeof(dp));
+        ans -= f(0, 0, 1, L);
+        for (int i = 1; i < sz(L); i++)
+            ans -= f(i, 0, 0, L);
+    }
+
+    // case 3: L
+    {
+        bool has_0 = 0;
+        vector<int> arr(4);
+        for (auto& c : L) {
+            if (c == '0') has_0 = 1;
+            else 
+                for (int i = 0; i < 4; i++)
+                    arr[i] += d[c - '0'][i];
         }
-
-        if (now.cnt2 < cntk.cnt2) isValid = false;
-        if (now.cnt3 < cntk.cnt3) isValid = false;
-        if (now.cnt5 < cntk.cnt5) isValid = false;
-        if (now.cnt7 < cntk.cnt7) isValid = false;
-        if (isValid) ans = (ans + 1) % MOD;
-        ans = (ans + MOD) % MOD;
+        bool is_valid = 1;
+        for (int i = 0; i < 4; i++) {
+            is_valid &= (cnt[i] <= arr[i]);
+        }
+        is_valid &= (k == 1);
+        if (is_valid || has_0) ans++;
     }
-
-    ans = (ans + f0(r) - f0(l)) % MOD;
-    for (auto& c : l) if (c == '0') {
-        ans = (ans + 1) % MOD;
-        break;
-    }
-    ans = (ans + MOD) % MOD;
+    
+    ans = (ans % MOD + MOD) % MOD;
 
     cout << ans;
 }
