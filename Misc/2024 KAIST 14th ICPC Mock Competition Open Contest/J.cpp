@@ -9,6 +9,8 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define all(x) (x).begin(), (x).end()
 
+const int INF = 1e9 + 7;
+
 int n;
 vector<pll> a;
 
@@ -17,17 +19,16 @@ ll gcd(ll x, ll y) {
     return gcd(y, x % y);
 }
 
-void init() {}
+void init() {
+}
 
 void input() {
     cin >> n;
     a.resize(n);
     for (auto& i : a) {
         cin >> i.fr >> i.sc;
-        if (i.fr > 0) i.fr = 1;
-        else if (i.fr < 0) i.fr = -1;
-        if (i.sc > 0) i.sc = 1;
-        else if (i.sc < 0) i.sc = -1;
+        ll g = gcd(abs(i.fr), abs(i.sc));
+        i.fr /= g, i.sc /= g;
     }
 }
 
@@ -46,85 +47,19 @@ int main() {
 
         input();
 
-        map<pll, int> mp;
-        for (auto& i : a) {
-            mp[i]++;
-        }
+        sort(all(a));
+        a.erase(unique(all(a)), a.end());
 
-        set<pll> ans;
-        for (auto& i : mp) {
-            if (i.fr == pll(0, 0)) continue;
-            else if (i.fr.fr == 0 || i.fr.sc == 0) ans.insert(i.fr);
+        if (sz(a) == 1) {
+            cout << sz(a) << '\n';
+            for (auto& i : a)
+                cout << i.fr << ' ' << i.sc << '\n';
+        } else if (sz(a) == 2) {
+            cout << sz(a) << '\n';
+            cout << a[0].fr << ' ' << a[0].sc << '\n';
+            cout << a[1].fr - a[0].fr << ' ' << a[1].sc - a[0].sc << '\n';
+        } else {
+            
         }
-
-        int cnt = 0;
-        for (auto& i : mp) {
-            if (i.fr.fr != 0 && i.fr.sc != 0) {
-                if (i.fr == pll(1, 1)) {
-                    if (i.sc >= 2) {
-                        ans.insert({ 0, 1 });
-                        ans.insert({ 1, 0 });
-                    } else {
-                        ans.insert({ 0, 1 });
-                            ans.insert({ 1, 0 });
-                        // if (ans.count({ 0, 1 }) || ans.count({ 1, 0 })) {
-                        //     ans.insert({ 0, 1 });
-                        //     ans.insert({ 1, 0 });
-                        // } else {
-                        //     ans.insert({ 1, 1 });
-                        // }
-                    }
-                }
-                if (i.fr == pll(1, -1)) {
-                    if (i.sc >= 2) {
-                        ans.insert({ 0, -1 });
-                        ans.insert({ 1, 0 });
-                    } else {
-                        ans.insert({ 0, -1 });
-                            ans.insert({ 1, 0 });
-                        // if (ans.count({ 0, -1 }) || ans.count({ 1, 0 })) {
-                        //     ans.insert({ 0, -1 });
-                        //     ans.insert({ 1, 0 });
-                        // } else {
-                        //     ans.insert({ 1, -1 });
-                        // }
-                    }
-                }
-                if (i.fr == pll(-1, 1)) {
-                    if (i.sc >= 2) {
-                        ans.insert({ 0, 1 });
-                        ans.insert({ -1, 0 });
-                    } else {
-                        ans.insert({ 0, 1 });
-                            ans.insert({ -1, 0 });
-                        // if (ans.count({ 0, 1 }) || ans.count({ -1, 0 })) {
-                        //     ans.insert({ 0, 1 });
-                        //     ans.insert({ -1, 0 });
-                        // } else {
-                        //     ans.insert({ -1, 1 });
-                        // }
-                    }
-                }
-                if (i.fr == pll(-1, -1)) {
-                    if (i.sc >= 2) {
-                        ans.insert({ 0, -1 });
-                        ans.insert({ -1, 0 });
-                    } else {
-                        ans.insert({ 0, -1 });
-                        ans.insert({ -1, 0 });
-                        // if (ans.count({ 0, -1 }) || ans.count({ -1, 0 })) {
-                        //     ans.insert({ 0, -1 });
-                        //     ans.insert({ -1, 0 });
-                        // } else {
-                        //     ans.insert({ -1, -1 });
-                        // }
-                    }
-                }
-            }
-        }
-
-        cout << sz(ans) << '\n';
-        for (auto& i : ans)
-            cout << i.fr << ' ' << i.sc << '\n';
     }
 }
