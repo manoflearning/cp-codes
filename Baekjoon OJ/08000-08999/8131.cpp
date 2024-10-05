@@ -31,6 +31,9 @@ inline ll sum(int ys, int xs, int ye, int xe) {
 }
 
 bool is_valid(int l, int r) {
+    for (int y = 1; y <= n; y++)
+        if (sum(y, l, y, r) > k) return 0;
+
     int ys = 1, xs = 1, ye = n, xe = m;
 
     while (1) {
@@ -42,8 +45,7 @@ bool is_valid(int l, int r) {
         else if (r < xe && sum(ys, xe, ye, xe) <= k) xe--;
         else return 0;
     }
-
-    return sum(ys, xs, ye, xe) <= k;
+    return 1;
 }
 
 int solve() {
