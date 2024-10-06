@@ -1,94 +1,107 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define ll long long
+#define all(x) (x).begin(), (x).end()
 
-const int sq = 318;
+const int MAXN = 101010, MAXM = 101010;
+const int MAXK = 1010101;
+const int SQ = 333;
+
+int n, k;
+ll a[MAXN], pa[MAXN];
 struct Query {
-    int l, r, idx;
+    int s, e, idx;
     bool operator<(const Query& rhs) const {
-        if (l / sq != rhs.l / sq) return l / sq < rhs.l / sq;
-        return (l / sq) & 1 ? r < rhs.r : r > rhs.r;
-    }
+		if(s / SQ != rhs.s / SQ) return s / SQ < rhs.s / SQ;
+		else return (s / SQ) & 1 ? e < rhs.e : e > rhs.e;
+	}
 };
+int m;
+Query q[MAXM];
+int ans[MAXM];
+int cnt[MAXN], bucket[MAXN / SQ];
 
-int N, M, K;
-int A[101010], psum[101010];
-
-vector<Query> qu;
-vector<int> ans;
+deque<int> dq[MAXN];
 
 void input() {
-    cin >> N >> K;
-    for (int i = 1; i <= N; i++) cin >> A[i];
-    cin >> M;
-    qu.resize(M);
-    ans.resize(M);
-    for (int i = 0; i < M; i++) {
-        cin >> qu[i].l >> qu[i].r;
-        qu[i].l--;
-        qu[i].idx = i;
+    cin >> n >> k;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        pa[i] = (a[i] + pa[i - 1]) % k;
+    }
+    cin >> m;
+    for (int i = 1; i <= m; i++) {
+        cin >> q[i].s >> q[i].e;
+        q[i].s--;
+        q[i].idx = i;
     }
 }
 
-void buildPsum() {
-    for (int i = 1; i <= N; i++) {
-        psum[i] = (A[i] + psum[i - 1]) % K;
-    }
+void value_comp() {
+    vector<int> cc(1, -1e9);
+    for (int i = 0; i <= n; i++)
+        cc.push_back(pa[i]);
+    sort(all(cc));
+    cc.erase(unique(all(cc)), cc.end());
+    for (int i = 0; i <= n; i++)
+        pa[i] = lower_bound(all(cc), pa[i]) - cc.begin();
 }
 
-deque<int> dq[1010101];
-int cnt[101010], res[101010 / sq];
-
-void add(int v, int isLeft) {
-    int x = psum[v];
+void add(int idx) {
+	int x = pa[idx];
     
     if (!dq[x].empty()) {
         cnt[dq[x].back() - dq[x].front()]--;
+        bucket[(dq[x].back() - dq[x].front()) / SQ]--;
     }
-    
-    if (isLeft) dq[x].push_front(v);
-    else dq[x].push_back(v);
-    
+
+    if (dq[x].empty() || dq[x].back() < idx) dq[x].push_back(idx);
+    else dq[x].push_front(idx);
+
     cnt[dq[x].back() - dq[x].front()]++;
+    bucket[(dq[x].back() - dq[x].front()) / SQ]++;
 }
-void del(int v, int isLeft) {
-    int x = psum[v];
+void del(int idx) {
+    int x = pa[idx];
     
-    int len = dq[x].back() - dq[x].front();
-    cnt[len]--;
-    if (len == res[len / sq]) {
-        for (int i = len / sq * sq + len - 1; i >= len / sq * sq; i--) {
-            
-        }
-    }
-    
-    if (isLeft) dq[x].pop_front();
-    else dq[x].pop_back();
+    cnt[dq[x].back() - dq[x].front()]--;
+    bucket[(dq[x].back() - dq[x].front()) / SQ]--;
+
+    if (dq[x].empty() || dq[x].back() == idx) dq[x].pop_back();
+    else dq[x].pop_front();
 
     if (!dq[x].empty()) {
         cnt[dq[x].back() - dq[x].front()]++;
-        res[]
+        bucket[(dq[x].back() - dq[x].front()) / SQ]++;
     }
 }
-int query() { return seg.t[1]; }
-
-void f() {
-    int l = qu[0].l, r = qu[0].r;
-    for (int i = l; i <= r; i++) add(i, 0);
-    ans[qu[0].idx] = query();
-
-    for (int i = 1; i < M; i++) {
-        while (l < qu[i].l) del(l++, 1);
-        while (qu[i].r < r) del(r--, 0);
-        while (qu[i].l < l) add(--l, 1);
-        while (r < qu[i].r) add(++r, 0);
-        ans[qu[i].idx] = query();
+int query() {
+    for (int i = MAXN / SQ; i >= 0; i--) {
+        if (!bucket[i]) continue;
+        for (int j = SQ - 1; j >= 0; j--) {
+            if (cnt[i * SQ + j]) return i * SQ + j;
+        }
     }
+    return 0;
+}
+void f() {
+	int s = q[1].s, e = q[1].e;
+	for (int i = s; i <= e; i++) add(i);
+	ans[q[1].idx] = query();
+
+	for (int i = 2; i <= m; i++) {
+		while (q[i].s < s) add(--s);
+		while (e < q[i].e) add(++e);
+		while (s < q[i].s) del(s++);
+		while (q[i].e < e) del(e--);
+		ans[q[i].idx] = query();
+	}
 }
 
 int main() {
     #ifndef ONLINE_JUDGE
-    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/input.txt", "r", stdin);
-    freopen("/Users/jeongwoo-kyung/Programming/CP-Codes/output.txt", "w", stdout);
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
     #endif
 
     cin.tie(NULL); cout.tie(NULL);
@@ -96,12 +109,12 @@ int main() {
 
     input();
 
-    sort(qu.begin(), qu.end());
+    value_comp();
 
-    buildPsum();
+    sort(q + 1, q + m + 1);
 
     f();
 
-    for (auto& i : ans)
-        cout << i << '\n';
+    for (int i = 1; i <= m; i++)
+        cout << ans[i] << '\n';
 }
