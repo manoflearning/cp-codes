@@ -5,9 +5,10 @@ using namespace std;
 #define pli pair<ll, int>
 #define fr first
 #define sc second
+#define all(x) (x).begin(), (x).end()
 
 const int MAXN = 505050;
-const int MAXD = 20;
+const int MAXD = 18;
 const ll INF = 1e18;
 
 int n, q;
@@ -17,13 +18,7 @@ bool used[MAXN];
 int siz[MAXN];
 
 int cdpar[MAXN];
-vector<int> cdchd[MAXN];
-ll cddist[MAXN];
-int cddep[MAXN];
-vector<int> cdbydep[21];
-
-int s, t;
-vector<int> x, y;
+ll cddist[MAXN][22];
 
 void input() {
     cin >> n >> q;
@@ -37,6 +32,7 @@ void input() {
 
 int dep[MAXN], par[MAXN][MAXD + 1];
 ll dist[MAXN][MAXD + 1];
+
 void dfs(int now, int prv) {
 	par[now][0] = prv;
 	dep[now] = dep[prv] + 1;
@@ -48,12 +44,13 @@ void dfs(int now, int prv) {
 }
 void buildSparseTable() {
 	for (int i = 1; i <= MAXD; i++) {
-		for (int v = 1; v <= n; v++) {
+		for (int v = 0; v < n; v++) {
 			par[v][i] = par[par[v][i - 1]][i - 1];
             dist[v][i] = dist[v][i - 1] + dist[par[v][i - 1]][i - 1];
 		}
 	}
 }
+
 ll get_dist(int u, int v) {
     ll ret = 0;
 
@@ -64,7 +61,9 @@ ll get_dist(int u, int v) {
             ret += dist[u][i];
             u = par[u][i];
         }
+
 	if (u == v) return ret;
+
 	for (int i = MAXD; i >= 0; i--) {
 		if (par[u][i] ^ par[v][i]) {
             ret += dist[u][i];
@@ -79,7 +78,7 @@ ll get_dist(int u, int v) {
 int get_size(int now, int prv) {
     siz[now] = 1;
     for (auto& i : adj[now]) {
-        if (used[i.sc] || prv == i.sc) continue;
+        if (used[i.sc] || i.sc == prv) continue;
         siz[now] += get_size(i.sc, now);
     }
     return siz[now];
@@ -96,11 +95,7 @@ void cd(int now, int prv) {
     int mxsiz = get_size(now, prv);
     int cent = get_cent(now, prv, mxsiz);
 
-    cdchd[prv].push_back(cent);
     cdpar[cent] = prv;
-    cddep[cent] = 1 + cddep[prv];
-    cdbydep[cddep[cent]].push_back(cent);
-    cddist[cent] = (prv == n ? 0 : get_dist(cent, prv));
 
     used[cent] = 1;
     for (auto& i : adj[cent]) {
@@ -108,57 +103,36 @@ void cd(int now, int prv) {
     }
 }
 
-vector<ll> xmin(MAXN, INF), ymin(MAXN, INF);
-vector<bool> vis(MAXN);
-
+vector<ll> xmin(MAXN, INF);
 void solve() {
+    int s, t;
     cin >> s >> t;
-    x.resize(s);
-    y.resize(t);
+
+    vector<int> x(s), y(t);
     for (auto& i : x) cin >> i;
     for (auto& i : y) cin >> i;
 
-    priority_queue<pii> pq;
-
     for (auto& i : x) {
-        xmin[i] = 0;
-        if (!vis[i]) {
-            vis[i] = 1;
-            pq.push({ cddep[i], i });
+        int cnt = 0;
+        for (int v = i; v != n; v = cdpar[v]) {
+            xmin[v] = min(xmin[v], cddist[i][cnt]);
+            cnt++;
         }
     }
-    for (auto& i : y) {
-        ymin[i] = 0;
-        if (!vis[i]) {
-            vis[i] = 1;
-            pq.push({ cddep[i], i });
-        }
-    }
-
-    vector<int> lazy_init;
 
     ll ans = INF;
-    while (!pq.empty()) {
-        auto [_, v] = pq.top();
-        pq.pop();
-
-        lazy_init.push_back(v);
-
-        ans = min(ans, ymin[v] + xmin[v]);
-
-        int p = cdpar[v];
-        ymin[p] = min(ymin[p], ymin[v] + cddist[v]);
-        xmin[p] = min(xmin[p], xmin[v] + cddist[v]);
-
-        if (!vis[p]) {
-            vis[p] = 1;
-            pq.push({ cddep[p], p });
+    for (auto& i : y) {
+        int cnt = 0;
+        for (int v = i; v != n; v = cdpar[v]) {
+            ans = min(ans, cddist[i][cnt] + xmin[v]);
+            cnt++;
         }
     }
 
-    for (auto& i : lazy_init) {
-        ymin[i] = xmin[i] = INF;
-        vis[i] = 0;
+    for (auto& i : x) {
+        for (int v = i; v != n; v = cdpar[v]) {
+            xmin[v] = INF;
+        }
     }
 
     cout << ans << '\n';
@@ -179,6 +153,12 @@ int main() {
     buildSparseTable();
 
     cd(0, n);
+
+    for (int v = 0; v < n; v++) {
+        for (int p = v, i = 0; p != n; p = cdpar[p], i++) {
+            cddist[v][i] = get_dist(p, v);
+        }
+    }
 
     while (q--) solve();
 }
