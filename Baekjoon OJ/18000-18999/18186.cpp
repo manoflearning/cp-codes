@@ -21,11 +21,7 @@ int main() {
     cin >> n >> b >> c;
     for (int i = 1; i <= n; i++) cin >> a[i];
 
-    if (b <= c) {
-        for (int i = 1; i <= n; i++) ans += b * a[i];
-        cout << ans;
-        exit(0);
-    }
+    if (b < c) c = b;
 
     for (int i = 1; i <= n; i++) {
         if (i + 2 <= n) {
