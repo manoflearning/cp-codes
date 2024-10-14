@@ -4,7 +4,7 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define Line pair<ll, ll>
 
-const Line e = { 0, -1e18 };
+const Line e = { 0, 1e18 };
 struct LiChaoTree {
     ll f(Line l, ll x) { return l.first * x + l.second; }
     struct Node {
@@ -23,24 +23,24 @@ struct LiChaoTree {
         if (f(llow, xl) >= f(lhigh, xl)) swap(llow, lhigh);
 
         if (f(llow, xr) <= f(lhigh, xr)) {
-            t[n].line = lhigh;
+            t[n].line = llow;
             return;
         }
-        else if (f(llow, xmid) < f(lhigh, xmid)) {
-            t[n].line = lhigh;
+        else if (f(llow, xmid) <= f(lhigh, xmid)) {
+            t[n].line = llow;
             if (t[n].r == -1) {
                 t[n].r = sz(t);
                 t.push_back({ xmid + 1, xr, -1, -1, e });
             }
-            insert(llow, t[n].r);
+            insert(lhigh, t[n].r);
         }
         else if (f(llow, xmid) >= f(lhigh, xmid)) {
-            t[n].line = llow;
+            t[n].line = lhigh;
             if (t[n].l == -1) {
                 t[n].l = sz(t);
                 t.push_back({ xl, xmid, -1, -1, e });
             }
-            insert(lhigh, t[n].l);
+            insert(llow, t[n].l);
         }
     }
     ll query(ll x, int n = 0) {
@@ -49,8 +49,8 @@ struct LiChaoTree {
         ll xmid = (xl + xr) >> 1;
 
         ll ret = f(t[n].line, x);
-        if (x <= xmid) ret = max(ret, query(x, t[n].l));
-        else ret = max(ret, query(x, t[n].r));
+        if (x <= xmid) ret = min(ret, query(x, t[n].l));
+        else ret = min(ret, query(x, t[n].r));
         return ret;
     }
 }lct;
@@ -82,11 +82,11 @@ int main() {
     lct.build(-(ll)2e12, (ll)2e12);
     lct.insert({ 0, 0 });
     for (int i = 1; i <= n; i++) {
-        ans = max(ans, psum[i] + lct.query(ssum[i + 1]));
+        ans = max(ans, psum[i] - lct.query(ssum[i + 1]));
 
         ll p = -i;
         ll q = psum[i] + i * ssum[i + 1];
-        lct.insert({ -p, -q });
+        lct.insert({ p, q });
     }
 
     cout << ans;
