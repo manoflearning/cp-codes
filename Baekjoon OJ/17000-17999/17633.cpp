@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
+#define all(x) (x).begin(), (x).end()
 
 namespace miller_rabin {
 ll mul(ll x, ll y, ll mod) { return (__int128_t)x * y % mod; }
@@ -70,26 +71,34 @@ vector<ll> factorize(ll n) {
 }
 }; // namespace pollard_rho
 
-bool is_square_num(ll x) {
-    auto res = pollard_rho::factorize(x);
-    
-}
-
 int main() {
-    #ifndef ONLINE_JUDGE
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-    #endif
+  #ifndef ONLINE_JUDGE
+  freopen("input.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
+  #endif
 
-    cin.tie(NULL), cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+  cin.tie(NULL), cout.tie(NULL);
+  ios_base::sync_with_stdio(false);
 
-    ll n; cin >> n;
+  ll n; cin >> n;
 
-    if (is_square_num(n)) {
-        cout << 1;
-        exit(0);
+  auto arr = pollard_rho::factorize(n);
+  map<ll, int> mp;
+  for (auto& i : arr) mp[i]++;
+
+  bool odd = 0, odd_4k3 = 0;
+  for (auto& [x, y] : mp) {
+    if (y & 1) {
+      odd = 1;
+      if (x % 4 == 3) odd_4k3 = 1;
     }
+  }
 
-
+  if (!odd) cout << 1;
+  else if (!odd_4k3) cout << 2;
+  else {
+    while (n % 4 == 0) n /= 4;
+    if (n % 8 != 7) cout << 3;
+    else cout << 4;
+  }
 }
