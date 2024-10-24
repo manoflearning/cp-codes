@@ -1,18 +1,22 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define ll long long
+#define pii pair<int, int>
+#define fr first
+#define sc second
+#define all(x) (x).begin(), (x).end()
 
-const ll INF = 1e18;
+const int MAXN = 1010;
+const int INF = 1e9 + 7;
 
-int n, K;
-struct Edge { ll w; int v; };
-vector<Edge> adj[1010];
+int n, k;
+vector<pii> adj[MAXN];
 
-int siz[1010];
-ll dp[1010][1010][2];
+vector<int> dp[MAXN][2];
+int siz[MAXN];
+vector<vector<tuple<int, int, int>>> optv[MAXN][2];
 
 void input() {
-    cin >> n >> K;
+    cin >> n >> k;
     for (int i = 0; i < n - 1; i++) {
         int u, v, w;
         cin >> u >> v >> w;
@@ -23,30 +27,60 @@ void input() {
 
 void dfs(int v, int prv) {
     siz[v] = 1;
-    dp[v][0][0] = 0;
-    dp[v][1][1] = 0;
+    dp[v][0].resize(siz[v] + 1, INF);
+    dp[v][1].resize(siz[v] + 1, INF);
+    optv[v][0].resize(siz[v] + 1);
+    optv[v][1].resize(siz[v] + 1);
+    
+    dp[v][0][0] = dp[v][1][1] = 0;
+    
+    for (auto &[w, u] : adj[v]) {
+        if (u == prv) continue;
+        dfs(u, v);
 
-    for (auto& i : adj[v]) {
-        if (i.v == prv) continue;
-        dfs(i.v, v);
+        vector<vector<int>> tmp(2, vector<int>(siz[v] + siz[u] + 1, INF));
+        vector<vector<vector<tuple<int, int, int>>>> tmpv(2, vector<vector<tuple<int, int, int>>>(siz[u] + siz[v] + 1));
 
-        vector<vector<ll>> tmp(siz[v] + siz[i.v] + 1, vector<ll>(2, INF));
-        for (int p = 0; p <= siz[v]; p++) {
-            for (int q = 0; q <= siz[i.v]; q++) {
-                tmp[p + q][0] = min(tmp[p + q][0], dp[v][p][0] + dp[i.v][q][0] + i.w);
-                tmp[p + q][0] = min(tmp[p + q][0], dp[v][p][0] + dp[i.v][q][1]);
-
-                tmp[p + q][1] = min(tmp[p + q][1], dp[v][p][1] + dp[i.v][q][0]);
-                tmp[p + q][1] = min(tmp[p + q][1], dp[v][p][1] + dp[i.v][q][1] + i.w);
+        for (int x = 0; x <= siz[v]; x++) {
+            for (int y = 0; y <= siz[u]; y++) {
+                if (tmp[0][x + y] > dp[v][0][x] + dp[u][1][y]) {
+                    tmp[0][x + y] = dp[v][0][x] + dp[u][1][y];
+                    tmpv[0][x + y] = optv[v][0][x];
+                    tmpv[0][x + y].push_back({u, 1, y});
+                }
+                if (tmp[0][x + y] > w + dp[v][0][x] + dp[u][0][y]) {
+                    tmp[0][x + y] = w + dp[v][0][x] + dp[u][0][y];
+                    tmpv[0][x + y] = optv[v][0][x];
+                    tmpv[0][x + y].push_back({u, 0, y});
+                }
+                if (tmp[1][x + y] > dp[v][1][x] + dp[u][0][y]) {
+                    tmp[1][x + y] = dp[v][1][x] + dp[u][0][y];
+                    tmpv[1][x + y] = optv[v][1][x];
+                    tmpv[1][x + y].push_back({u, 0, y});
+                }
+                if (tmp[1][x + y] > w + dp[v][1][x] + dp[u][1][y]) {
+                    tmp[1][x + y] = w + dp[v][1][x] + dp[u][1][y];
+                    tmpv[1][x + y] = optv[v][1][x];
+                    tmpv[1][x + y].push_back({u, 1, y});
+                }
             }
         }
 
-        for (int p = 0; p <= siz[v] + siz[i.v]; p++) {
-            dp[v][p][0] = tmp[p][0];
-            dp[v][p][1] = tmp[p][1];
-        }
+        dp[v][0] = tmp[0];
+        dp[v][1] = tmp[1];
+        optv[v][0] = tmpv[0];
+        optv[v][1] = tmpv[1];
 
-        siz[v] += siz[i.v];
+        siz[v] += siz[u];
+    }
+}
+
+vector<int> ans2;
+void backtrace(int v, int bit, int rem) {
+    if (bit) ans2.push_back(v);
+
+    for (auto &i : optv[v][bit][rem]) {
+        backtrace(get<0>(i), get<1>(i), get<2>(i));
     }
 }
 
@@ -59,13 +93,13 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    for (int i = 0; i < 1010; i++)
-        for (int j = 0; j < 1010; j++)
-            dp[i][j][0] = dp[i][j][1] = INF;
-
     input();
-
+    
     dfs(1, 0);
 
-    cout << min(dp[1][K][0], dp[1][K][1]) << '\n';
+    cout << min(dp[1][0][k], dp[1][1][k]) << '\n';
+    if (dp[1][0][k] <= dp[1][1][k]) backtrace(1, 0, k);
+    else backtrace(1, 1, k);
+    sort(all(ans2));
+    for (auto& i : ans2) cout << i << ' ';
 }
