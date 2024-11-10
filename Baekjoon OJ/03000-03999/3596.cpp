@@ -18,7 +18,7 @@ int main() {
     gn[1] = 1;
     gn[2] = 1;
     for (int i = 3; i < MAXN; i++) {
-        vector<bool> vis(75);
+        vector<bool> vis(121);
         if (i >= 3) vis[gn[i - 3]] = 1;
         if (i >= 4) vis[gn[i - 4]] = 1;
         if (i >= 5) {
@@ -28,10 +28,8 @@ int main() {
             }
         }
 
-        for (int j = 0; j < 75; j++)
+        for (int j = 0; j < 121; j++)
             if (!vis[j]) { gn[i] = j; break; }
-
-        // cout << i << ' ' << gn[i] << '\n';
     }
 
     int n; cin >> n;
