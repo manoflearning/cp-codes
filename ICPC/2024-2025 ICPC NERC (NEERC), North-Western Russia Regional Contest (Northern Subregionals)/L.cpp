@@ -10,15 +10,16 @@ using namespace std;
 const int MOD = 998244353;
 const int MAXN = 101;
 
-void bottomup(vector<vector<ll>> &dp, string w) {
-    // base case
-    dp[0][0] = 1;
-    dp[0][1] = 1;
+int n, m, k;
+string w;
 
-    // inductive step
-    for (int i = 0; i + 1 < MAXN; i++) {
-        
-    }
+ll dp[MAXN][1 << 3][1 << 4];
+
+void modify(int i, int bit, int vis, int nbit) {
+    int nvis = (bit << 1) | nbit;
+    dp[i + 1][nbit][nvis] = (
+        dp[i + 1][nbit][nvis] + dp[i][bit][vis]
+    ) % MOD;
 }
 
 int main() {
@@ -30,45 +31,22 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    int n, m, k;
-    string w, rw;
     cin >> n >> m >> k >> w;
-    rw = w; reverse(all(rw));
 
-    vector<vector<ll>> dpl(MAXN, vector<ll>(8));
-    vector<vector<ll>> dpr(MAXN, vector<ll>(8));
+    // base case
+    for (int bit = 0; bit < (1 << k); bit++) {
+        dp[k][bit][0] = 1;
+    }
 
-    bottomup(dpl, w);
-    bottomup(dpr, rw);
-
-    ll ans = 0;
-    for (int s1 = 1; s1 + k - 1 <= n; s1++) {
-        int e1 = s1 + k - 1;
-        for (int s2 = 1; s2 + k - 1 <= m; s2++) {
-            int e2 = s2 + k - 1;
-
-            ll resl = 0, resr = 0;
-            for (int bl1 = 0; bl1 < 8; bl1 += 2) {
-                for (int bl2 = 1; bl2 < 8; bl2 += 2) {
-                    resl += dpl[s1 - 1][bl1] * dpl[s2 - 1][bl2];
-                    resl %= MOD;
-                    resl += dpl[s1 - 1][bl2] * dpl[s2 - 1][bl1];
-                    resl %= MOD;
-                }
+    // inductive step
+    for (int i = k; i + 1 < MAXN; i++) {
+        for (int bit = 0; bit < (1 << k); bit++) {
+            for (int vis = 0; vis < (1 << (k + 1)); vis++) {
+                modify(i, bit, vis, (bit << 1) % (1 << k));
+                modify(i, bit, vis, (bit << 1) % (1 << k) + 1);
             }
-
-            for (int br1 = 0; br1 < 8; br1 += 2) {
-                for (int br2 = 1; br2 < 8; br2 += 2) {
-                    resr += dpr[n - e1][br1] * dpr[m - e2][br2];
-                    resr %= MOD;
-                    resr += dpr[n - e1][br2] * dpr[m - e2][br1];
-                    resr %= MOD;
-                }
-            }
-
-            ans = (ans + resl * resr) % MOD;
         }
     }
 
-    cout << ans;
+    
 }
