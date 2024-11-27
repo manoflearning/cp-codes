@@ -1,67 +1,89 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
+#define sz(x) (int)(x).size()
 
-const int st = 33;
+const int MAXN = 2020202;
+const int ST = 33;
 const int MAXC = 126 - 33 + 1;
 
-struct trie {
-  trie *child[MAXC];
-  bool term;
-  trie() {
-    fill(child, child + MAXC, nullptr);
-    term = false;
+struct Trie {
+  int cnt, t[MAXN][MAXC], par[MAXN];
+  priority_queue<int, vector<int>, greater<int>> pq[MAXN];
+  bool is_del[MAXN];
+
+  void init() {
+    par[0] = -1;
   }
-  ~trie() {
-    for (int i = 0; i < MAXC; i++)
-      if (child[i]) delete child[i];
-  }
-  void insert(const string &s, int key = 0) {
-    if (s.size() == key) term = true;
-    else {
-      int next = s[key] - st;
-      if (!child[next]) child[next] = new trie;
-      child[next]->insert(s, key + 1);
+  void add(string &s, int id) {
+    int here = 0;
+    for (char &i : s) {
+      if (!t[here][i - ST]) {
+        t[here][i - ST] = ++cnt;
+        par[cnt] = here;
+      }
+      pq[here].push(id);
+      here = t[here][i - ST];
     }
   }
-  bool find(const string &s, int key = 0) {
-    if (s.size() == key) return term;
-    else {
-      int next = s[key] - st;
-      if (!child[next]) return false;
-      else return child[next]->find(s, key + 1);
+  int append(string &s, int here) {
+    for (char &i : s) {
+      if (!t[here][i - ST]) {
+        t[here][i - ST] = ++cnt;
+        par[cnt] = here;
+      }
+      here = t[here][i - ST];
     }
+    return here;
+  }
+  int backspace(int x, int here) {
+    while (x--) {
+      assert(par[here] != -1);
+      here = par[here];
+    }
+    return here;
+  }
+  int get_answer(int here) {
+    while (!pq[here].empty() && is_del[pq[here].top()]) pq[here].pop();
+    if (pq[here].empty()) return -1;
+    else return pq[here].top();
   }
 };
 
+Trie trie;
+int here = 0;
+
 int main() {
-    #ifndef ONLINE_JUDGE
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-    #endif
+  #ifndef ONLINE_JUDGE
+  freopen("input.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
+  #endif
 
-    cin.tie(NULL); cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+  cin.tie(NULL); cout.tie(NULL);
+  ios_base::sync_with_stdio(false);
 
-    trie *root = new trie;
+  trie.init();
 
-    int n; cin >> n;
-    while (n--) {
-        string op; cin >> op;
+  int n; cin >> n;
+  while (n--) {
+    string op; cin >> op;
 
-        if (op == "add") {
-            int id;
-            string s;
-            cin >> id >> s;
-            
-        } else if (op == "append") {
-
-        } else if (op == "backspace") {
-
-        } else if (op == "delete") {
-
-        }
+    if (op == "add") {
+      int id;
+      string s;
+      cin >> id >> s;
+      trie.add(s, id);
+    } else if (op == "append") {
+      string s; cin >> s;
+      here = trie.append(s, here);
+    } else if (op == "backspace") {
+      int x; cin >> x;
+      here = trie.backspace(x, here);
+    } else if (op == "delete") {
+      int id; cin >> id;
+      trie.is_del[id] = 1;
     }
 
-    delete root;
+    cout << trie.get_answer(here) << '\n';
+  }
 }
