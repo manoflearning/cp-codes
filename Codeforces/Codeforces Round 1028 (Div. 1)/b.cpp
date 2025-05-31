@@ -40,45 +40,44 @@ void solve() {
         lb[i] = ub[i] = b[i];
 
     for (int i = q - 1; i >= 0; i--) {
+        if (lb[z[i]] > min(ub[x[i]], ub[y[i]])) {
+            is_valid = 0;
+            return;
+        }
+
         if (x[i] == y[i]) {
             if (z[i] == x[i]) {
                 continue;
             } else {
-                if (lb[z[i]] > ub[x[i]]) {
-                    is_valid = 0;
-                    return;
-                }
-
                 lb[x[i]] = max(lb[z[i]], lb[x[i]]);
 
-                lb[z[i]] = -INF;
+                lb[z[i]] = 0;
                 ub[z[i]] = INF;
             }
         } else {
             if (z[i] == x[i] || z[i] == y[i]) {
-                if (lb[z[i]] > min(ub[x[i]], ub[y[i]])) {
-                    is_valid = 0;
-                    return;
-                }
-
                 lb[x[i]] = max(lb[z[i]], lb[x[i]]);
                 lb[y[i]] = max(lb[z[i]], lb[y[i]]);
 
                 ub[z[i]] = INF;
             } else {
-                if (lb[z[i]] > min(ub[x[i]], ub[y[i]])) {
-                    is_valid = 0;
-                    return;
-                }
-
                 lb[x[i]] = max(lb[z[i]], lb[x[i]]);
                 lb[y[i]] = max(lb[z[i]], lb[y[i]]);
 
-                lb[z[i]] = -INF;
+                lb[z[i]] = 0;
                 ub[z[i]] = INF;
             }
         }
     }
+}
+
+vector<int> simul(vector<int> c) {
+    for (int i = 0; i < q; i++) {
+        c[z[i]] = min(c[x[i]], c[y[i]]);
+        // for (int j = 0; j < n; j++) cout << c[j] << ' ';
+        // cout << '\n';
+    }
+    return c;
 }
 
 int main() {
@@ -98,11 +97,14 @@ int main() {
 
         solve();
 
+        is_valid &= (b == simul(lb));
+
         if (is_valid) {
             for (int i = 0; i < n; i++) {
-                cout << (lb[i] == -INF ? 0 : lb[i]) << ' ';
+                cout << lb[i] << ' ';
             }
             cout << '\n';
+            // simul(lb);
         } else cout << -1 << '\n';
     }
 }
