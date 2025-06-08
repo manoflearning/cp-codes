@@ -32,7 +32,7 @@ int main() {
     cin.tie(NULL); cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    chrono::duration<double, milli> cal_dp1, cal_dp2;
+    // chrono::duration<double, milli> cal_dp1, cal_dp2;
 
     cout << fixed;
     cout.precision(6);
@@ -51,7 +51,7 @@ int main() {
         const double P = (double)p / 100, Q = (double)(100 - p) / 100;
 
         {
-            auto st = chrono::high_resolution_clock::now();
+            // auto st = chrono::high_resolution_clock::now();
 
             dp1.resize(m + 1, vector<double>(sum_h - n * min_h + 1));
             
@@ -67,12 +67,12 @@ int main() {
                 }
             }
 
-            auto et = chrono::high_resolution_clock::now();
-            cal_dp1 += et - st;
+            // auto et = chrono::high_resolution_clock::now();
+            // cal_dp1 += et - st;
         }
 
         {
-            auto st = chrono::high_resolution_clock::now();
+            // auto st = chrono::high_resolution_clock::now();
 
             dp2.resize(m + 1, vector<double>(n * (min_h - 1) + 1));
 
@@ -89,8 +89,8 @@ int main() {
                 }
             }
 
-            auto et = chrono::high_resolution_clock::now();
-            cal_dp2 += et - st;
+            // auto et = chrono::high_resolution_clock::now();
+            // cal_dp2 += et - st;
         }
 
         double ans = 0;

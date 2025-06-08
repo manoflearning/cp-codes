@@ -8,57 +8,6 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define all(x) (x).begin(), (x).end()
 
-int n;
-ll k;
-vector<ll> a, b;
-vector<ll> ssum;
-
-struct Node {
-    ll rem_b, rem_a;
-    Node operator+(const Node &rhs) const {
-        Node ret;
-        ret.rem_b = rem_b + max(0ll, rhs.rem_b - rem_a);
-        ret.rem_a = max(0ll, rem_a - rhs.rem_b) + rhs.rem_a;
-        return ret;
-    }
-};
-
-int flag;    // array size
-struct Seg { // 1-indexed
-  vector<Node> t;
-  void build() {
-    t.clear();
-    for (flag = 1; flag < 2 * n; flag <<= 1);
-    t.resize(2 * flag);
-    for (int i = flag; i < flag + 2 * n; i++) {
-        t[i].rem_b = max(0ll, b[(i - flag) % n] - a[(i - flag) % n]);
-        t[i].rem_a = max(0ll, a[(i - flag) % n] - b[(i - flag) % n]);
-    }
-    for (int i = flag - 1; i >= 1; i--) t[i] = t[i << 1] + t[i << 1 | 1];
-  }
-  Node query(int l, int r, int n = 1, int nl = 1, int nr = flag) { // sum on interval [l, r]
-    if (r < nl || nr < l) return {0};
-    if (l <= nl && nr <= r) return t[n];
-    int mid = (nl + nr) / 2;
-    return query(l, r, n << 1, nl, mid) + query(l, r, n << 1 | 1, mid + 1, nr);
-  }
-} seg;
-
-void init() {}
-
-void input() {
-    cin >> n >> k;
-    a.resize(n);
-    b.resize(n);
-    for (auto &i : a) cin >> i;
-    for (auto &i : b) cin >> i;
-}
-
-ll sum(int l, int r) {
-    if (r >= l) return ssum[r] - (l > 0 ? ssum[l - 1] : 0);
-    else return (ssum[n - 1] - ssum[l - 1]) + ssum[r];
-}
-
 int main() {
     #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
@@ -70,25 +19,38 @@ int main() {
 
     int tc; cin >> tc;
     while (tc--) {
-        init();
+        int n;
+        ll k;
+        cin >> n >> k;
 
-        input();
+        vector<ll> a(n), b(n);
+        for (auto &i : a) cin >> i;
+        for (auto &i : b) cin >> i;
 
-        seg.build();
-
-        int ans = 0;
         for (int i = 0; i < n; i++) {
-            if (b[i] >= a[i]) {
-                ans = max(ans, 1);
-            } else {
-                int l = 2, r = n;
-                while (l < r) {
-                    int mid = (l + r) >> 1;
-                    if (seg.query(i + 2, i + mid).rem_b + b[i] >= a[i]) r = mid;
-                    else l = mid + 1;
-                }
-                ans = max(ans, l);
+            a.push_back(a[i]);
+            b.push_back(b[i]);
+        }
+
+        vector<ll> psum(2 * n);
+        psum[0] = a[0] - b[0];
+        for (int i = 1; i < 2 * n; i++) {
+            psum[i] = a[i] - b[i] + psum[i - 1];
+        }
+
+        int ans = 1;
+        stack<int> stk;
+        for (int i = 2 * n - 1; i >= 0; i--) {
+            ll now = (i == 0 ? 0 : psum[i - 1]);
+            while (!stk.empty() && now < psum[stk.top()]) {
+                stk.pop();
             }
+
+            if (a[i] > b[i] && i < n) {
+                ans = max(ans, stk.top() - i + 1);
+            }
+            
+            stk.push(i);            
         }
 
         cout << ans << '\n';
