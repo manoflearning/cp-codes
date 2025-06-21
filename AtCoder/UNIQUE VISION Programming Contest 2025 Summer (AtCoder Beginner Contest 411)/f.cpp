@@ -16,7 +16,6 @@ struct UF {
     vector<int> uf;
     vector<unordered_set<int>> e;
     void build(int n) {
-        uf.clear();
         uf.resize(n + 1, -1);
         e.resize(n + 1);
     }
@@ -28,30 +27,18 @@ struct UF {
         int U = find(u), V = find(v);
         if (U == V) return;
 
-        if (sz(e[U]) > sz(e[U])) swap(U, V);
+        if (sz(e[U]) > sz(e[V])) swap(U, V);
 
         uf[U] = V;
 
-        if (e[V].count(U)) {
-            e[V].erase(U);
-            ans--;
-        }
-
         for (auto &i : e[U]) {
-            int j = find(i);
+            e[i].erase(U);
+            ans--;
 
-            if (e[j].count(U)) {
-                e[j].erase(U);
-                ans--;
-            }
-            if (!e[j].count(V)) {
-                e[j].insert(V);
-                ans++;
-            }
-            
-            if (j != V && !e[V].count(j)) {
-                e[V].insert(j);
-                ans++;
+            if (i != V && !e[i].count(V)) {
+                e[i].insert(V);
+                e[V].insert(i);
+                ans += 2;
             }
         }
 
@@ -94,6 +81,8 @@ int main() {
         if (U != V && uf.e[U].count(V)) {
             uf.merge(U, V);
         }
+
+        assert(ans % 2 == 0);
 
         cout << ans / 2 << '\n';
     }
