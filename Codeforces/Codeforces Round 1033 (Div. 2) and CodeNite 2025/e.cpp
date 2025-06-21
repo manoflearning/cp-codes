@@ -8,34 +8,9 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define all(x) (x).begin(), (x).end()
 
-const int MOD = 1e9 + 7;
-
-ll power(ll x, ll y) {
-    if (y == 0) return 1;
-    if (y == 1) return x;
-    ll res = power(x, y / 2);
-    return res * res % MOD * (y & 1 ? x : 1) % MOD;
+inline ll sum(ll l, ll r) {
+    return (l + r) * (r - l + 1) / 2;
 }
-
-// ll get_m(ll a, ll b, ll k) {
-//     if (k == 1) return b;
-
-//     ll ret = 0;
-//     ret += (get_m(a, b, k - 1) + MOD - 1) * k;
-//     return ( + (b - 1)) % MOD;
-// }
-
-ll binom(ll n, ll r) {
-    if (r < 0 || n < r) return 0;
-    r = min(r, n - r);
-    ll ret = 1;
-    for (ll i = 1; i <= r; i++) {
-        ret = ret * (n % MOD + 1 - i) % MOD;
-        ret = ret * power(i, MOD - 2) % MOD;
-    }
-    return ret;
-}
-
 
 int main() {
     #ifndef ONLINE_JUDGE
@@ -48,18 +23,45 @@ int main() {
 
     int tc; cin >> tc;
     while (tc--) {
-        ll a, b, k;
-        cin >> a >> b >> k;
+        int n, k;
+        cin >> n >> k;
 
-        ll n = k * (a - 1) + 1;
-        
-        if (b == 1) {
-            cout << n << ' ' << 1 << '\n';
-            continue;
+        vector<ll> a(n);
+        ll m = 0;
+        for (auto &i : a) {
+            cin >> i;
+            m += i;
         }
 
-        // m = nCa * (b - 1) * k + 1
-        ll m = (binom(n, a) * (b - 1) % MOD * k % MOD + 1) % MOD;
-        cout << n % MOD << ' ' << m % MOD << '\n';
+        ll l = -1e6, r = 1e6;
+        while (l < r) {
+            ll mid = (l + r) >> 1;
+
+            ll cnt = 0;
+            for (auto &i : a) {
+                cnt += min(mid, i - k) + k;
+                cnt += max(0ll, mid - i);
+            }
+
+            if (cnt >= m) r = mid;
+            else l = mid + 1;
+        }
+
+        ll t = l;
+
+        ll ans = k * m, ans_cnt = 0;
+        for (auto &i : a) {
+            if (t - 1 >= 1 - k) {
+                ans += sum(1 - k, min(t - 1, i - k));
+                ans_cnt += min(t - 1, i - k) + k;
+            }
+            if (t - 1 >= i + 1) {
+                ans += sum(i + 1, t - 1);
+                ans_cnt += (t - 1) - i;
+            }
+        }
+        ans += (m - ans_cnt) * t;
+
+        cout << ans << '\n';
     }
 }
