@@ -8,9 +8,31 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define all(x) (x).begin(), (x).end()
 
-void move(ll &x, ll y, ll &ans) {
-    ans += abs(y - x);
-    x = y;
+int n, m;
+vector<ll> a;
+vector<pll> b;
+
+void init() {}
+
+void input() {
+    cin >> n >> m;
+    a.resize(n);
+    for (auto &i : a) cin >> i;
+    b.resize(m);
+    for (auto &[l, r] : b) cin >> l >> r;
+}
+
+void remove_b() {
+    vector<pll> tmp;
+    for (auto &[l, r] : b) {
+        int idx = lower_bound(all(a), l) - a.begin();
+        if (idx < sz(a) && a[idx] <= r) {
+            continue;
+        } else {
+            tmp.push_back({l, r});
+        }
+    }
+    b = tmp;
 }
 
 int main() {
@@ -24,15 +46,13 @@ int main() {
 
     int tc; cin >> tc;
     while (tc--) {
-        int n, m;
-        cin >> n >> m;
+        init();
 
-        vector<ll> a(n);
-        for (auto &i : a) cin >> i;
+        input();
 
-        vector<pll> lr(m);
-        for (auto &[l, r] : lr) cin >> l >> r;
-        
-        
+        sort(all(a));
+        sort(all(b));
+
+        remove_b();
     }
 }
