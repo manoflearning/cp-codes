@@ -90,9 +90,11 @@ int main() {
         }
     }
 
-    // DEBUG
-    // cout << c << ' ' << d << '\n';
-
-    ll ans = (power(2, c) - (d > 0 ? power(2, d) : 0) + MOD) % MOD * power(2, MOD - 2) % MOD;
+    ll ans = 0;
+    ans += power(2, c);
+    if (d) ans -= power(2, d);
+    ans = (ans % MOD + MOD) % MOD;
+    ans = ans * power(2, MOD - 2) % MOD;
+    
     cout << ans;
 }
