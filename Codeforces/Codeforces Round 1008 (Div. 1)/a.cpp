@@ -8,35 +8,6 @@ using namespace std;
 #define sz(x) (int)(x).size()
 #define all(x) (x).begin(), (x).end()
 
-// int n;
-// vector<ll> b;
-// set<ll> st;
-// bool is_done = 0;
-
-// void init() {
-//     st.clear();
-//     is_done = 0;
-// }
-
-// void bt(int i, ll sum, int cnt_c, int cnt_d) {
-//     if (2 * n == i) {
-//         cout << "fuck " << sum << ' ' << cnt_c << ' ' << cnt_d << '\n';
-//         if (sum > 0 && !st.count(sum)) {
-//             is_done = 1;
-//         }
-//         return;
-//     }
-
-//     if (!is_done && cnt_c < n) {
-//         b[i] = abs(b[i]);
-//         bt(i + 1, sum + b[i], cnt_c + 1, cnt_d);
-//     }
-//     if (!is_done && cnt_d < n) {
-//         b[i] = -abs(b[i]);
-//         bt(i + 1, sum + b[i], cnt_c, cnt_d + 1);
-//     }
-// }
-
 int main() {
     #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
