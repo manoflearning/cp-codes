@@ -10,17 +10,8 @@ int n, m, k;
 int a[N][M];
 int y_st, x_st, y_en, x_en;
 
-void input() {
-    cin >> n >> m >> k;
-    for (int i = 1; i <= k; i++) {
-        int y, x;
-        cin >> y >> x;
-        a[y][x] = i;
-    }
-    cin >> y_st >> x_st >> y_en >> x_en;
-}
-
 bool vis[N][M];
+
 void dfs(int y, int x, int &cnt0, const int ub) {
     if (!a[y][x] && !(y_st <= y && y <= y_en && x_st <= x && x <= x_en)) cnt0++;
 
@@ -48,7 +39,6 @@ bool f(const int ub) {
 
     int cnt0 = 0;
     dfs(y_st, x_st, cnt0, ub);
-    // cout << ub << ' ' << cnt0 << '\n';
     return cnt0 >= cnt_need_move;
 }
 
@@ -61,7 +51,13 @@ int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    input();
+    cin >> n >> m >> k;
+    for (int i = 1; i <= k; i++) {
+        int y, x;
+        cin >> y >> x;
+        a[y][x] = i;
+    }
+    cin >> y_st >> x_st >> y_en >> x_en;
 
     int l = 0, r = k + 1;
     while (l < r) {
