@@ -100,21 +100,19 @@ int main() {
         }
         
         if (is_swaped) {
-            vector<vector<int>> tmp(m, vector<int>(n));
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    cout << (ans[j][i] == INF ? 0 : ans[j][i]) << ' ';
+                }
+                cout << '\n';
+            }
+        } else {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < m; j++) {
-                    tmp[j][i] = ans[i][j];
+                    cout << (ans[i][j] == INF ? 0 : ans[i][j]) << ' ';
                 }
+                cout << '\n';
             }
-            swap(n, m);
-            ans = tmp;
-        }
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                cout << (ans[i][j] == INF ? 0 : ans[i][j]) << ' ';
-            }
-            cout << '\n';
         }
     }
 }
