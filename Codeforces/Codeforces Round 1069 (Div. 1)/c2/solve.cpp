@@ -55,7 +55,7 @@ int main() {
 
             b[i] = (2 * psum2[r] + psum[r]) % mod;
         }
-        
+
         ll ans = 0;
         ans += sum_a * sum_a % mod;
         ans %= mod;
