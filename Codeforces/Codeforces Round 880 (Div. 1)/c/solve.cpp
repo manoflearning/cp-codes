@@ -54,37 +54,40 @@ void sol_naive() {
     }
 }
 
-void sol_random(uniform_int_distribution<int> &dis, mt19937_64 &eng) {
-    unordered_map<ll, int> mpr;
+void sol_random(mt19937_64 &eng) {
+    unordered_map<ll, int> mp;
     for (int i = 1; i <= n; i++) {
-        if (mpr.count(pg[i]) && mpr[pg[i]] + 1 < i) {
-            a = b = mpr[pg[i]] + 1;
-            c = mpr[pg[i]] + 2, d = i;
+        if (mp.count(pg[i]) && mp[pg[i]] + 1 < i) {
+            a = b = mp[pg[i]] + 1;
+            c = mp[pg[i]] + 2, d = i;
             return;
         }
-        mpr[pg[i]] = i;
+        mp[pg[i]] = i;
     }
 
-    while (1) {
-        array<int, 4> arr{};
-        arr[0] = dis(eng);
-        arr[1] = dis(eng);
-        arr[2] = dis(eng);
+    vector<int> ord(n);
+    iota(all(ord), 1);
+    shuffle(all(ord), eng);
 
-        if (arr[0] == arr[1] || arr[1] == arr[2] || arr[0] == arr[2]) continue;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            for (int k = j + 1; k < n; k++) {
+                ll res = 0;
+                res ^= pg[ord[i]];
+                res ^= pg[ord[j]];
+                res ^= pg[ord[k]];
 
-        ll res = 0;
-        res ^= pg[arr[2]];
-        res ^= pg[arr[1]];
-        res ^= pg[arr[0]];
-
-        auto it = mpr.find(res);
-
-        if (it != mpr.end() && it->sc != arr[0] && it->sc != arr[1] && it->sc != arr[2]) {
-            arr[3] = it->sc;
-            sort(all(arr));
-            a = arr[0] + 1, b = arr[1], c = arr[2] + 1, d = arr[3];
-            return;
+                auto it = mp.find(res);
+                if (it != mp.end() && it->sc != ord[i] && it->sc != ord[j] && it->sc != ord[k]) {
+                    array<int, 4> arr{};
+                    arr[0] = it->sc, arr[1] = ord[i];
+                    arr[2] = ord[j], arr[3] = ord[k];
+                    sort(all(arr));
+                    a = arr[0] + 1, b = arr[1];
+                    c = arr[2] + 1, d = arr[3];
+                    return;
+                }
+            }
         }
     }
 }
@@ -108,8 +111,7 @@ int main() {
         if (n <= BOUND) {
             sol_naive();
         } else {
-            uniform_int_distribution<int> dis(0, n);
-            sol_random(dis, eng);
+            sol_random(eng);
         }
 
         if (a == -1) {
