@@ -12,35 +12,6 @@ using pll = pair<ll, ll>;
 
 constexpr int INF = 1e9 + 7;
 
-// what: point update + range sum on a fixed-size array using a tree.
-// time: build O(n), update/query O(log n); memory: O(n)
-// constraint: 1-indexed [1, n]; a[0] unused.
-// usage: seg_tree st; st.build(a); st.set(p, v); st.query(l, r);
-struct seg_tree {
-    int flag;
-    vector<ll> t;
-    void build(int n) {
-        // goal: build tree from 1-indexed array.
-        flag = 1;
-        while (flag < n) flag <<= 1;
-        t.assign(2 * flag, INF);
-    }
-    void set(int p, ll val) {
-        // goal: set a[p] = val.
-        p += flag - 1;
-        for (t[p] = min(t[p], val); p > 1; p >>= 1)
-            t[p >> 1] = min(t[p], t[p ^ 1]);
-    }
-    ll query(int l, int r) const { return query(l, r, 1, 1, flag); }
-    ll query(int l, int r, int v, int nl, int nr) const {
-        // result: sum on [l, r] within node range.
-        if (r < nl || nr < l) return INF;
-        if (l <= nl && nr <= r) return t[v];
-        int mid = (nl + nr) >> 1;
-        return min(query(l, r, v << 1, nl, mid), query(l, r, v << 1 | 1, mid + 1, nr));
-    }
-};
-
 int main() {
     cin.tie(nullptr)->sync_with_stdio(false);
 
@@ -49,50 +20,73 @@ int main() {
         int n, m, k;
         cin >> n >> m >> k;
 
-        vector<int> l(m), r(m);
+        vector<pii> a(m);
+        vector<int> ps(n + 2), ps1(n + 2), ps2(n + 2);
+        int cnt0 = 0;
         for (int i = 0; i < m; i++) {
-            cin >> l[i] >> r[i];
-        }
-
-        vector<int> ps(n + 2);
-        vector<int> ps0(n + 2), ps1(n + 2), ps2(n + 2);
-        for (int i = 0; i < m; i++) {
-            ps[l[i]]++;
-            ps[r[i] + 1]--;
+            cin >> a[i].fr >> a[i].sc;
+            
+            ps[a[i].fr]++, ps[a[i].sc + 1]--;
         }
         for (int i = 1; i <= n; i++) {
             ps[i] += ps[i - 1];
-
-            ps0[i] = (ps[i] == 0) + ps0[i - 1];
+            // cout << ps[i] << ' ';
+            cnt0 += ps[i] == 0;
             ps1[i] = (ps[i] == 1) + ps1[i - 1];
             ps2[i] = (ps[i] == 2) + ps2[i - 1];
         }
+        // cout << '\n';
 
-        vector<int> ord(m);
-        iota(all(ord), 0);
-        sort(all(ord), [&](int i, int j) {
-            return l[i] < l[j];
-        });
+        sort(all(a));
 
-        seg_tree seg;
-        seg.build(n);
+        vector<vector<int>> ls(n + 1), rs(n + 1);
+        for (int i = 0; i < m; i++) {
+            ls[a[i].fr].push_back(i);
+            rs[a[i].sc].push_back(i);
+        }
 
-        int jj = 0;
-        for (int ii = 0; ii < m; ii++) {
-            int i = ord[i];
+        int ans = 0;
 
-            while (jj < sz(ord)) {
-                int j = ord[jj];
-                if (l[j] <= l[i]) {
-                    int res = ps1[r[j]] - ps1[l[j] - 1];
-                    seg.set(r[j], res);
-                    jj++;
-                } else {
-                    break;
+        set<int> st;
+        for (int i = 1; i <= n; i++) {
+            for (int x : ls[i]) st.insert(x);
+            assert(sz(st) == ps[i]);
+
+            if (ps[i] == 2) {
+                auto it = st.begin();
+                auto [l1, r1] = a[*(it++)];
+                auto [l2, r2] = a[*it];
+                if (pii{l1, r1} > pii{l2, r2}) {
+                    swap(l1, l2);
+                    swap(r1, r2);
                 }
+                int res = 0;
+                res += ps1[max(r1, r2)] - ps1[l1 - 1];
+                res += ps2[min(r1, r2)] - ps2[l2 - 1];
+                ans = max(ans, res);
             }
 
-            
+            for (int x : rs[i]) st.erase(x);
         }
+
+        multiset<int> l1s;
+        priority_queue<pii, vector<pii>, greater<pii>> pq;
+        int cnt1_1 = 0;
+        for (const auto &[l2, r2] : a) {
+            while (!pq.empty()) {
+                const auto [r1, l1] = pq.top();
+                if (r1 < l2) {
+                    pq.pop();
+                    l1s.erase(l1s.find(l1));
+                    cnt1_1 = max(cnt1_1, ps1[r1] - ps1[l1 - 1]);
+                } else break;
+            }
+            ans = max(ans, cnt1_1 + ps1[r2] - ps1[l2 - 1]);
+            if (!l1s.empty()) ans = max(ans, ps1[r2] - ps1[*l1s.begin() - 1]);
+            pq.push({r2, l2});
+            l1s.insert(l2);
+        }
+        
+        cout << ans + cnt0 << '\n';
     }
 }

@@ -11,13 +11,8 @@ using pll = pair<ll, ll>;
 
 int n;
 vector<vector<int>> t;
-
-vector<bool> is_b;
-vector<int> dp1, dp2;
-
-void init() {
-    // TODO
-}
+int a = -1, b = -1, opt_a = 0, opt_b = 0;
+vector<int> par;
 
 void input() {
     cin >> n;
@@ -29,93 +24,36 @@ void input() {
         t[u].push_back(v);
         t[v].push_back(u);
     }
+    a = b = -1;
+    opt_a = opt_b = 0;
 
-    is_b.assign(n + 1, 0);
+    par.assign(n + 1, 0);
 }
 
-void dfs1(int v, int prv) {
-    for (auto &i : t[v]) {
-        if (i == prv) continue;
-        if (is_b[i]) continue;
-        dfs1(i, v);
-        dp1[v] = max(dp1[v], dp1[i] + 1);
+void dfs(int v, int prv, int dist, int &u, int &opt) {
+    if (opt < dist) {
+        u = v;
+        opt = dist;
     }
-}
-
-void dfs2(int v, int prv) {
-    int mx1 = -2, mx2 = -2;
-    for (auto &i : t[v]) {
-        if (i == prv) continue;
-        if (is_b[i]) continue;
-
-        if (mx1 <= dp1[i]) {
-            mx2 = mx1;
-            mx1 = dp1[i];
-        } else if (mx2 < dp1[i]) {
-            mx2 = dp1[i];
-        }
-    }
+    par[v] = prv;
 
     for (auto &i : t[v]) {
-        if (i == prv) continue;
-        if (is_b[i]) continue;
-
-        int res = 1 + dp2[v];
-        res = max(res, 2 + (dp1[i] == mx1 ? mx2 : mx1));
-
-        dp2[i] = res;
-        dfs2(i, v);
+        if (i != prv) dfs(i, v, dist + 1, u, opt);
     }
 }
 
-pair<int, int> find_dc() {
-    int dia = 0;
+pii get_center() {
+    int now = b;
+    int dist = -1;
 
-    vector<int> mx1(n + 1), mx2(n + 1);
-    for (int v = 1; v <= n; v++) {
-        if (is_b[v]) continue;
-
-        mx1[v] = dp2[v];
-        for (auto &i : t[v]) {
-            if (is_b[i]) continue;
-
-            if (1 + dp1[i] <= dp1[v]) {
-                if (mx1[v] <= 1 + dp1[i]) {
-                    mx2[v] = mx1[v];
-                    mx1[v] = 1 + dp1[i];
-                } else if (mx2[v] < 1 + dp1[i]) {
-                    mx2[v] = 1 + dp1[i];
-                }
-            }
-        }
-
-        dia = max(dia, mx1[v] + mx2[v]);
-    }
-
-    int opt = -1, opt_val = 1e9;
-    for (int v = 1; v <= n; v++) {
-        if (is_b[v]) continue;
-        // cout << dia << ' ' << mx1[v] << ' ' << mx2[v] << '\n';
-        // if (dia == mx1[v] + mx2[v]) cout << v << ' ';
-        if (dia == mx1[v] + mx2[v] && max(dp1[v], dp2[v]) < opt_val) {
-            opt = v;
-            opt_val = max(dp1[v], dp2[v]);
-        }
-    }
-    // cout << '\n';
-    return {opt, opt_val};
-}
-
-void coloring(int v, int prv, int d) {
-    if (d == 0) {
-        is_b[v] = 1;
-        return;
-    }
-
-    for (auto &i : t[v]) {
-        if (i == prv) continue;
-        if (is_b[i]) continue;
-        coloring(i, v, d - 1);
+    if (opt_b & 1) {
+        dist = opt_b / 2;
+        while (dist--) now = par[now];
+        return {now, -1};
+    } else {
+        dist = opt_b / 2 - 1;
+        while (dist--) now = par[now];
+        return {now, par[now]};
     }
 }
 
@@ -124,45 +62,27 @@ int main() {
 
     int tc; cin >> tc;
     while (tc--) {
-        init();
-
         input();
 
+        dfs(1, 0, 1, a, opt_a);
+        dfs(a, 0, 1, b, opt_b);
+
+        auto [c1, c2] = get_center();
+        
         vector<pii> ans;
-
-        while (1) {
-            dp1.assign(n + 1, 0);
-            dp2.assign(n + 1, 0);
-
-            int ans_v = -1, ans_d = -1;
-
-            for (int v = 1; v <= n; v++) {
-                if (is_b[v]) continue;
-                dfs1(v, 0);
-                dfs2(v, 0);
-                auto res = find_dc();
-                ans_v = res.fr, ans_d = res.sc;
-                break;
+        if (c2 == -1) {
+            for (int d = 0; d <= opt_b / 2; d++) {
+                ans.push_back({c1, d});
             }
-
-            if (ans_v == -1) break;
-
-            ans.push_back({ans_v, ans_d});
-
-            coloring(ans_v, 0, ans_d);
-
-            // for (int v = 1; v <= n; v++) {
-            //     cout << v << ' ' << dp1[v] << ' ' << dp2[v] << '\n';
-            // }
-
-            // cout << ans_v << ' ' << ans_d << '\n';
+        } else {
+            for (int d = 1; d <= opt_b / 2; d += 2) {
+                ans.push_back({c1, d});
+                ans.push_back({c2, d});
+            }
         }
-
-        // assert(sz(ans) <= (n + 1) / 2);
 
         cout << sz(ans) << '\n';
-        for (auto &[v, d] : ans) {
-            cout << v << ' ' << d << '\n';
-        }
+        for (auto &i : ans)
+            cout << i.fr << ' ' << i.sc << '\n';
     }
 }
