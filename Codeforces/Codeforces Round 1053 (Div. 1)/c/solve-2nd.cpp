@@ -11,28 +11,57 @@ using pll = pair<ll, ll>;
 
 constexpr ll INF = 1e18;
 
-struct seg_tree {
+struct seg_tree_lz {
     int flag;
     vector<ll> t;
+    vector<pll> lz;
     void build(int n) {
         flag = 1;
         while (flag < n) flag <<= 1;
-        t.assign(2 * flag, 0);
+        t.assign(2 * flag, -INF);
+        for (int i = 1; i < flag + n; i++) t[i] = 0;
+        lz.assign(2 * flag, {0, -INF});
     }
-    void set(int p, ll val) {
-        p += flag - 1;
-        t[p] = max(t[p], val);
-        for (; p > 1; p >>= 1) {
-            t[p >> 1] = max(t[p], t[p ^ 1]);
+    void modify(int l, int r, pll val) { modify(l, r, val, 1, 1, flag); }
+    void modify(int l, int r, pll val, int v, int nl, int nr) {
+        push(v, nl, nr);
+        if (r < nl || nr < l) return;
+        if (l <= nl && nr <= r) {
+            lz[v] = val;
+            push(v, nl, nr);
+            return;
         }
+        int mid = (nl + nr) >> 1;
+        modify(l, r, val, v << 1, nl, mid);
+        modify(l, r, val, v << 1 | 1, mid + 1, nr);
+        t[v] = max(t[v << 1], t[v << 1 | 1]);
     }
-    ll query(int l, int r) const { return query(l, r, 1, 1, flag); }
-    ll query(int l, int r, int v, int nl, int nr) const {
-        if (r < nl || nr < l) return 0;
+    ll query(int l, int r) { return query(l, r, 1, 1, flag); }
+    ll query(int l, int r, int v, int nl, int nr) {
+        push(v, nl, nr);
+        if (r < nl || nr < l) return -INF;
         if (l <= nl && nr <= r) return t[v];
         int mid = (nl + nr) >> 1;
         return max(query(l, r, v << 1, nl, mid), query(l, r, v << 1 | 1, mid + 1, nr));
     }
+    void push(int v, int nl, int nr) {
+        if (lz[v] == pll{0, -INF}) return;
+        if (v < flag) {
+            lz[v << 1].fr += lz[v].fr;
+            lz[v << 1].sc += lz[v].fr;
+            lz[v << 1].sc = max(lz[v << 1].sc, lz[v].sc);
+
+            lz[v << 1 | 1].fr += lz[v].fr;
+            lz[v << 1 | 1].sc += lz[v].fr;
+            lz[v << 1 | 1].sc = max(lz[v << 1 | 1].sc, lz[v].sc);
+
+            // lz[v << 1].fr = max(lz[v << 1].fr, lz[v].sc);
+            // lz[v << 1 | 1].fr = max(lz[v << 1 | 1].fr, lz[v].sc);
+        }
+        t[v] += lz[v].fr;
+        t[v] = max(t[v], lz[v].sc);
+        lz[v] = {0, -INF};
+    } 
 };
 
 int main() {
@@ -50,22 +79,16 @@ int main() {
             rb[b[i]] = i;
         }
 
-        vector<ll> psum(n + 1);
+        ll ans = 0;
+
+        seg_tree_lz seg;
+        seg.build(n + 1);
         for (int i = 1; i <= n; i++) {
-            psum[i] = v[a[i]] + psum[i - 1];
+            const ll nxt = seg.query(1, rb[a[i]]);
+            seg.modify(rb[a[i]] + 1, n + 1, {0, nxt});
+            seg.modify(1, rb[a[i]], {v[a[i]], -INF});
         }
 
-        ll ans = max(0ll, psum[n]);
-
-        seg_tree seg;
-        seg.build(n);
-        for (int i = 1; i <= n; i++) {
-            ll res = 0;
-            // res += psum[i - 1];
-            res += max(psum[i - 1], seg.query(1, rb[a[i]])) + v[a[i]];
-            ans = max(ans, res);
-            seg.set(rb[a[i]], res);
-        }
-        cout << seg.query(1, n) << '\n';
+        cout << seg.query(1, n + 1) << '\n';
     }
 }
