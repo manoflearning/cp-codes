@@ -8,106 +8,55 @@ typedef long long ll;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 
-int r, c;
-vector<string> a;
-ll ans = 0;
-
-inline ll nc4(ll n) {
-    if (n < 4) return 0;
-    return n * (n - 1) * (n - 2) * (n - 3) / 24;
-}
-inline ll nc3(ll n) {
-    if (n < 3) return 0;
-    return n * (n - 1) * (n - 2) / 6;
-}
-inline ll nc2(ll n) {
-    if (n < 2) return 0;
-    return n * (n - 1) / 2;
-}
-inline ll nc1(ll n) {
-    if (n < 1) return 0;
-    return n;
-}
-
-void solve() {
-    vector<vector<ll>> ps(r, vector<ll>(c));
-    for (int y = 0; y < r; y++) {
-        for (int x = 0; x < c; x++) {
-            ps[y][x] = (a[y][x] == '.') + (x ? ps[y][x - 1] : 0);
-            // cout << ps[y][x] << ' ';
-        }
-        // cout << '\n';
-    }
-    // cout << '\n';
-
-    { // case 1
-        for (int y = 0; y < r; y++) {
-            ans += nc4(ps[y][c - 1]) * 24;
-        }
-    }
-    { // case 2
-        for (int x = 0; x < c; x++) {
-            ll acc = 0;
-            for (int y = 0; y < r; y++) {
-                if (a[y][x] == '#') continue;
-
-                ans += acc * nc2(ps[y][c - 1] - 1) * 4;
-                acc++;
-            }
-        }
-    }
-    { // case 3
-        ll res = 0;
-        for (int x = 0; x < c; x++) {
-            ll acc = 0;
-            for (int y = r - 1; y >= 0; y--) {
-                if (a[y][x] == '#') continue;
-
-                res += acc * nc2(ps[y][c - 1] - 1) * 4;
-                acc++;
-            }
-            // cout << x << ' ' << acc << '\n';
-        }
-        ans += res;
-        // cout << res << '\n';
-    }
-    { // case 4
-        ll res = 0;
-        for (int x = 0; x < c; x++) {
-            ll acc = 0;
-            for (int y = 0; y < r; y++) {
-                if (a[y][x] == '#') continue;
-
-                res += acc * nc1(ps[y][c - 1] - 1) * 2;
-                acc += nc1(ps[y][c - 1] - 1);
-            }
-            // cout << x << ' ' << acc << '\n';
-        }
-        ans += res;
-        // cout << res << '\n';
-    }
-}
-
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
+    int r, c;
     cin >> r >> c;
-    a.assign(r, string{});
+    vector<string> a(r);
     for (auto &i : a) cin >> i;
 
-    solve();
+    ll ans = 0;
 
-    vector<string> tmp(c, string(r, '#'));
+    vector<ll> cntR(r), cntC(c);
     for (int i = 0; i < r; i++) {
         for (int j = 0; j < c; j++) {
-            tmp[j][i] = a[i][j];
+            if (a[i][j] == '.') cntR[i]++, cntC[j]++;
         }
     }
-    swap(r, c);
-    a = tmp;
 
-    solve();
+    for (int i = 0; i < r; i++) {
+        ll acc = 0, sum = 0;
+        for (int j = 0; j < c; j++) {
+            if (a[i][j] == '#') continue;
+
+            ll res = 0;
+            res += (acc * (cntR[i] - 2) + sum) * (cntR[i] + cntC[j] - 3);
+            res -= acc * (cntR[i] - 2);
+
+            ans += res * 2;
+
+            acc++;
+            sum += cntC[j] - 1;
+        }
+    }
+
+    for (int j = 0; j < c; j++) {
+        ll acc = 0, sum = 0;
+        for (int i = 0; i < r; i++) {
+            if (a[i][j] == '#') continue;
+
+            ll res = 0;
+            res += (acc * (cntC[j] - 2) + sum) * (cntC[j] + cntR[i] - 3);
+            res -= acc * (cntC[j] - 2);
+
+            ans += res * 2;
+
+            acc++;
+            sum += cntR[i] - 1;
+        }
+    }
 
     cout << ans << '\n';
 }

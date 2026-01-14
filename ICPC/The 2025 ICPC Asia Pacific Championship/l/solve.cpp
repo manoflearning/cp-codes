@@ -8,45 +8,40 @@ typedef long long ll;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 
-const int dy[4]{0,0,1,-1}, dx[4]{1,-1,0,0};
+constexpr int dy[] = {1, 0, -1, 0};
+constexpr int dx[] = {0, 1, 0, -1};
 
 int r, c, n, p;
-vector<vi> arr;
+vector<vi> g;
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
     cin >> r >> c >> n >> p;
+    g.assign(r, vi(c));
 
-    arr.resize(r);
-    for(auto &v:arr) {
-        v.resize(c);
-        for(auto &a:v) cin >> a;
-    }
+    map<int, pii> rg;
+    for (int i = 0; i < r; i++)
+        for (int j = 0; j < c; j++) {
+            cin >> g[i][j];
+            if (g[i][j]) rg[g[i][j]] = {i, j};
+        }
 
-    set<int> s;
-
-    for(int i=0; i<r; i++) {
-        for(int j=0; j<c; j++) {
-            if(arr[i][j]>p || arr[i][j]==0) continue;
-
-            int ny, nx;
-            for(int d=0; d<4; d++) {
-                ny=i+dy[d];
-                nx=j+dx[d];
-
-                if(ny<0 || nx<0 || ny>=r || nx>=c) continue;
-
-                if(arr[ny][nx]==0) continue;
-
-                int nv=arr[ny][nx]-arr[i][j]+p;
-                if(nv<1 || nv>n) continue;
-
-                s.insert(nv);
-            }
+    set<int> vis;
+    for (int i = 1; i <= p; i++) {
+        const auto [y, x] = rg[i];
+        const int t = (p - i);
+        for (int d = 0; d < 4; d++) {
+            const int ny = y + dy[d], nx = x + dx[d];
+            if (ny < 0 || r <= ny || nx < 0 || c <= nx) continue;
+            if (g[ny][nx] > 0 && g[ny][nx] + t <= n) vis.insert(g[ny][nx] + t);
         }
     }
 
-    cout << sz(s) << "/" << n-1 << '\n';
+    // DEBUG
+    // for (auto &i : vis) cout << i << ' ';
+    // cout << '\n';
+
+    cout << sz(vis) << "/" << n - 1;
 }
