@@ -12,8 +12,7 @@ typedef vector<int> vi;
 bool query(int i, int j) {
     cout << "? " << i << ' ' << j << '\n';
     cout.flush();
-    int ret; cin >> ret;
-    assert(ret != -1);
+    bool ret; cin >> ret;
     return ret;
 }
 
@@ -31,7 +30,6 @@ int main() {
     int tc; cin >> tc;
     while (tc--) {
         int n; cin >> n;
-        assert(n != -1);
 
         int j = -1;
         for (int t = n - 1; t >= 1; t--) {
@@ -47,16 +45,7 @@ int main() {
         int i = -1, k = -1;
         for (int t = j - 2; t >= 1; t--) {
             bool res = query(t, t + 1);
-            if (res) {
-                i = t, k = j;
-                for (int x = t + 2; x <= j; x++) {
-                    if (!query(i, x)) {
-                        k = x - 1;
-                        break;
-                    }
-                }
-                break;
-            }
+            if (res) { i = t; break; }
         }
 
         if (i == -1) {
@@ -64,26 +53,31 @@ int main() {
             continue;
         }
 
-        vector<int> ans;
-
-        for (int t = 1; t <= i - 1; t++) ans.push_back(t);
-        ans.push_back(k);
-
+        vector<int> a, b;
+        for (int t = 1; t <= i - 1; t++) a.push_back(t);
+        
         int tl = j, tr = j + 1;
         while (i < tl || tr <= n) {
-            const int u = (tl == k ? i : tl);
-            const int v = tr;
             if (i < tl && tr <= n) {
-                bool res = query(u, v);
-                if (res) ans.push_back(u), tl--;
-                else ans.push_back(v), tr++;
+                bool res = query(tl, tr);
+                if (res) b.push_back(tl), tl--;
+                else b.push_back(tr), tr++;
             } else if (i < tl) {
-                ans.push_back(u), tl--;
+                b.push_back(tl), tl--;
             } else if (tr <= n) {
-                ans.push_back(v), tr++;
+                b.push_back(tr), tr++;
             }
         }
 
-        answer(ans);
+        for (int t : b) {
+            bool res = query(i, t);
+            if (res) { a.push_back(t); break; }
+        }
+        for (int t : b) {
+            if (t != a[i - 1]) a.push_back(t);
+            else a.push_back(i);
+        }
+
+        answer(a);
     }
 }
