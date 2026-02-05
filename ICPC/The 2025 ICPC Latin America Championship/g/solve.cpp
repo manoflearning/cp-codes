@@ -96,15 +96,10 @@ int main() {
 
     vector<ll> cc(1, 0);
     for (auto &i : a) {
-        cc.push_back(i.p);
         cc.push_back(i.p - 1);
-        cc.push_back(i.p + 1);
-        cc.push_back(i.p + i.l - 1 - 1);
+        cc.push_back(i.p);
         cc.push_back(i.p + i.l - 1);
         cc.push_back(i.p + i.l - 1 + 1);
-        // if (i.op == HYPHEN) {
-        //     cc.push_back(i.p + i.l - 1);   
-        // }
     }
     sort(all(cc));
     cc.erase(unique(all(cc)), cc.end());

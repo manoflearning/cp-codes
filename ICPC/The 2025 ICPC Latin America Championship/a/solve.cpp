@@ -1,3 +1,4 @@
+#pragma GCC optimize ("Ofast")
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -8,58 +9,45 @@ using ll = long long;
 using pii = pair<int, int>;
 using vi = vector<int>;
 
-int dp[5050][5050];
+int n;
+vector<vector<int>> dp;
+vector<vector<vector<int>>> adj, radj;
 
-void run(int u, int v, const vector<vector<vi>>& adj, const vector<vector<vi>>& rev){
-    if(~dp[u][v]) return;
-    dp[u][v]=1;
-    
-    for(int i = 0; i < 26; i++) {
-        for(auto &nu:rev[u][i]) {
-            for(auto &nv:adj[v][i]) {
-                run(nu, nv, adj, rev);
-            }
-        }
-    }
+void f(int u, int v) {
+    if (dp[u][v] != -1) return;
+    dp[u][v] = 1;
+    for (int c = 0; c < 26; c++)
+        for (const int p : radj[c][u])
+            for (const int q : adj[c][v]) f(p, q);
 }
 
 int main() {
     cin.tie(nullptr)->sync_with_stdio(false);
     cin.exceptions(cin.failbit);
 
-    int n,m; cin >> n >> m;
-    vector<vector<vi>> adj(n + 1, vector<vi>(26));
-    vector<vector<vi>> rev(n + 1, vector<vi>(26));
-    vector<pii> edge;
+    int n, m;
+    cin >> n >> m;
 
-    for(int i = 0; i < m; i++) {
-        int u,v; char c;
-        cin >> u >> v >> c;
-        u--; v--; c -= 'a';
-        adj[u][c].push_back(v);
-        rev[v][c].push_back(u);
-
-        edge.push_back({u,v});
+    adj.assign(26, vector<vector<int>>(n));
+    radj.assign(26, vector<vector<int>>(n));
+    for (int i = 0; i < m; i++) {
+        int u, v; char w;
+        cin >> u >> v >> w;
+        u--, v--;
+        adj[w - 'a'][u].push_back(v);
+        radj[w - 'a'][v].push_back(u);
     }
 
-    memset(dp, -1, sizeof(dp));
-
-    for(int i = 0; i < n; i++) {
-        run(i,i, adj, rev);
-    }
-    for(int i = 0; i < m; i++) {
-        run(edge[i].first, edge[i].second, adj, rev);
+    dp.assign(n, vector<int>(n, -1));
+    for (int i = 0; i < n; i++) {
+        f(i, i);
+        for (int c = 0; c < 26; c++)
+            for (const int j : adj[c][i]) f(i, j);
     }
 
-    int ans=0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(i == j) continue;
-            if(dp[i][j] == 1) ans++;
-
-            // if(dp[i][j] == 1) cout << i << ' ' << j << '\n';
-        }
-    }
-
+    int ans = 0;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            ans += dp[i][j] == 1 && i != j;
     cout << ans << '\n';
 }
