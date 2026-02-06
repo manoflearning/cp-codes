@@ -9,6 +9,8 @@ using ll = long long;
 using pii = pair<int, int>;
 using vi = vector<int>;
 
+constexpr int INF = 1e9 + 7;
+
 struct Sign {
     int a, b, h;
 };
@@ -36,28 +38,64 @@ struct SegTime {
 
 struct SegSpace {
     int flag;
-    vector<int> t;
-    vector<pii> lazy; // {h, id}
-    vector<vector<pii>> rb;
+    vector<int> t, lazy;
+    vector<pair<int *, int>> log;
     void init(int n) {
         for (flag = 1; flag < n; flag <<= 1);
         t.assign(flag << 1, 0);
-        lazy.assign(flag << 1, {0, -1});
-        rb.assign(n, vector<pii>{});
+        lazy.assign(flag << 1, 0);
     }
     void prop(int v) {
-        // TODO
+        if (!lazy[v]) return;
+        if (v < flag) {
+            if (lazy[v << 1] < lazy[v]) {
+                log.push_back({&lazy[v << 1], lazy[v << 1]});
+                lazy[v << 1] = max(lazy[v << 1], lazy[v]);
+            }
+            if (lazy[v << 1 | 1] < lazy[v]) {
+                log.push_back({&lazy[v << 1 | 1], lazy[v << 1 | 1]});
+                lazy[v << 1 | 1] = max(lazy[v << 1 | 1], lazy[v]);
+            }
+        }
+
+        if (t[v] < lazy[v]) {
+            log.push_back({&t[v], t[v]});
+            t[v] = lazy[v];
+        }
+        log.push_back({&lazy[v], lazy[v]});
+        lazy[v] = 0;
     }
-    void update(int l, int r, pii val, int v, int vl, int vr) {
-        // TODO
+    void update(int l, int r, int val, int v, int vl, int vr) {
+        prop(v);
+        if (r < vl || vr < l) return;
+        if (l <= vl && vr <= r) {
+            log.push_back({&lazy[v], lazy[v]});
+            lazy[v] = val;
+            prop(v);
+            return;
+        }
+        const int mid = (vl + vr) >> 1;
+        update(l, r, val, v << 1, vl, mid);
+        update(l, r, val, v << 1 | 1, mid + 1, vr);
+        if (t[v] != min(t[v << 1], t[v << 1 | 1])) {
+            log.push_back({&t[v], t[v]});
+            t[v] = min(t[v << 1], t[v << 1 | 1]);
+        }
     }
-    void update(int l, int r, pii val) { update(l, r, val, 1, 1, flag); }
+    void update(int l, int r, int val) { update(l, r, val, 1, 1, flag); }
     int query(int l, int r, int v, int vl, int vr) {
-        // TODO
+        prop(v);
+        if (r < vl || vr < l) return INF;
+        if (l <= vl && vr <= r) return t[v];
+        const int mid = (vl + vr) >> 1;
+        return min(query(l, r, v << 1, vl, mid), query(l, r, v << 1 | 1, mid + 1, vr));
     }
-    int query(int l, int r) { query(l, r, 1, 1, flag); }
-    void rollback(int id) {
-        // TODO
+    int query(int l, int r) { return query(l, r, 1, 1, flag); }
+    void rollback(int snapshot) {
+        while (sz(log) > snapshot) {
+            *log.back().first = log.back().second;
+            log.pop_back();
+        }
     }
 };
 
@@ -73,8 +111,9 @@ SegTime seg_t;
 SegSpace seg_s;
 
 void dnc(int v, int vl, int vr) {
+    const int snapshot = sz(seg_s.log);
     for (const int id : seg_t.t[v]) {
-        seg_s.update(arr[id].a, arr[id].b, {arr[id].h, id});
+        seg_s.update(arr[id].a, arr[id].b, arr[id].h);
     }
 
     if (vl == vr) {
@@ -87,9 +126,7 @@ void dnc(int v, int vl, int vr) {
         dnc(v << 1 | 1, mid + 1, vr);
     }
 
-    for (const int id : seg_t.t[v]) {
-        seg_s.rollback(id);
-    }
+    seg_s.rollback(snapshot);
 }
 
 int main() {
@@ -106,7 +143,7 @@ int main() {
         if (op == '+') {
             int a, b, h;
             cin >> a >> b >> h;
-            arr.push_back({a, b, h});
+            arr.push_back({a, b - 1, h});
             st[sz(arr) - 1] = t;
         } else if (op == '-') {
             int id; cin >> id;
@@ -115,16 +152,19 @@ int main() {
         } else if (op == '?') {
             int l, r;
             cin >> l >> r;
-            qu[t] = {l, r};
+            qu[t] = {l, r - 1};
         }
     }
 
     vector<int> cc(1, -1);
     for (auto &i : arr) {
+        cc.push_back(i.a - 1);
         cc.push_back(i.a);
         cc.push_back(i.b);
+        cc.push_back(i.b + 1);
     }
     for (auto &i : qu) {
+        if (i.first == -1) continue;
         cc.push_back(i.first - 1);
         cc.push_back(i.first);
         cc.push_back(i.second);
@@ -139,6 +179,7 @@ int main() {
         i.b = lower_bound(all(cc), i.b) - cc.begin();
     }
     for (auto &i : qu) {
+        if (i.first == -1) continue;
         i.first = lower_bound(all(cc), i.first) - cc.begin();
         i.second = lower_bound(all(cc), i.second) - cc.begin();
     }
