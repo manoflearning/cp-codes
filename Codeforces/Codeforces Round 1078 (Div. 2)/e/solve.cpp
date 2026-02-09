@@ -1,4 +1,4 @@
-#pragma GCC optimize ("Ofast")
+#pragma GCC optimize ("O3")
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -9,57 +9,7 @@ using ll = long long;
 using pii = pair<int, int>;
 using vi = vector<int>;
 
-constexpr ll INF = 1e18;
-
-vector<int> DominatorTree(const vector<vector<int>>& g, int src) { // 0-based
-	const int n = g.size();
-	vector<vector<int>> rg(n), buf(n);
-	vector<int> r(n), val(n), idom(n, -1), sdom(n, -1), par(n), u(n), o;
-	iota(r.begin(), r.end(), 0), iota(val.begin(), val.end(), 0);
-	for (int i = 0; i < n; i++) for (auto j : g[i]) rg[j].push_back(i);
-	auto Find = [&](int v, auto&& Find) -> int {
-		if (v == r[v]) return v;
-		int ret = Find(r[v], Find);
-		if (sdom[val[v]] > sdom[val[r[v]]]) val[v] = val[r[v]];
-		return r[v] = ret;
-	};
-	auto DFS = [&](int v, auto&& DFS) -> void {
-		sdom[v] = o.size(); o.push_back(v);
-		for (auto i : g[v]) if (sdom[i] == -1) par[i] = v, DFS(i, DFS);
-	};
-	DFS(src, DFS), reverse(o.begin(), o.end());
-	for (auto& i : o) {
-		if (sdom[i] == -1) continue;
-		for (auto j : rg[i]) {
-			if (sdom[j] == -1) continue;
-			int x = val[Find(j, Find), j];
-			if (sdom[i] > sdom[x]) sdom[i] = sdom[x];
-		}
-		buf[o[o.size() - sdom[i] - 1]].push_back(i);
-		for (auto j : buf[par[i]]) u[j] = val[Find(j, Find), j];
-		buf[par[i]].clear();
-		r[i] = par[i];
-	}
-	idom[src] = src, reverse(o.begin(), o.end());
-	for (auto i : o) { // WARNING : if different, takes idom
-		if (i != src) idom[i] = sdom[i] == sdom[u[i]] ? sdom[i] : idom[u[i]];
-	}
-	for (auto i : o) if (i != src) idom[i] = o[idom[i]];
-	return idom; // unreachable -> ret[i] = -1
-}
-
-int _hash(int i, int j, const int m) { return m * i + j; }
-
-ll get_opt(const int stx, const int sty, const int n, const int m, const vector<vector<ll>> &a, vector<vector<ll>> dp) {
-    for (int i = stx; i < n; i++) {
-        for (int j = sty; j < m; j++) {
-            dp[i][j] = (i == 0 && j == 0 ? a[0][0] : -INF);
-            if (i > 0) dp[i][j] = max(dp[i][j], dp[i - 1][j] + a[i][j]);
-            if (j > 0) dp[i][j] = max(dp[i][j], dp[i][j - 1] + a[i][j]);
-        }
-    }
-    return dp[n - 1][m - 1];
-}
+constexpr ll INF = 4e18;
 
 int main() {
     cin.tie(nullptr)->sync_with_stdio(false);
@@ -73,51 +23,49 @@ int main() {
         vector<vector<ll>> a(n, vector<ll>(m));
         for (auto &i : a) for (auto &j : i) cin >> j;
 
-        vector<vector<ll>> dp(n, vector<ll>(m, -INF));
-        vector<vector<int>> g(n * m);
-        dp[0][0] = a[0][0];
+        vector<vector<ll>> dp1(n, vector<ll>(m, -INF)), dp2(n, vector<ll>(m, -INF));
+        dp1[0][0] = a[0][0];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (i > 0) dp[i][j] = max(dp[i][j], dp[i - 1][j] + a[i][j]);
-                if (j > 0) dp[i][j] = max(dp[i][j], dp[i][j - 1] + a[i][j]);
-
-                if (i > 0 && dp[i][j] == a[i][j] + dp[i - 1][j]) {
-                    g[_hash(i - 1, j, m)].push_back(_hash(i, j, m));
-                }
-                if (j > 0 && dp[i][j] == a[i][j] + dp[i][j - 1]) {
-                    g[_hash(i, j - 1, m)].push_back(_hash(i, j, m));
-                }
+                if (i > 0) dp1[i][j] = max(dp1[i][j], dp1[i - 1][j] + a[i][j]);
+                if (j > 0) dp1[i][j] = max(dp1[i][j], dp1[i][j - 1] + a[i][j]);
             }
         }
 
-        const auto res = DominatorTree(g, 0);
-
-        const ll base = get_opt(0, 0, n, m, a, dp);
-
-        ll ans = base;
-
-        vector<pii> b;
-        int now = _hash(n - 1, m - 1, m);
-        while (1) {
-            const int x = now / m, y = now % m;
-            if (a[x][y] > 0) b.push_back({x, y});
-            if (now == 0) break;
-            now = res[now];
+        dp2[n - 1][m - 1] = a[n - 1][m - 1];
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = m - 1; j >= 0; j--) {
+                if (i + 1 < n) dp2[i][j] = max(dp2[i][j], dp2[i + 1][j] + a[i][j]);
+                if (j + 1 < m) dp2[i][j] = max(dp2[i][j], dp2[i][j + 1] + a[i][j]);
+            }
         }
 
-        sort(all(b), [&](const pii &i, const pii &j) {
-            if (i == pii{0, 0}) return true;
-            if (j == pii{0, 0}) return false;
-            if (i == pii{n - 1, m - 1}) return true;
-            if (j == pii{n - 1, m - 1}) return false;
-            return a[i.first][i.second] > a[j.first][j.second];
-        });
+        ll ans = INF;
+        for (int i = 0; i < n; i++) {
+            vector<ll> ps(m);
+            if (i + 1 < n) {
+                for (int j = 0; j < m; j++) {
+                    ps[j] = dp1[i][j] + dp2[i + 1][j];
+                    if (j > 0) ps[j] = max(ps[j], ps[j - 1]);
+                }
+            }
+            
+            vector<ll> ss(m);
+            if (i > 0) {
+                for (int j = m - 1; j >= 0; j--) {
+                    ss[j] = dp1[i - 1][j] + dp2[i][j];
+                    if (j + 1 < m) ss[j] = max(ss[j], ss[j + 1]);
+                }
+            }
+            
+            for (int j = 0; j < m; j++) {
+                ll res = dp1[i][j] + dp2[i][j] - 3 * a[i][j];
 
-        for (const auto &[x, y] : b) {
-            if (ans <= base - 2 * a[x][y]) continue;
-            a[x][y] *= -1;
-            ans = min(ans, get_opt(x, y, n, m, a, dp));
-            a[x][y] *= -1;
+                if (i + 1 < n && j > 0) res = max(res, ps[j - 1]);
+                if (i > 0 && j + 1 < m) res = max(res, ss[j + 1]);
+
+                ans = min(ans, res);
+            }
         }
 
         cout << ans << '\n';
