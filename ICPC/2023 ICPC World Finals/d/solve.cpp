@@ -84,10 +84,6 @@ template<class P> vector<P> segInter(P a, P b, P c, P d) {
     return {all(s)};
 }
 
-bool within_range(const P &as, const P &a1, const P &a2, const P &bs) {
-    return !segInter(as, bs, a1, a2).empty();
-}
-
 ld get_min_dist(const P &a1, const P &a2, const ld ah, const P &b1, const P &b2, const ld bh, const Pyramid &a, const Pyramid &b) {
     const auto as = get_tip(a1, a2, ah);
     const auto bs = get_tip(b1, b2, bh);
@@ -102,12 +98,12 @@ ld get_min_dist(const P &a1, const P &a2, const ld ah, const P &b1, const P &b2,
 
     const vector<P> aa{a1, a2}, bb{b1, b2};
     for (const auto am : aa) {
-        if (within_range(bs, b1, b2, am)) {
+        if (!segInter(bs, am, b1, b2).empty()) {
             ret = min(ret, (am - as).dist() + (bs - am).dist());
         }
     }
     for (const auto bm : bb) {
-        if (within_range(as, a1, a2, bm)) {
+        if (!segInter(as, bm, a1, a2).empty()) {
             ret = min(ret, (bm - as).dist() + (bs - bm).dist());
         }
     }
