@@ -27,9 +27,7 @@ void bt(int idx,
     }
 
     bt(idx + 1, ub, x, y, pow3, sum_x + x[idx], sum_y + y[idx], code + 1 * pow3[idx], mp);
-
     bt(idx + 1, ub, x, y, pow3, sum_x, sum_y, code, mp);
-
     bt(idx + 1, ub, x, y, pow3, sum_x - x[idx], sum_y - y[idx], code + 2 * pow3[idx], mp);
 }
 
