@@ -1,3 +1,4 @@
+#pragma GCC optimize ("Ofast", "unroll-loops")
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -8,9 +9,7 @@ using ll = long long;
 using pii = pair<int, int>;
 using vi = vector<int>;
 
-struct Rect {
-    int w, h, x, y, dx, dy;
-};
+struct Rect { int w, h, x, y, dx, dy; };
 
 ll gcd(ll x, ll y) {
     if (!y) return x;
@@ -63,28 +62,31 @@ int main() {
 
                 ret[t] = bit;
             }
-            return ret;
+            return std::move(ret);
         };
 
         auto count_pairs = [&]() -> pair<ll, ll> {
             const auto vec1 = build_bit_vec(ax, bx);
             const auto vec2 = build_bit_vec(ay, by);
+            const ll n1 = sz(vec1), n2 = sz(vec2);
 
-            const ll g = gcd(sz(vec1), sz(vec2));
+            const ll g = gcd(n1, n2);
 
             vector<ll> cnt1(g), cnt2(g);
-            for (int i = 0; i < sz(vec1); i++) cnt1[i % g] += vec1[i];
-            for (int i = 0; i < sz(vec2); i++) cnt2[i % g] += vec2[i];
+            for (int i = 0; i < n1; i++) if (vec1[i]) cnt1[i % g]++;
+            for (int i = 0; i < n2; i++) if (vec2[i]) cnt2[i % g]++;
 
             ll ret = 0;
             for (int i = 0; i < g; i++) ret += cnt1[i] * cnt2[i];
-            
-            return {ret, (ll)sz(vec1) * sz(vec2) / g};
+
+            return {ret, n1 * n2 / g};
         };
 
         auto [ans_n, ans_d] = count_pairs();
+
         const ll g = gcd(ans_n, ans_d);
         ans_n /= g, ans_d /= g;
+        
         cout << ans_n << "/" << ans_d << '\n';
     }
 }
