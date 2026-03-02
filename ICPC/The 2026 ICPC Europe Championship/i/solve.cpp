@@ -5,101 +5,60 @@ using namespace std;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) (int)(x).size()
 using ll = long long;
-using ld = long double;
 using pii = pair<int, int>;
 using vi = vector<int>;
 
-constexpr ld INF = 4e18l;
+ll modpow(ll b, ll e, const ll mod) {
+    if (!e) return 1;
+    const ll res = modpow(b, e / 2, mod);
+    return res * res % mod * (e & 1 ? b : 1) % mod;
+}
 
-template <class T> int sgn(T x) { return (x > 0) - (x < 0); }
-template<class T>
-struct Point {
-	typedef Point P;
-	T x, y;
-	explicit Point(T x=0, T y=0) : x(x), y(y) {}
-	bool operator<(P p) const { return tie(x,y) < tie(p.x,p.y); }
-	bool operator==(P p) const { return tie(x,y)==tie(p.x,p.y); }
-	P operator+(P p) const { return P(x+p.x, y+p.y); }
-	P operator-(P p) const { return P(x-p.x, y-p.y); }
-	P operator*(T d) const { return P(x*d, y*d); }
-	P operator/(T d) const { return P(x/d, y/d); }
-	T dot(P p) const { return x*p.x + y*p.y; }
-	T cross(P p) const { return x*p.y - y*p.x; }
-	T cross(P a, P b) const { return (a-*this).cross(b-*this); }
-	T dist2() const { return x*x + y*y; }
-	double dist() const { return sqrt((double)dist2()); }
-	// angle to x-axis in interval [-pi, pi]
-	double angle() const { return atan2(y, x); }
-	P unit() const { return *this/dist(); } // makes dist()=1
-	P perp() const { return P(-y, x); } // rotates +90 degrees
-	P normal() const { return perp().unit(); }
-	// returns point rotated 'a' radians ccw around the origin
-	P rotate(double a) const {
-		return P(x*cos(a)-y*sin(a),x*sin(a)+y*cos(a)); }
-	friend ostream& operator<<(ostream& os, P p) {
-		return os << "(" << p.x << "," << p.y << ")"; }
-};
+ll f(const ll l, const ll mod, const vector<ll> &a) {
+    set<ll> st;
+    for (const ll i : a) st.insert(i);
 
-using P = Point<ld>;
+    ll cnt_free = l - a.back();
+    while (sz(st) >= 2) {
+        const ll y = *prev(st.end());
+        const ll x = *prev(prev(st.end()));
+        const ll a = (sz(st) > 2 ? *prev(prev(prev(st.end()))) : 0ll);
 
-vector<P> convexHull(vector<P> pts) {
-	if (sz(pts) <= 1) return pts;
-	sort(all(pts));
-    reverse(all(pts));
-	vector<P> h(sz(pts)+1);
-	int s = 0, t = 0;
-    for (P p : pts) {
-        while (t >= s + 2 && h[t-2].cross(h[t-1], p) <= 0) t--;
-        h[t++] = p;
+        if (2 * x <= y) {
+            st.erase(y);
+            cnt_free += (y - 2 * x + 1) / 2;
+        } else {
+            st.erase(x), st.erase(y);
+
+            const ll d = y - x;
+            const ll thres = max(a, d);
+            const ll t = (x - thres + d - 1) / d;
+
+            const ll r = x - t * d;
+            const ll u = r + d;
+
+            st.insert(r);
+            if (r <= a) st.insert(u);
+            else cnt_free += (d - r + 1) / 2;
+        }
     }
-	return {h.begin(), h.begin() + t - (t == 2 && h[0] == h[1])};
+    cnt_free += (*st.begin() + 1) / 2;
+
+    return modpow(2, cnt_free, mod);
 }
 
 int main() {
     cin.tie(nullptr)->sync_with_stdio(false);
     cin.exceptions(cin.failbit);
 
-    cout << fixed;
-    cout.precision(15);
+    ll l; int n, m;
+    cin >> l >> n >> m;
 
-    int tc; cin >> tc;
-    while (tc--) {
-        int n; cin >> n;
+    vector<ll> a(n);
+    for (auto &i : a) cin >> i;
 
-        vector<vector<ll>> a(n);
-        for (auto &i : a) {
-            int k; cin >> k;
-            i.assign(k, 0);
-            for (auto &j : i) cin >> j;
-        }
+    sort(all(a));
+    a.erase(unique(all(a)), a.end());
 
-        ld ans1{+INF}, ans2{-INF};
-        vector<P> b;
-        for (auto &i : a) {
-            ld m{}, r{};
-            for (auto &j : i) m += j, r += j * j;
-            m /= sz(i), r /= sz(i);
-            b.push_back(P{m, r});
-            ans1 = min(ans1, r - m * m);
-            ans2 = max(ans2, r - m * m);
-        }
-
-        b = convexHull(b);
-        reverse(all(b));
-
-        for (int i = 0; i + 1 < sz(b); i++) {
-            const ld p = (b[i + 1].y - b[i].y) / (b[i + 1].x - b[i].x);
-            const ld q = b[i].y - p * b[i].x;
-
-            auto cal = [](ld p, ld q, ld x) -> ld {
-                return -x * x + p * x + q;
-            };
-    
-            if (b[i].x <= p / 2 && p / 2 <= b[i + 1].x) {
-                ans2 = max(ans2, cal(p, q, p / 2));
-            }
-        }
-
-        cout << ans1 << ' ' << ans2 << '\n';
-    }
+    cout << f(l, m, a) << '\n';    
 }
